@@ -11,16 +11,16 @@ export class DialogueBox {
   constructor(elementId: string, textElementId: string) {
     const element = document.getElementById(elementId);
     const textElement = document.getElementById(textElementId);
-    
+
     if (!element || !textElement) {
       throw new Error('Dialogue box elements not found');
     }
-    
+
     this.element = element;
     this.textElement = textElement;
     this.dialogues = [];
     this.currentIndex = 0;
-    
+
     this.element.addEventListener('click', () => this.advance());
   }
 
@@ -47,7 +47,7 @@ export class DialogueBox {
    */
   private advance(): void {
     this.currentIndex++;
-    
+
     if (this.currentIndex >= this.dialogues.length) {
       this.hide();
       if (this.onComplete) {
