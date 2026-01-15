@@ -5,11 +5,16 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
-  js.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  prettierConfig,
+  {
+    ignores: ['dist', 'node_modules', '*.config.js', '*.config.ts'],
+  },
   {
     files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
+      prettierConfig,
+    ],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
@@ -31,8 +36,5 @@ export default tseslint.config(
         version: 'detect',
       },
     },
-  },
-  {
-    ignores: ['dist', 'node_modules', 'eslint.config.js', 'vite.config.ts'],
   }
 );
