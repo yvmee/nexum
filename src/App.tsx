@@ -35,16 +35,14 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="bg-nexum-bg flex justify-center items-center min-h-screen font-sans">
-      <div className="relative w-[800px] h-[600px]">
-        <GameCanvas />
+    <div className="relative w-screen h-screen overflow-hidden font-sans">
+      <GameCanvas/>
         <DialogueBox
-          dialogues={dialogues}
-          currentIndex={currentIndex}
-          onAdvance={handleAdvance}
-          isVisible={isDialogueVisible}
+        dialogues={dialogues}
+        currentIndex={currentIndex}
+        onAdvance={handleAdvance}
+        isVisible={isDialogueVisible}
         />
-      </div>
     </div>
   );
 };

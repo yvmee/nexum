@@ -9,7 +9,7 @@ interface Star {
 /**
  * GameCanvas - React component for rendering the game canvas with stars and title
  */
-export const GameCanvas: React.FC = () => {
+export const GameCanvas: React.FC = (children) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const starsRef = useRef<Star[]>([]);
 
@@ -20,16 +20,28 @@ export const GameCanvas: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 800;
-    canvas.height = 600;
+    // Set canvas to window size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Generate stars only once
     if (starsRef.current.length === 0) {
-      starsRef.current = generateStars(50, canvas.width, canvas.height);
+      starsRef.current = generateStars(100, canvas.width, canvas.height);
     }
 
     // Render the scene
     renderScene(ctx, canvas, starsRef.current);
+
+    // Handle window resize
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      starsRef.current = generateStars(100, canvas.width, canvas.height);
+      renderScene(ctx, canvas, starsRef.current);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const generateStars = (
@@ -80,7 +92,7 @@ export const GameCanvas: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="w-full h-full bg-nexum-canvas border-2 border-nexum-border rounded-lg"
-    />
+      className="absolute inset-0 w-full h-full bg-nexum-canvas"
+    /> 
   );
 };
