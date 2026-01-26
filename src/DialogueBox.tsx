@@ -22,13 +22,16 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
 
   return (
     <div
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[750px] max-w-[90vw] bg-gradient-to-br from-nexum-border/95 to-nexum-canvas/95 border-2 border-nexum-accent rounded-xl p-5 text-white cursor-pointer select-none transition-all duration-100 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(233,69,96,0.3)]"
+      className="flex flex-col z-10 justify-between gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-slate-900/95 via-slate-800/95 to-slate-900/95 border-2 border-[#e94560] rounded-xl p-8 cursor-pointer select-none transition-all duration-100 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(233,69,96,0.3)]"
       onClick={onAdvance}
     >
-      <div className="text-lg leading-relaxed mb-3 min-h-[50px]">
+      {/* Content */}
+      <div className="flex text-[2xl] text-[#e0e0e0] leading-relaxed px-2">
         {dialogues[currentIndex]}
       </div>
-      <div className="text-sm text-nexum-accent text-right blink-animation">
+
+      {/* Footer */}
+      <div className="flex text-sm text-[#e94560] text-right blink-animation self-end">
         Click to continue...
       </div>
     </div>

@@ -7,9 +7,9 @@ interface Star {
 }
 
 /**
- * GameCanvas - React component for rendering the game canvas with stars and title
+ * GameCanvas - React component for rendering the game canvas with stars
  */
-export const GameCanvas: React.FC = (children) => {
+export const GameCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const starsRef = useRef<Star[]>([]);
 
@@ -76,23 +76,12 @@ export const GameCanvas: React.FC = (children) => {
       ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
       ctx.fill();
     }
-
-    // Draw game title
-    ctx.fillStyle = '#e94560';
-    ctx.font = 'bold 48px Segoe UI';
-    ctx.textAlign = 'center';
-    ctx.fillText('NEXUM', canvas.width / 2, 150);
-
-    // Draw subtitle
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '20px Segoe UI';
-    ctx.fillText('A Browser Game Prototype', canvas.width / 2, 190);
   };
 
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full bg-nexum-canvas"
-    /> 
+      className="block w-full h-full"
+    />
   );
 };

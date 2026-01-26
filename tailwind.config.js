@@ -8,6 +8,7 @@ export default {
         'nexum-canvas': '#16213e',
         'nexum-border': '#0f3460',
         'nexum-accent': '#e94560',
+        'nexum-text': '#e0e0e0',
       },
     },
   },
