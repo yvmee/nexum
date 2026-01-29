@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-nexum-bg: #0f172a;
+  --color-nexum-canvas: #0f172a;
+  --color-nexum-border: #fbbf24;
+  --color-nexum-accent: #fbbf24;
+  --color-nexum-text: #202020;
+  
+  /* Light theme gradient colors */
+  --color-nexum-light-start: #f5f5dc;
+  --color-nexum-light-middle: #b0b0b0;
+  --color-nexum-light-end: #e0e0e0;
+}
+
 /* Minimal custom CSS for blink animation */
 @keyframes blink {
   0%,
