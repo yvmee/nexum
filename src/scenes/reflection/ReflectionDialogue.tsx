@@ -4,6 +4,7 @@ import * as ChoicesManager from '../dialogue/ChoicesManager';
 import { ReflectionNode, UserResponse } from './reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { setUpAI, generateResponse } from './ProcessAnswers';
+import { loadReflectionTexts, saveData, ReflectionData } from '../../db/database';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 
 
@@ -17,11 +18,21 @@ export const ReflectionDialogue: React.FC = () => {
   const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [conversationCount, setConversationCount] = useState<number>(0);
+  const [previousReflections, setPreviousReflections] = useState<ReflectionData[]>([]);
   const maxConversations = 3; // Number of reflection exchanges before ending
 
   useEffect(() => {
     const initializeReflection = async () => {
       console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.selectedChoice);
+      
+      // Load all previous reflection texts at the beginning
+      try {
+        const loadedReflections = await loadReflectionTexts();
+        setPreviousReflections(loadedReflections);
+        console.log('Previous reflections loaded:', loadedReflections.length);
+      } catch (error) {
+        console.error('Error loading previous reflections:', error);
+      }
       
       // Check if we have a valid choice selection
       if (ChoicesManager.selectedChoice === null) {
@@ -97,7 +108,7 @@ export const ReflectionDialogue: React.FC = () => {
   const handleSubmitInput = async (input: string) => {
     if (!currentDialogue) return;
 
-    // Save the user's response
+    // Save the user's response to local state
     const newResponse: UserResponse = {
       nodeId: currentDialogue.id,
       prompt: currentDialogue.text,
@@ -110,6 +121,14 @@ export const ReflectionDialogue: React.FC = () => {
       console.log('User responses updated:', updated);
       return updated;
     });
+
+    // Save the sanitized input to the database
+    try {
+      await saveData(input);
+      console.log('User response saved to database');
+    } catch (error) {
+      console.error('Error saving user response to database:', error);
+    }
 
     // Show loading state while waiting for AI
     setIsLoading(true);

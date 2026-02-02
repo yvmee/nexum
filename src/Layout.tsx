@@ -10,11 +10,8 @@ import { loadData, saveData } from './db/database.ts';
 export const Layout: React.FC = () => {
 
   useEffect(() => {
-    // Any global initialization can go here
     console.log('App initialized');
-    loadData();
   }, []);
-  
 
   return (
     <BrowserRouter>
