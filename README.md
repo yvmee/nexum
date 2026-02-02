@@ -1,6 +1,14 @@
 # nexum
 
-A first browser prototype - A browser game built with React 19.2 and TypeScript.
+An educational browser game prototype built with React 19.2 and TypeScript.
+This is specifically a prototype for a modern discussion and reflection mechanic for a single player game based on Play x Discuss.
+
+## Features
+
+- Play through a scenario and make decisions.
+- Reflect on your decisions and share your thoughts.
+- Get feedback and guidance.
+- See other player's reflections asynchronously and discuss with future and past players.
 
 ## Tech Stack
 
@@ -22,40 +30,4 @@ npm run dev
 
 # Build for production
 npm run build
-
-# Preview production build
-npm run preview
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
 ```
-
-## Project Structure
-
-```
-nexum/
-├── src/
-│   ├── App.tsx           # Main application component
-│   ├── GameCanvas.tsx    # Canvas rendering component
-│   ├── DialogueBox.tsx   # Dialogue interaction component
-│   ├── main.tsx          # Application entry point
-│   └── style.css         # Global styles (Tailwind + minimal custom CSS)
-├── index.html            # HTML entry point
-├── vite.config.ts        # Vite configuration
-├── tsconfig.json         # TypeScript configuration
-├── tailwind.config.js    # Tailwind CSS configuration
-├── eslint.config.js      # ESLint configuration
-└── .prettierrc           # Prettier configuration
-```
-
-## Features
-
-- Interactive canvas-based game scene with animated stars
-- Click-through dialogue system
-- Responsive design
-- TypeScript for type safety
-- Modern React best practices
-
