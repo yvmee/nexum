@@ -1,27 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import * as ChoicesManager from '../dialogue/ChoicesManager';
 // import { GameCanvas } from '../dialogue/GameCanvas';
-import { reflectionDialogues, ReflectionNode, UserResponse } from './reflectionData';
+import { ReflectionNode, UserResponse } from './reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
+import { setUpAI, generateResponse } from './ProcessAnswers';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 
 
 /**
- * ReflectionDialogue - Main component for reflection scene with star background
+ * ReflectionDialogue - Main component for reflection scene with AI-driven reflection
  */
 export const ReflectionDialogue: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<ReflectionNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(true);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
   const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [conversationCount, setConversationCount] = useState<number>(0);
+  const maxConversations = 3; // Number of reflection exchanges before ending
 
   useEffect(() => {
-    console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.selectedChoice);
-    // Start with the first dialogue
-    const startDialogue = reflectionDialogues.find((d) => d.id === 'start');
-    if (startDialogue) {
-      setCurrentDialogue(startDialogue);
-    }
+    const initializeReflection = async () => {
+      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.selectedChoice);
+      
+      // Check if we have a valid choice selection
+      if (ChoicesManager.selectedChoice === null) {
+        console.warn('No choice selected, using default scenario');
+        setCurrentDialogue({
+          id: 'error',
+          text: 'No scenario found. Please complete the dialogue first.',
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Get the scenario and the student's decision
+        const scenario = ChoicesManager.currentData.situation;
+        const decision = ChoicesManager.currentData.choices[ChoicesManager.selectedChoice];
+        
+        // Call setUpAI to initialize the reflection with gemma
+        const aiResponse = await setUpAI(scenario, decision);
+        
+        // Create the initial dialogue node with AI response
+        setCurrentDialogue({
+          id: 'ai_initial',
+          text: aiResponse,
+          requiresInput: true,
+          inputPrompt: 'Share your thoughts on this...',
+          nextId: 'ai_response',
+        });
+      } catch (error) {
+        console.error('Error initializing AI reflection:', error);
+        setCurrentDialogue({
+          id: 'error',
+          text: 'I encountered an issue starting our reflection. Let\'s try thinking about your teaching choice anyway. What motivated your decision?',
+          requiresInput: true,
+          inputPrompt: 'Share your thoughts...',
+          nextId: 'ai_response',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeReflection();
   }, []);
 
   const handleAdvance = () => {
@@ -33,21 +76,25 @@ export const ReflectionDialogue: React.FC = () => {
       return;
     }
 
-    // Move to next dialogue
-    if (currentDialogue.nextId) {
-      const nextDialogue = reflectionDialogues.find((d) => d.id === currentDialogue.nextId);
-      if (nextDialogue) {
-        setCurrentDialogue(nextDialogue);
-        setIsAwaitingInput(false);
-      }
-    } else {
+    // Check if we've reached the end of the reflection
+    if (!currentDialogue.nextId || conversationCount >= maxConversations) {
       // End of dialogue
       setIsDialogueVisible(false);
       console.log('Reflection complete. User responses:', userResponses);
+      return;
+    }
+
+    // If we have a nextId but it's the ending, show ending message
+    if (currentDialogue.nextId === 'ending') {
+      setCurrentDialogue({
+        id: 'ending',
+        text: 'Thank you for your reflections. Your insights have been recorded and will help you grow as an educator.',
+      });
+      setIsAwaitingInput(false);
     }
   };
 
-  const handleSubmitInput = (input: string) => {
+  const handleSubmitInput = async (input: string) => {
     if (!currentDialogue) return;
 
     // Save the user's response
@@ -64,15 +111,46 @@ export const ReflectionDialogue: React.FC = () => {
       return updated;
     });
 
-    // Move to next dialogue
-    if (currentDialogue.nextId) {
-      const nextDialogue = reflectionDialogues.find((d) => d.id === currentDialogue.nextId);
-      if (nextDialogue) {
-        setCurrentDialogue(nextDialogue);
-        setIsAwaitingInput(false);
-      }
-    } else {
-      setIsDialogueVisible(false);
+    // Show loading state while waiting for AI
+    setIsLoading(true);
+    setIsAwaitingInput(false);
+
+    const newCount = conversationCount + 1;
+    setConversationCount(newCount);
+
+    // Check if we should end the reflection
+    if (newCount >= maxConversations) {
+      setCurrentDialogue({
+        id: 'ending',
+        text: 'Thank you for sharing your reflections. Your thoughtful insights show real growth as an educator. Keep questioning and learning!',
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Send user input to gemma and get response
+      const aiResponse = await generateResponse(input);
+      
+      // Create new dialogue node with AI response
+      setCurrentDialogue({
+        id: `ai_response_${newCount}`,
+        text: aiResponse,
+        requiresInput: true,
+        inputPrompt: 'Continue your reflection...',
+        nextId: newCount + 1 >= maxConversations ? 'ending' : 'ai_response',
+      });
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setCurrentDialogue({
+        id: 'error_response',
+        text: 'I appreciate your thoughts. Could you elaborate a bit more on that? What specific aspects of the classroom dynamic were you considering?',
+        requiresInput: true,
+        inputPrompt: 'Share more of your thoughts...',
+        nextId: 'ai_response',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -89,13 +167,22 @@ export const ReflectionDialogue: React.FC = () => {
 
       {/* Dialogue box at the top */}
       <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
-        <ReflectionDialogueBox
-          dialogue={currentDialogue}
-          onAdvance={handleAdvance}
-          onSubmitInput={handleSubmitInput}
-          isVisible={isDialogueVisible}
-          isAwaitingInput={isAwaitingInput}
-        />
+        {isLoading ? (
+          <div className="flex flex-col z-10 justify-center items-center gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-nexum-light-start/95 via-nexum-light-middle/95 to-nexum-light-end/95 border-2 border-nexum-border rounded-xl p-8">
+            <div className="flex items-center gap-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-nexum-accent"></div>
+              <span className="text-nexum-text font-medium">Thinking...</span>
+            </div>
+          </div>
+        ) : (
+          <ReflectionDialogueBox
+            dialogue={currentDialogue}
+            onAdvance={handleAdvance}
+            onSubmitInput={handleSubmitInput}
+            isVisible={isDialogueVisible}
+            isAwaitingInput={isAwaitingInput}
+          />
+        )}
       </div>
 
       {/* Character image */}
