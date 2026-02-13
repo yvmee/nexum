@@ -15,7 +15,7 @@ export const Layout: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div className="relative w-screen h-screen overflow-hidden font-sans bg-[#16213e]">
+      <div className="relative w-screen h-screen overflow-hidden font-sans bg-background">
         <Routes>
           <Route path="/" element={<LayoutDialogue />} />
           <Route path="/reflection" element={<ReflectionDialogue />} />

@@ -95,7 +95,7 @@ export const LayoutDialogue: React.FC = () => {
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
         {/* Game Title & Subtitle */}
         <div className="flex flex-col items-center justify-center mt-20">
-          <h1 className="text-nexum-accent font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
+          <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
             NEXUM
           </h1>
         </div>

@@ -15,6 +15,7 @@ export interface DialogueOption {
 export interface DialogueNode {
   id: string;
   text: string;
+  speaker?: string; // Optional speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
   nextId?: string; // If no options, this is the next dialogue (undefined = end)
 }
@@ -70,7 +71,8 @@ export const gameDialogues: DialogueNode[] = [
 export const tutorAcademyDialogues: DialogueNode[] = [
   {
     id: 'start',
-    text: 'This is a prototype for a self reflection system based on a scenario from the Tutor Academy by ProLehre. Enjoy your journey!',
+    text: 'Hello! This is a prototype for a self reflection system based on a scenario from the Tutor Academy by ProLehre. Enjoy your journey!',
+    speaker: 'Narrator',
     nextId: 'intro',
   },
   {

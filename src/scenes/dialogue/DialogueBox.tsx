@@ -26,13 +26,17 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
 
   return (
     <div
-      className={`flex flex-col z-10 justify-between gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-nexum-light-start/95 via-nexum-light-middle/95 to-nexum-light-end/95 border-2 border-nexum-border rounded-xl p-8 select-none transition-all duration-100 ${
-        !hasOptions ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(251,191,36,0.3)]' : ''
+      className={`flex flex-col z-10 justify-between gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-8 select-none transition-all duration-100 ${
+        !hasOptions ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
       }`}
       onClick={!hasOptions ? onAdvance : undefined}
     >
+      {/* Speaker Name (if present) */}
+      <div className="flex text-sm text-primary font-semibold">
+        {dialogue.speaker}
+      </div>
       {/* Dialogue Text */}
-      <div className="flex text-nexum-text leading-relaxed px-2 font-medium">
+      <div className="flex text-base leading-relaxed px-2 font-medium">
         {dialogue.text}
       </div>
 
@@ -42,10 +46,10 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           {dialogue.options!.map((option, index) => (
             <button
               key={index}
-              className="w-full text-left px-4 py-3 bg-nexum-light-start border border-nexum-border/50 rounded-lg text-nexum-text hover:bg-nexum-accent/20 hover:border-nexum-border transition-all duration-150 cursor-pointer"
+              className="w-full text-left px-4 py-3 bg-secondary border border-border/50 rounded-lg text-foreground hover:bg-accent/20 hover:border-accent transition-all duration-150 cursor-pointer"
               onClick={() => onSelectOption(option.nextId, option.choiceKey)}
             >
-              <span className="text-nexum-accent mr-2 font-bold">{index + 1}.</span>
+              <span className="text-primary mr-2 font-bold">{index + 1}.</span>
               {option.text}
             </button>
           ))}
@@ -54,7 +58,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
 
       {/* Footer (only for non-branching dialogue) */}
       {!hasOptions && (
-        <div className="flex text-sm text-nexum-accent text-right blink-animation self-end font-semibold">
+        <div className="flex text-sm text-primary text-right blink-animation self-end font-semibold">
           Click to continue...
         </div>
       )}
