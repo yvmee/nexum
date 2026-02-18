@@ -3,6 +3,7 @@ import * as ChoicesManager from '../dialogue/ChoicesManager';
 // import { GameCanvas } from '../dialogue/GameCanvas';
 import { ReflectionNode, UserResponse } from './reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
+import { ThoughtBubbles } from './ThoughtBubbles';
 import { setUpAI, generateResponse } from './ProcessAnswers';
 import { loadReflectionTexts, saveData, ReflectionData } from '../../db/database';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
@@ -19,7 +20,21 @@ export const ReflectionDialogue: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [conversationCount, setConversationCount] = useState<number>(0);
   const [previousReflections, setPreviousReflections] = useState<ReflectionData[]>([]);
+  const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
+  const [pendingAIResponse, setPendingAIResponse] = useState<string | null>(null);
+  const [canContinue, setCanContinue] = useState<boolean>(true);
   const maxConversations = 3; // Number of reflection exchanges before ending
+
+  // Start 3-second timeout when thought bubbles appear
+  useEffect(() => {
+    if (showThoughtBubbles) {
+      setCanContinue(false);
+      const timer = setTimeout(() => {
+        setCanContinue(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showThoughtBubbles]);
 
   useEffect(() => {
     const initializeReflection = async () => {
@@ -80,6 +95,24 @@ export const ReflectionDialogue: React.FC = () => {
 
   const handleAdvance = () => {
     if (!currentDialogue) return;
+
+    // If thought bubbles are showing, dismiss them and show AI response
+    if (showThoughtBubbles && canContinue) {
+      setShowThoughtBubbles(false);
+      
+      if (pendingAIResponse) {
+        const newCount = conversationCount;
+        setCurrentDialogue({
+          id: `ai_response_${newCount}`,
+          text: pendingAIResponse,
+          requiresInput: true,
+          inputPrompt: 'Continue your reflection...',
+          nextId: newCount + 1 >= maxConversations ? 'ending' : 'ai_response',
+        });
+        setPendingAIResponse(null);
+      }
+      return;
+    }
 
     // If this dialogue requires input, wait for input instead of advancing
     if (currentDialogue.requiresInput && !isAwaitingInput) {
@@ -151,25 +184,15 @@ export const ReflectionDialogue: React.FC = () => {
       // Send user input to gemma and get response
       const aiResponse = await generateResponse(input);
       
-      // Create new dialogue node with AI response
-      setCurrentDialogue({
-        id: `ai_response_${newCount}`,
-        text: aiResponse,
-        requiresInput: true,
-        inputPrompt: 'Continue your reflection...',
-        nextId: newCount + 1 >= maxConversations ? 'ending' : 'ai_response',
-      });
+      // Store the AI response and show thought bubbles first
+      setPendingAIResponse(aiResponse);
+      setIsLoading(false);
+      setShowThoughtBubbles(true);
     } catch (error) {
       console.error('Error getting AI response:', error);
-      setCurrentDialogue({
-        id: 'error_response',
-        text: 'I appreciate your thoughts. Could you elaborate a bit more on that? What specific aspects of the classroom dynamic were you considering?',
-        requiresInput: true,
-        inputPrompt: 'Share more of your thoughts...',
-        nextId: 'ai_response',
-      });
-    } finally {
+      setPendingAIResponse('I appreciate your thoughts. Could you elaborate a bit more on that? What specific aspects of the classroom dynamic were you considering?');
       setIsLoading(false);
+      setShowThoughtBubbles(true);
     }
   };
 
@@ -200,10 +223,18 @@ export const ReflectionDialogue: React.FC = () => {
             onSubmitInput={handleSubmitInput}
             isVisible={isDialogueVisible}
             isAwaitingInput={isAwaitingInput}
+            canContinue={canContinue}
           />
         )}
       </div>
 
+      {/* Thought Bubbles - shown after user input */}
+      <ThoughtBubbles
+        reflections={previousReflections}
+        isVisible={showThoughtBubbles}
+        maxBubbles={5}
+      />
+      
       {/* Character image */}
       <div className="flex flex-row justify-center h-full items-end pb-8">
         <img

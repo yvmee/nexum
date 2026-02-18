@@ -176,3 +176,37 @@
 .blink-animation {
   animation: blink 1s infinite;
 }
+
+/* Thought bubble floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.thought-bubble {
+  animation: float 4s ease-in-out infinite;
+}
+
+.thought-bubble:nth-child(2n) {
+  animation-duration: 5s;
+  animation-delay: 0.5s;
+}
+
+.thought-bubble:nth-child(3n) {
+  animation-duration: 4.5s;
+  animation-delay: 1s;
+}
+
+.thought-bubble:nth-child(4n) {
+  animation-duration: 5.5s;
+  animation-delay: 0.3s;
+}
+
+.thought-bubble:nth-child(5n) {
+  animation-duration: 4.2s;
+  animation-delay: 0.7s;
+}

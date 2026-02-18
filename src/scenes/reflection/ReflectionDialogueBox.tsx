@@ -10,6 +10,7 @@ export interface ReflectionDialogueBoxProps {
   onSubmitInput: (input: string) => void;
   isVisible: boolean;
   isAwaitingInput: boolean;
+  canContinue?: boolean;
 }
 
 export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
@@ -18,6 +19,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
   onSubmitInput,
   isVisible,
   isAwaitingInput,
+  canContinue = true,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -46,12 +48,14 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
     }
   };
 
+  const canClick = !isAwaitingInput && canContinue;
+
   return (
     <div
       className={`flex flex-col z-10 justify-between gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-8 select-none transition-all duration-100 ${
-        !isAwaitingInput ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
+        canClick ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
       }`}
-      onClick={!isAwaitingInput ? onAdvance : undefined}
+      onClick={canClick ? onAdvance : undefined}
     >
       {/* Dialogue Text */}
       <div className="flex text-foreground leading-relaxed px-2 font-medium">
@@ -81,7 +85,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
       )}
 
       {/* Footer (only for non-input dialogue) */}
-      {!isAwaitingInput && (
+      {!isAwaitingInput && canContinue && (
         <div className="flex text-sm text-primary text-right blink-animation self-end">
           Click to continue...
         </div>
