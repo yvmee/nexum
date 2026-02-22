@@ -6,7 +6,7 @@ import { TutorialChoice } from './ChoicesManager';
 export interface DialogueOption {
   text: string;
   nextId: string;
-  choiceKey?: TutorialChoice;
+  choiceKey?: number; // Using number to reference TutorialChoice enum values
 }
 
 /**
@@ -21,53 +21,144 @@ export interface DialogueNode {
 }
 
 /**
- * Dialogue data for the game - now supports branching
+ * Dialogue data for scenario 5 - Work organization
  */
-export const gameDialogues: DialogueNode[] = [
+export const scenario5Dialogue: DialogueNode[] = [
   {
     id: 'start',
-    text: 'Welcome to Nexum, brave adventurer!',
-    nextId: 'intro',
+    text: 'Infront of Mayra lies a silent classroom filled with students. Most of them are looking down at their tablets or exercise sheets, some look directly at her with an expectant gaze.',
+    speaker: 'Narrator',
+    nextId: 'intro_0',
   },
   {
-    id: 'intro',
-    text: 'You stand at a crossroads. Three paths stretch before you, each shrouded in mystery.',
+    id: 'intro_0',
+    text: '(Alright, so far so good. The next step is exercise one. I should let them work on it in some way. Hmmm, should I maybe split them into groups? Or is it more effective if everyone is on their own?)',
+    speaker: 'Mayra',
+    nextId: 'decision_0',
+  },
+  {
+    id: 'decision_0',
+    text: 'How should Mayra organize the work on the exercise?',
     options: [
-      { text: 'Take the path to the left, into the forest.', nextId: 'forest' },
-      { text: 'Walk straight ahead, toward the mountains.', nextId: 'mountains' },
-      { text: 'Turn right, following the river.', nextId: 'river' },
+      { text: 'Let them work on their own.', nextId: 'choice_0_0', choiceKey: 0 },
+      { text: 'Have them work in groups', nextId: 'choice_0_1', choiceKey: 1 },
+      { text: 'Have them work in pairs', nextId: 'choice_0_2', choiceKey: 2 },
     ],
   },
+  // Option 0 of Choice 0 start
   {
-    id: 'forest',
-    text: 'The forest is dark and ancient. You hear whispers among the trees...',
-    nextId: 'forest_choice',
+    id: 'choice_0_0',
+    text: '\"Okay everyone! Next, please work on exercise one by yourself. We will discuss your solutions afterwards.\"',
+    speaker: 'Mayra',
+    nextId: 'work_0',
+  },
+  // Option 1 of Choice 0 start
+  {
+    id: 'choice_0_1',
+    text: '\"Okay everyone! Next, please work on exercise one together in groups. Try to group together with the people next to you so you build groups of four. Five or three people are also fine. We will discuss your solutions afterwards.\"',
+    speaker: 'Mayra',
+    nextId: 'work_0',
+  },
+  // Option 1 of Choice 0 start
+  {
+    id: 'choice_0_2',
+    text: '\"Okay everyone! Next, please pair up to work on exercise one. You can just turn to the person sitting next to you. If someone is left, one group of three is also fine. We will discuss your solutions afterwards.\"',
+    speaker: 'Mayra',
+    nextId: 'work_0',
+  },
+  // Work Scenario start
+  {
+    id: 'work_0',
+    text: '(Okay, looks like everyone is starting to work. At least they are looking at the exercise sheet and some already starting writing.)',
+    speaker: 'Mayra',
+    nextId: 'work_1',
   },
   {
-    id: 'forest_choice',
-    text: 'A strange creature appears before you. What do you do?',
+    id: 'work_1',
+    text: '(Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.)',
+    speaker: 'Mayra',
+    nextId: 'decision_1',
+  },
+  {
+    id: 'decision_1',
+    text: 'What should Mayra do?',
     options: [
-      { text: 'Approach it cautiously.', nextId: 'ending' },
-      { text: 'Run away!', nextId: 'ending' },
+      { text: 'Stay at the front and tell them that they can just ask questions anytime', nextId: 'choice_1_0', choiceKey: 0 },
+      { text: '2.	Walk from desk to desk and ask them how they are doing individually', nextId: 'choice_1_1', choiceKey: 1 },
     ],
   },
+  // Option 0 of Choice 1 start
   {
-    id: 'mountains',
-    text: 'The mountain air is cold and crisp. You begin your ascent...',
-    nextId: 'ending',
+    id: 'choice_1_0',
+    text: '\"Remember, if you have any questions, you can ask anytime. I am right here to answer them.\"',
+    speaker: 'Mayra',
+    nextId: 'front_0',
   },
   {
-    id: 'river',
-    text: 'The river sparkles in the sunlight. You follow its winding path...',
-    nextId: 'ending',
+    id: 'front_0',
+    text: 'Mayra sits in a rather quiet room for a while. A slight murmur goes through the room, while most students keep their eyes averted to their paper. Then a girl raises her hand. Mayra helps her and a few more students with their questions until the first students seem to have finished the task.',
+    speaker: 'Narrator',
+    nextId: 'ending_0',
+  },
+  // Option 1 of Choice 1 start
+  {
+    id: 'choice_1_1',
+    text: 'Mayra starts walking around from table to table to see how the students are doing. She comes across a boy that does not seem to have written anything yet. He stares at the paper with a frown.',
+    speaker: 'Narrator',
+    nextId: 'walking_0',
   },
   {
-    id: 'ending',
-    text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
-    // No nextId means this is the end
+    id: 'walking_0',
+    text: '\"Hey, are you managing okay? Do you need any help?\"',
+    speaker: 'Mayra',
+    nextId: 'walking_1',
   },
-];
+  {
+    id: 'walking_1',
+    text: '\"Uhmm…. I just don’t really know how to start…\"',
+    speaker: 'Student',
+    nextId: 'walking_2',
+  },
+  {
+    id: 'walking_2',
+    text: '\"Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…\"',
+    speaker: 'Mayra',
+    nextId: 'walking_3',
+  },
+  {
+    id: 'walking_3',
+    text: 'Mayra starts explaining to the boy what to do. He still seems a bit confused at first, but after starting with the first step he slowly seems more engaged within the exercise. Mayra continues to walk around from table to table and answers a few other questions before returning to her desk in the front.',
+    speaker: 'Narrator',
+    nextId: 'ending_0',
+  },
+  // Ending start
+  {
+    id: 'ending_0',
+    text: '\"We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?\"',
+    speaker: 'Mayra',
+    nextId: 'ending_1',
+  },
+  {
+    id: 'ending_1',
+    text: 'The tutorial goes on for another 60 minutes quite uneventfully.',
+    speaker: 'Narrator',
+    nextId: 'ending_2',
+  },
+  {
+    id: 'ending_2',
+    text: '\"I think that\’s it for today! Thank you all for coming and I will see you next week.\"',
+    speaker: 'Mayra',
+    nextId: 'ending_3',
+  },
+  {
+    id: 'ending_3',
+    text: '...',  
+  },
+]
 
+/**
+ * Debugging dialogue data for the game
+ */
 export const tutorAcademyDialogues: DialogueNode[] = [
   {
     id: 'start',

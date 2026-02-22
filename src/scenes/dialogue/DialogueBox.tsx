@@ -1,6 +1,6 @@
 import React from 'react';
-import { DialogueNode } from './dialogueData';
 import { TutorialChoice } from './ChoicesManager';
+import { DialogueNode } from './DialogueData.ts';
 
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;
@@ -31,12 +31,14 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
       }`}
       onClick={!hasOptions ? onAdvance : undefined}
     >
-      {/* Speaker Name (if present) */}
-      <div className="flex text-sm text-primary font-semibold">
-        {dialogue.speaker}
-      </div>
-      {/* Dialogue Text */}
-      <div className="flex text-base leading-relaxed px-2 font-medium">
+      {/* Speaker Name (hide for Narrator) */}
+      {dialogue.speaker && dialogue.speaker !== 'Narrator' && (
+        <div className="flex text-sm text-primary font-semibold">
+          {dialogue.speaker}
+        </div>
+      )}
+      {/* Dialogue Text (italic for Narrator) */}
+      <div className={`flex text-base leading-relaxed px-2 font-medium ${dialogue.speaker === 'Narrator' ? 'italic' : ''}`}>
         {dialogue.text}
       </div>
 

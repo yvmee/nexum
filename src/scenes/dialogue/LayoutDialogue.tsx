@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 // import { GameCanvas } from './GameCanvas';
 import { DialogueBox } from './DialogueBox';
-import { gameDialogues, tutorAcademyDialogues, DialogueNode } from './dialogueData';
+import { scenario5Dialogue, tutorAcademyDialogues, DialogueNode } from './DialogueData.ts';
 import { useNavigate } from 'react-router-dom';
 import * as ChoicesManager from './ChoicesManager';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
+import LectureHall from '../../../assets/LectureHall.png';
 
 // Set the active dialogue dataset
-let activeDialogues = tutorAcademyDialogues;
-
+let activeDialogues = scenario5Dialogue;
+let currentBackground = LectureHall;
+let choiceIndeces: number[] = []; // Track the indices of choices made
 /**
  * Helper to find a dialogue node by ID
  */
@@ -58,8 +60,9 @@ export const LayoutDialogue: React.FC = () => {
   const handleSelectOption = (nextId: string, choiceKey?: ChoicesManager.TutorialChoice): void => {
     // Set the selected choice if a choiceKey is provided
     if (choiceKey !== undefined) {
-      ChoicesManager.setChoice(choiceKey);
-      console.log('Selected choice:', ChoicesManager.TutorialChoice[choiceKey]);
+      //ChoicesManager.setChoice(choiceKey);
+      choiceIndeces.push(choiceKey);
+      console.log('Selected choices:', choiceIndeces);
     }
 
     const nextDialogue = findDialogueById(nextId);
@@ -76,6 +79,9 @@ export const LayoutDialogue: React.FC = () => {
   const endDialogue = (): void => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
+    // Set choice indeces in ChoicesManager for reflection scene
+    ChoicesManager.setChoiceIndeces(choiceIndeces);
+    choiceIndeces = []; // Reset for next time
     // Navigate to reflection scene
     navigate('/reflection');
   };
@@ -85,21 +91,15 @@ export const LayoutDialogue: React.FC = () => {
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={SchoolBackground} 
-          alt="School Background" 
+          src={currentBackground} 
+          alt="Background" 
           className="w-full h-full object-cover"
         />
       </div>
 
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
-        {/* Game Title & Subtitle */}
-        <div className="flex flex-col items-center justify-center mt-20">
-          <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
-            NEXUM
-          </h1>
-        </div>
-
+        <div className="flex flex-col items-center justify-center mt-20"></div>
         {/* Dialogue Box */}
         <div className="pointer-events-auto mb-10">
           <DialogueBox

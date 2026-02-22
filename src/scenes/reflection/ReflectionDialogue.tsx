@@ -38,7 +38,7 @@ export const ReflectionDialogue: React.FC = () => {
 
   useEffect(() => {
     const initializeReflection = async () => {
-      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.selectedChoice);
+      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.currentChoice);
       
       // Load all previous reflection texts at the beginning
       try {
@@ -50,7 +50,7 @@ export const ReflectionDialogue: React.FC = () => {
       }
       
       // Check if we have a valid choice selection
-      if (ChoicesManager.selectedChoice === null) {
+      if (ChoicesManager.currentChoice === null) {
         console.warn('No choice selected, using default scenario');
         setCurrentDialogue({
           id: 'error',
@@ -62,11 +62,17 @@ export const ReflectionDialogue: React.FC = () => {
 
       try {
         // Get the scenario and the student's decision
-        const scenario = ChoicesManager.currentData.situation;
-        const decision = ChoicesManager.currentData.choices[ChoicesManager.selectedChoice];
+        const scenario = ChoicesManager.currentChoice.situation;
+        let decisions = "";
+        for (let i = 0; i < ChoicesManager.choiceIndeces.length; i++) {
+          const option = ChoicesManager.currentChoice.choices[i][ChoicesManager.choiceIndeces[i]];
+          console.debug('Decisions for reflection:', option);
+          decisions += option + " ";
+        }
+        console.debug('Decisions for reflection:', decisions);
         
         // Call setUpAI to initialize the reflection with gemma
-        const aiResponse = await setUpAI(scenario, decision);
+        const aiResponse = await setUpAI(scenario, decisions);
         
         // Create the initial dialogue node with AI response
         setCurrentDialogue({
