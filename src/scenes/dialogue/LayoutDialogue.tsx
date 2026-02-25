@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { GameCanvas } from './GameCanvas';
 import { DialogueBox } from './DialogueBox';
 import { scenario5Dialogue, tutorAcademyDialogues, DialogueNode } from './DialogueData.ts';
-import { useNavigate } from 'react-router-dom';
+import { useSceneStore } from '../../store/useSceneStore.ts';
 import * as ChoicesManager from './ChoicesManager';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
@@ -24,7 +24,6 @@ const findDialogueById = (id: string): DialogueNode | null => {
 export const LayoutDialogue: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Start with the first dialogue node (id: 'start')
@@ -82,8 +81,8 @@ export const LayoutDialogue: React.FC = () => {
     // Set choice indeces in ChoicesManager for reflection scene
     ChoicesManager.setChoiceIndeces(choiceIndeces);
     choiceIndeces = []; // Reset for next time
-    // Navigate to reflection scene
-    navigate('/reflection');
+    // Change scene in SceneStore
+    useSceneStore.getState().setScene('REFLECTION');
   };
 
   return (

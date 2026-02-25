@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-// import { GameCanvas } from './GameCanvas';
 import { DialogueBox } from '../dialogue/DialogueBox';
 import { DialogueNode } from '../dialogue/DialogueData';
 import { introText } from './TextData';
-import { useNavigate } from 'react-router-dom';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
+import { useSceneStore } from '../../store/useSceneStore';
 
 // Set the active dialogue dataset
 let activeDialogues = introText;
@@ -23,7 +22,6 @@ const findDialogueById = (id: string): DialogueNode | null => {
 export const Intro: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Start with the first dialogue node (id: 'start')
@@ -59,8 +57,8 @@ export const Intro: React.FC = () => {
   const endDialogue = (): void => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
-    // Navigate to reflection scene
-    navigate('/scene');
+    // Change scene in SceneStore
+    useSceneStore.getState().setScene('STORY');
   };
 
   return (
