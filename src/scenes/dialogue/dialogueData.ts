@@ -48,21 +48,21 @@ export const scenario5Dialogue: DialogueNode[] = [
   // Option 0 of Choice 0 start
   {
     id: 'choice_0_0',
-    text: '\"Okay everyone! Next, please work on exercise one by yourself. We will discuss your solutions afterwards.\"',
+    text: 'Okay everyone! Next, please work on exercise one by yourself. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
   {
     id: 'choice_0_1',
-    text: '\"Okay everyone! Next, please work on exercise one together in groups. Try to group together with the people next to you so you build groups of four. Five or three people are also fine. We will discuss your solutions afterwards.\"',
+    text: 'Okay everyone! Next, please work on exercise one together in groups. Try to group together with the people next to you so you build groups of four. Five or three people are also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
   {
     id: 'choice_0_2',
-    text: '\"Okay everyone! Next, please pair up to work on exercise one. You can just turn to the person sitting next to you. If someone is left, one group of three is also fine. We will discuss your solutions afterwards.\"',
+    text: 'Okay everyone! Next, please pair up to work on exercise one. You can just turn to the person sitting next to you. If someone is left, one group of three is also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
     nextId: 'work_0',
   },
@@ -84,13 +84,13 @@ export const scenario5Dialogue: DialogueNode[] = [
     text: 'What should Mayra do?',
     options: [
       { text: 'Stay at the front and tell them that they can just ask questions anytime', nextId: 'choice_1_0', choiceKey: 0 },
-      { text: '2.	Walk from desk to desk and ask them how they are doing individually', nextId: 'choice_1_1', choiceKey: 1 },
+      { text: 'Walk from desk to desk and ask them how they are doing individually', nextId: 'choice_1_1', choiceKey: 1 },
     ],
   },
   // Option 0 of Choice 1 start
   {
     id: 'choice_1_0',
-    text: '\"Remember, if you have any questions, you can ask anytime. I am right here to answer them.\"',
+    text: 'Remember, if you have any questions, you can ask anytime. I am right here to answer them.',
     speaker: 'Mayra',
     nextId: 'front_0',
   },
@@ -109,19 +109,19 @@ export const scenario5Dialogue: DialogueNode[] = [
   },
   {
     id: 'walking_0',
-    text: '\"Hey, are you managing okay? Do you need any help?\"',
+    text: 'Hey, are you managing okay? Do you need any help?',
     speaker: 'Mayra',
     nextId: 'walking_1',
   },
   {
     id: 'walking_1',
-    text: '\"Uhmm…. I just don’t really know how to start…\"',
+    text: 'Uhmm…. I just don’t really know how to start…',
     speaker: 'Student',
     nextId: 'walking_2',
   },
   {
     id: 'walking_2',
-    text: '\"Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…\"',
+    text: 'Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…',
     speaker: 'Mayra',
     nextId: 'walking_3',
   },
@@ -134,7 +134,7 @@ export const scenario5Dialogue: DialogueNode[] = [
   // Ending start
   {
     id: 'ending_0',
-    text: '\"We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?\"',
+    text: 'We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?',
     speaker: 'Mayra',
     nextId: 'ending_1',
   },
@@ -146,7 +146,7 @@ export const scenario5Dialogue: DialogueNode[] = [
   },
   {
     id: 'ending_2',
-    text: '\"I think that\’s it for today! Thank you all for coming and I will see you next week.\"',
+    text: 'I think that\’s it for today! Thank you all for coming and I will see you next week.',
     speaker: 'Mayra',
     nextId: 'ending_3',
   },
