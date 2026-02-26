@@ -1,6 +1,6 @@
 import React from 'react';
 import { TutorialChoice } from './ChoicesManager';
-import { DialogueNode } from './DialogueData.ts';
+import { DialogueNode } from './dialogueData.ts';
 
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;

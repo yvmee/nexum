@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LayoutDialogue } from './scenes/dialogue/LayoutDialogue.tsx';
-import { ReflectionDialogue } from './scenes/reflection/ReflectionDialogue.tsx';
-import { Intro } from './scenes/intro/IntroLayout.tsx';
 import GameContainer from './components/GameContainer.tsx';
+import { Menu } from './components/Menu.tsx';
 
 /**
  * Layout component - provides the main layout structure for the app
@@ -18,7 +16,8 @@ export const Layout: React.FC = () => {
     <BrowserRouter>
       <div className="relative w-screen h-screen overflow-hidden font-sans bg-background">
         <Routes>
-          <Route path="/" element={<GameContainer />} />
+          <Route path="/" element={<Menu />} />
+          <Route path="/game" element={<GameContainer />} />
         </Routes>
       </div>
     </BrowserRouter>
