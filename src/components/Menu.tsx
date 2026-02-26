@@ -42,9 +42,9 @@ export const Menu: React.FC = () => {
         <div className="flex flex-col items-center justify-center mb-20 pointer-events-auto">
             <button className="
                 start-button bg-primary text-white font-bold rounded mb-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20
-                text-[clamp(0.875rem,4vw,5rem)]     /* Fluid text size */
-                py-[clamp(0.5rem,6vw,3rem)]         /* Fluid vertical padding */
-                px-[clamp(1.5rem,16vw,12rem)]       /* Fluid horizontal padding */
+                text-[var(--menu-btn-text)]
+                py-[var(--menu-btn-py)]
+                px-[var(--menu-btn-px)]
             " onClick={handleStartGame}>
                 Start Game
             </button>

@@ -109,14 +109,14 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
               transitionDelay: `${position.delay}s`,
             }}
           >
-            <div className="relative max-w-[200px] bg-white/90 dark:bg-card/90 border border-border/50 rounded-2xl p-4 shadow-lg backdrop-blur-sm">
+            <div className="relative max-w-[var(--bubble-max-w)] bg-white/90 dark:bg-card/90 border border-border/50 rounded-2xl p-[var(--bubble-padding)] shadow-lg backdrop-blur-sm">
               {/* Thought bubble tail */}
               <div className="absolute -bottom-3 left-6 w-4 h-4 bg-white/90 dark:bg-card/90 border-l border-b border-border/50 transform rotate-[-45deg]"></div>
               <div className="absolute -bottom-6 left-4 w-2 h-2 bg-white/90 dark:bg-card/90 border border-border/50 rounded-full"></div>
               <div className="absolute -bottom-8 left-2 w-1.5 h-1.5 bg-white/90 dark:bg-card/90 border border-border/50 rounded-full"></div>
               
               {/* Reflection text */}
-              <p className="text-sm text-foreground/80 italic leading-relaxed">
+              <p className="text-[var(--bubble-text)] text-foreground/80 italic leading-relaxed">
                 "{truncateText(reflection.text)}"
               </p>
             </div>

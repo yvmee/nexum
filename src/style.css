@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* _________________________ Color theme _________________________ */
+
 :root {
   --background: rgb(249, 249, 249);
   --foreground: rgb(32, 32, 32);
@@ -53,7 +55,6 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
-}
 
 .dark {
   --background: rgb(17, 17, 17);
@@ -161,7 +162,53 @@
   --shadow-2xl: var(--shadow-2xl);
 }
 
-/* Minimal custom CSS for blink animation */
+
+
+/* _________________________ Global variables for sizing _________________________ */
+
+
+  /* Dialogue box container */
+  --box-width:        clamp(300px, 75vw, 900px);
+  --box-min-height:   clamp(100px, 15vh, 180px);
+  --box-padding:      clamp(1rem, 3vw, 2.5rem);
+  --box-gap:          clamp(0.75rem, 2vw, 1.5rem);
+
+  /* Text sizes */
+  --text-body:        clamp(1rem, 2.5vw, 1.5rem);
+  --text-label:       clamp(0.875rem, 2vw, 1.25rem);
+  --text-hint:        clamp(0.75rem, 1.5vw, 1rem);
+
+  /* Inner element spacing */
+  --inner-px:         clamp(0.25rem, 1vw, 0.75rem);
+  --inner-gap:        clamp(0.5rem, 1.5vw, 1rem);
+  --inner-mt:         clamp(0.5rem, 2vw, 1.25rem);
+
+  /* Option / input button padding */
+  --btn-px:           clamp(0.75rem, 2vw, 1.5rem);
+  --btn-py:           clamp(0.5rem, 1.5vw, 1rem);
+  --submit-px:        clamp(1rem, 3vw, 2rem);
+  --submit-py:        clamp(0.375rem, 1vw, 0.75rem);
+
+  /* Spinner / loading */
+  --spinner-size:     clamp(1rem, 2.5vw, 1.75rem);
+
+  /* Thought bubbles */
+  --bubble-max-w:     clamp(150px, 20vw, 280px);
+  --bubble-padding:   clamp(0.5rem, 1.5vw, 1.25rem);
+  --bubble-text:      clamp(0.75rem, 1.5vw, 1.1rem);
+
+  /* Menu button */
+  --menu-btn-text:    clamp(0.875rem, 4vw, 5rem);
+  --menu-btn-py:      clamp(0.5rem, 6vw, 3rem);
+  --menu-btn-px:      clamp(1.5rem, 16vw, 12rem);
+}
+
+
+
+/* _________________________ Animations and others _________________________ */
+
+
+/* Blink animation */
 @keyframes blink {
   0%,
   50% {

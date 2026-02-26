@@ -216,10 +216,10 @@ export const ReflectionDialogue: React.FC = () => {
       {/* Dialogue box at the top */}
       <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
         {isLoading ? (
-          <div className="flex flex-col z-10 justify-center items-center gap-4 w-[750px] max-w-[90vw] min-h-[120px] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-8">
+          <div className="flex flex-col z-10 justify-center items-center gap-[var(--box-gap)] w-[var(--box-width)] max-w-[90vw] min-h-[var(--box-min-height)] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-[var(--box-padding)]">
             <div className="flex items-center gap-3">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-              <span className="text-foreground font-medium">Thinking...</span>
+              <div className="animate-spin rounded-full h-[var(--spinner-size)] w-[var(--spinner-size)] border-b-2 border-primary"></div>
+              <span className="text-[var(--text-body)] text-foreground font-medium">Thinking...</span>
             </div>
           </div>
         ) : (

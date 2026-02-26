@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox';
-import { DialogueNode } from '../dialogue/DialogueData';
+import { DialogueNode } from '../dialogue/dialogueData';
 import { introText } from './TextData';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
-import LectureHall from '../../../assets/LectureHall.png';
 import { useSceneStore } from '../../store/useSceneStore';
 
 // Set the active dialogue dataset
