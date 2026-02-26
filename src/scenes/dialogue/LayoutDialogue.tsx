@@ -7,10 +7,11 @@ import * as ChoicesManager from './ChoicesManager';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
 
-// Set the active dialogue dataset
+// Set scene relevant variables
 let activeDialogues = scenario5Dialogue;
 let currentBackground = LectureHall;
 let choiceIndeces: number[] = []; // Track the indices of choices made
+
 /**
  * Helper to find a dialogue node by ID
  */

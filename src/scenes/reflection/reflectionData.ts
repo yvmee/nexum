@@ -6,6 +6,8 @@ export interface ReflectionNode {
   text: string;
   requiresInput?: boolean; // If true, show input field after this text
   inputPrompt?: string; // Placeholder text for input field
+  generateAIResponse?: boolean; // If true, generate AI response based on user input
+  showBubbles?: boolean; // If true, show thought bubbles with database insights
   nextId?: string; // Next dialogue ID (undefined = end)
 }
 
@@ -37,14 +39,21 @@ export const reflectionDialogues: ReflectionNode[] = [
   },
   {
     id: 'reflect_2',
-    text: 'Interesting perspective. Now, consider how you might handle a similar situation differently.',
+    text: 'This is what others have thought about this situation:',
+    showBubbles: true, 
     nextId: 'reflect_3',
   },
   {
     id: 'reflect_3',
+    text: 'Interesting perspective. Now, consider how you might handle a similar situation differently.',
+    nextId: 'reflect_4',
+  },
+  {
+    id: 'reflect_4',
     text: 'What would you do differently if you encountered this scenario again?',
     requiresInput: true,
     inputPrompt: 'Describe your alternative approach...',
+    generateAIResponse: true, 
     nextId: 'ending',
   },
   {
