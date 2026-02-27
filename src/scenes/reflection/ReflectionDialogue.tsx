@@ -6,14 +6,13 @@ import { ThoughtBubbles } from './ThoughtBubbles';
 import { setUpAI, generateResponse } from './ProcessAnswers';
 import { loadReflectionTexts, saveData, ReflectionData } from '../../db/database';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
+import LectureHall from '../../../assets/LectureHall.png';
 
 // Set scene relevant variables
 let activeDialogues = reflectionDialogues;
-let currentBackground = SchoolBackground;
+let currentBackground = LectureHall;
 
-/**
- * Helper to find a reflection node by id
- */
+// Helper function to find a dialogue node by its id
 function findNode(id: string): ReflectionNode | undefined {
   return activeDialogues.find((n) => n.id === id);
 }
@@ -84,9 +83,8 @@ export const ReflectionDialogue: React.FC = () => {
     initializeReflection();
   }, []);
 
-  /**
-   * Advance to a node by its id. If id is undefined the dialogue ends.
-   */
+
+  // Advance to a node by its id. If id is undefined the dialogue ends.
   const advanceToNode = (nodeId: string | undefined) => {
     if (!nodeId) {
       setIsDialogueVisible(false);
@@ -226,13 +224,13 @@ export const ReflectionDialogue: React.FC = () => {
       />
       
       {/* Character image */}
-      <div className="flex flex-row justify-center h-full items-end pb-8">
+      {/* <div className="flex flex-row justify-center h-full items-end pb-8">
         <img
           className="z-10 object-contain scale-[90%] max-w-full max-h-[50%]"
           src="../../assets/Sphere.png"
-          alt="fairy image"
+          alt="sphere"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

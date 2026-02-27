@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { GameCanvas } from './GameCanvas';
 import { DialogueBox } from './DialogueBox';
-import { scenario5Dialogue, tutorAcademyDialogues, DialogueNode } from './DialogueData.ts';
+import { scenario5Dialogue, tutorAcademyDialogues, DialogueNode } from './dialogueData.ts';
 import { useSceneStore } from '../../store/useSceneStore.ts';
 import * as ChoicesManager from './ChoicesManager';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
@@ -12,9 +12,7 @@ let activeDialogues = scenario5Dialogue;
 let currentBackground = LectureHall;
 let choiceIndeces: number[] = []; // Track the indices of choices made
 
-/**
- * Helper to find a dialogue node by ID
- */
+// Helper function to find a dialogue node by its id
 const findDialogueById = (id: string): DialogueNode | null => {
   return activeDialogues.find((d) => d.id === id) || null;
 };
@@ -35,9 +33,7 @@ export const LayoutDialogue: React.FC = () => {
     }
   }, []);
 
-  /**
-   * Advance to the next dialogue (for non-branching dialogues)
-   */
+  // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
     if (!currentDialogue) return;
 
@@ -54,9 +50,8 @@ export const LayoutDialogue: React.FC = () => {
     }
   };
 
-  /**
-   * Handle player selecting a dialogue option (for branching)
-   */
+
+  // Handle player selecting a dialogue option (for branching)
   const handleSelectOption = (nextId: string, choiceKey?: ChoicesManager.TutorialChoice): void => {
     // Set the selected choice if a choiceKey is provided
     if (choiceKey !== undefined) {
@@ -73,16 +68,13 @@ export const LayoutDialogue: React.FC = () => {
     }
   };
 
-  /**
-   * End the dialogue sequence
-   */
+
+  // End the dialogue sequence and transition to reflection 
   const endDialogue = (): void => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
-    // Set choice indeces in ChoicesManager for reflection scene
     ChoicesManager.setChoiceIndeces(choiceIndeces);
     choiceIndeces = []; // Reset for next time
-    // Change scene in SceneStore
     useSceneStore.getState().setScene('REFLECTION');
   };
 

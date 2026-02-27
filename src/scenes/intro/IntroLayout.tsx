@@ -76,7 +76,7 @@ export const Intro: React.FC = () => {
         {/* Game Title & Subtitle */}
         <div className="flex flex-col items-center justify-center mt-20">
           <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
-            NEXUM
+            
           </h1>
         </div>
 

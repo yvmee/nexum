@@ -1,9 +1,9 @@
-import { DialogueNode } from "../dialogue/DialogueData";
+import { DialogueNode } from "../dialogue/dialogueData";
 
 export const introText: DialogueNode[] = [
   {
     id: 'start',
-    text: 'Welcome to this Nexum prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
+    text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     nextId: 'intro_0',
   },
   {

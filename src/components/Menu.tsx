@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import SchoolBackground from '../../assets/SchoolBackground.png';
 import { useNavigate } from 'react-router-dom';
 
-
 // Set the background image 
 let currentBackground = SchoolBackground;
 
