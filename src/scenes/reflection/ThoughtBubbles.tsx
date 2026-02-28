@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { ReflectionData } from '../../db/database';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { ReflectionAnswerData, ReflectionData } from '../../db/database';
 
 interface ThoughtBubblesProps {
-  reflections: ReflectionData[];
+  reflections: ReflectionAnswerData[];
   isVisible: boolean;
   maxBubbles?: number;
 }
@@ -15,7 +15,7 @@ interface BubblePosition {
 }
 
 /**
- * ThoughtBubbles - Displays other users' reflection texts in floating thought bubbles
+ * Displays other users' reflection texts in floating thought bubbles
  */
 export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
   reflections,
@@ -30,22 +30,74 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
     
     // Shuffle and pick up to maxBubbles reflections
     const shuffled = [...reflections]
-      .filter(r => r.text && r.text.trim().length > 0)
+      .filter(r => r.answer && r.answer.trim().length > 0)
       .sort(() => Math.random() - 0.5);
     
     return shuffled.slice(0, maxBubbles);
   }, [reflections, maxBubbles]);
 
-  // Generate random positions for bubbles
+  // Generate non-overlapping random positions for bubbles
   const bubblePositions = useMemo((): BubblePosition[] => {
-    return selectedReflections.map((_, index) => ({
-      // Spread bubbles across the screen, avoiding center (where dialogue box is)
+    // Estimated bubble dimensions in viewport-percentage units.
+    // --bubble-max-w ≈ 20 vw → ~20 %; height varies, estimate ~12 %.
+    const BUBBLE_W = 22; // % of viewport width (with a small margin)
+    const BUBBLE_H = 14; // % of viewport height (with a small margin)
+
+    const placed: BubblePosition[] = [];
+
+    const overlaps = (candidate: { x: number; y: number }, existing: BubblePosition[]) =>
+      existing.some(
+        (p) => Math.abs(candidate.x - p.x) < BUBBLE_W && Math.abs(candidate.y - p.y) < BUBBLE_H
+      );
+
+    const generateCandidate = (index: number) => ({
+      // Spread across left / right halves, avoiding the centre dialogue area
       x: 10 + (index % 2 === 0 ? Math.random() * 30 : 60 + Math.random() * 30),
       y: 35 + Math.random() * 50,
-      scale: 0.85 + Math.random() * 0.3,
-      delay: index * 0.4 + Math.random() * 0.3,
-    }));
+    });
+
+    console.debug('Generating bubble positions for reflections:', selectedReflections);
+    console.debug('Bubble amount:', selectedReflections.length);
+
+    for (let i = 0; i < selectedReflections.length; i++) {
+      const MAX_ATTEMPTS = 60;
+      let bestCandidate = generateCandidate(i);
+      let bestMinDist = -Infinity;
+
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        const candidate = generateCandidate(i);
+
+        if (!overlaps(candidate, placed)) {
+          bestCandidate = candidate;
+          bestMinDist = Infinity; // no overlap -> perfect
+          break;
+        }
+
+        // Track the candidate that is furthest from all others (fallback)
+        const minDist = Math.min(
+          ...placed.map(
+            (p) =>
+              Math.hypot((candidate.x - p.x) / BUBBLE_W, (candidate.y - p.y) / BUBBLE_H)
+          )
+        );
+        if (minDist > bestMinDist) {
+          bestMinDist = minDist;
+          bestCandidate = candidate;
+        }
+      }
+
+      placed.push({
+        x: bestCandidate.x,
+        y: bestCandidate.y,
+        scale: 0.85 + Math.random() * 0.3,
+        delay: i * 0.4 + Math.random() * 0.3,
+      });
+    }
+
+    return placed;
   }, [selectedReflections]);
+
+  const currentIndexRef = useRef(0);
 
   // Animate bubbles appearing one by one
   useEffect(() => {
@@ -54,22 +106,21 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
       return;
     }
 
-    // Show bubbles one at a time with staggered delay
-    let currentIndex = 0;
+    currentIndexRef.current = 0;
     
     const showNextBubble = () => {
-      if (currentIndex < selectedReflections.length) {
-        setVisibleBubbles(prev => [...prev, currentIndex]);
-        currentIndex++;
+      if (currentIndexRef.current < selectedReflections.length) {
+        setVisibleBubbles(prev => [...prev, currentIndexRef.current]);
+        console.debug('Showing bubble index:', currentIndexRef.current);
+        currentIndexRef.current++;
       }
     };
 
-    // Show first bubble immediately
-    showNextBubble();
+    showNextBubble(); // Show first bubble immediately
 
     // Show remaining bubbles with staggered delay
     const interval = setInterval(() => {
-      if (currentIndex < selectedReflections.length) {
+      if (currentIndexRef.current < selectedReflections.length) {
         showNextBubble();
       } else {
         clearInterval(interval);
@@ -77,7 +128,7 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
     }, 800);
 
     return () => clearInterval(interval);
-  }, [isVisible, selectedReflections.length]);
+  }, [isVisible, selectedReflections]);
 
   if (!isVisible || selectedReflections.length === 0) {
     return null;
@@ -117,7 +168,7 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
               
               {/* Reflection text */}
               <p className="text-[var(--bubble-text)] text-foreground/80 italic leading-relaxed">
-                "{truncateText(reflection.text)}"
+                "{truncateText(reflection.answer)}"
               </p>
             </div>
           </div>

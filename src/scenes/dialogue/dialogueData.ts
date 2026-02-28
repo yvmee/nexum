@@ -1,29 +1,25 @@
-import { TutorialChoice } from './ChoicesManager';
-
 /**
  * Dialogue option for branching choices
  */
 export interface DialogueOption {
   text: string;
   nextId: string;
-  choiceKey?: number; // Using number to reference TutorialChoice enum values
+  choiceKey?: number; 
 }
 
 /**
- * Single dialogue node
+ * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id
  */
 export interface DialogueNode {
   id: string;
   text: string;
-  speaker?: string; // Optional speaker name
+  speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
-  nextId?: string; // If no options, this is the next dialogue (undefined = end)
+  nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
 }
 
-/**
- * Dialogue data for scenario 5 - Work organization
- */
-export const scenario5Dialogue: DialogueNode[] = [
+
+export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
     id: 'start',
     text: 'Infront of Mayra lies a silent classroom filled with students. Most of them are looking down at their tablets or exercise sheets, some look directly at her with an expectant gaze.',
@@ -157,7 +153,7 @@ export const scenario5Dialogue: DialogueNode[] = [
 ]
 
 /**
- * Debugging dialogue data for the game
+ * Debugging dialogue data from TUM's Tutor Academy
  */
 export const tutorAcademyDialogues: DialogueNode[] = [
   {
@@ -175,9 +171,9 @@ export const tutorAcademyDialogues: DialogueNode[] = [
     id: 'choice_1',
     text: 'How should Emma address this situation?',
     options: [
-      { text: 'She should ask the class why they are so quiet and if they are finding the material difficult to understand.', nextId: 'ask', choiceKey: TutorialChoice.ASK },
-      { text: 'She should decide to include more group activities and games that require interaction.', nextId: 'groupwork', choiceKey: TutorialChoice.GROUPWORK },
-      { text: 'She should opt to modify her teaching style by speaking less and prompting the students with open-ended questions to think critically.', nextId: 'teachingstyle', choiceKey: TutorialChoice.TEACHINGSTYLE },
+      { text: 'She should ask the class why they are so quiet and if they are finding the material difficult to understand.', nextId: 'ask', choiceKey: 0 },
+      { text: 'She should decide to include more group activities and games that require interaction.', nextId: 'groupwork', choiceKey: 1 },
+      { text: 'She should opt to modify her teaching style by speaking less and prompting the students with open-ended questions to think critically.', nextId: 'teachingstyle', choiceKey: 2 },
     ],
   },
   {
@@ -213,6 +209,5 @@ export const tutorAcademyDialogues: DialogueNode[] = [
   {
     id: 'ending',
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
-    // No nextId means this is the end
   },
 ];

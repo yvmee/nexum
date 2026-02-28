@@ -1,16 +1,15 @@
 import React from 'react';
-import { TutorialChoice } from './ChoicesManager';
 import { DialogueNode } from './dialogueData.ts';
 
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;
   onAdvance: () => void;
-  onSelectOption: (nextId: string, choiceKey?: TutorialChoice) => void;
+  onSelectOption: (nextId: string, choiceKey?: number) => void;
   isVisible: boolean;
 };
 
 /**
- * DialogueBox - React component for displaying dialogue text with optional branching choices
+ * React component for displaying dialogue text with optional branching choices
  */
 export const DialogueBox: React.FC<DialogueBoxProps> = ({
   dialogue,

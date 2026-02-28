@@ -1,7 +1,7 @@
 # nexum
 
-An educational browser game prototype built with React 19.2 and TypeScript.
-This is specifically a prototype for a modern discussion and reflection mechanic for a single player game based on Play x Discuss.
+An educational browser game prototype built with React 19.2, TypeScript and Tailwind.
+This is a first prototype for a single player game based on Play x Discuss.
 
 ## Features
 
@@ -12,12 +12,10 @@ This is specifically a prototype for a modern discussion and reflection mechanic
 
 ## Tech Stack
 
-- **React 19.0.0** - Modern UI library
-- **TypeScript 5.9.3** - Type-safe development
-- **Vite 7.2.4** - Fast build tool and dev server
-- **Tailwind CSS 3.4.17** - Utility-first CSS framework
-- **ESLint 9.18.0** - Code linting
-- **Prettier 3.4.2** - Code formatting
+- **React 19.2** - Modern UI library
+- **TypeScript 5.9** - Type-safe development
+- **Vite 7.3** - Fast build tool and dev server
+- **Tailwind CSS 4.1** - Utility-first CSS framework
 
 ## Development
 

@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-// import { GameCanvas } from './GameCanvas';
 import { DialogueBox } from './DialogueBox';
-import { scenario5Dialogue, tutorAcademyDialogues, DialogueNode } from './dialogueData.ts';
+import { scenario5Dialogue, DialogueNode } from './dialogueData.ts';
 import { useSceneStore } from '../../store/useSceneStore.ts';
 import * as ChoicesManager from './ChoicesManager';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
 
 // Set scene relevant variables
-let activeDialogues = scenario5Dialogue;
+let activeDialogues = scenario5Dialogue; // default for now, later set by a manager
 let currentBackground = LectureHall;
-let choiceIndeces: number[] = []; // Track the indices of choices made
+let choiceIndeces: number[] = []; // To track the indices of choices made
+let startingDialogueId = 'start'; // Default starting dialogue id, can be set by a manager
 
-// Helper function to find a dialogue node by its id
+/** Helper function to find a dialogue node by its id */
 const findDialogueById = (id: string): DialogueNode | null => {
   return activeDialogues.find((d) => d.id === id) || null;
 };
 
 /**
- * LayoutDialogue component - handles dialogue flow with branching support
+ * React component that handles dialogue flow with branching support
  */
 export const LayoutDialogue: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
@@ -26,7 +26,7 @@ export const LayoutDialogue: React.FC = () => {
 
   useEffect(() => {
     // Start with the first dialogue node (id: 'start')
-    const startDialogue = findDialogueById('start');
+    const startDialogue = findDialogueById(startingDialogueId);
     if (startDialogue) {
       setCurrentDialogue(startDialogue);
       setIsDialogueVisible(true);
@@ -52,10 +52,9 @@ export const LayoutDialogue: React.FC = () => {
 
 
   // Handle player selecting a dialogue option (for branching)
-  const handleSelectOption = (nextId: string, choiceKey?: ChoicesManager.TutorialChoice): void => {
-    // Set the selected choice if a choiceKey is provided
+  const handleSelectOption = (nextId: string, choiceKey?: number): void => {
+    // Save the selected choice if a choiceKey is provided
     if (choiceKey !== undefined) {
-      //ChoicesManager.setChoice(choiceKey);
       choiceIndeces.push(choiceKey);
       console.log('Selected choices:', choiceIndeces);
     }
@@ -74,7 +73,7 @@ export const LayoutDialogue: React.FC = () => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
     ChoicesManager.setChoiceIndeces(choiceIndeces);
-    choiceIndeces = []; // Reset for next time
+    choiceIndeces = []; // Reset for next scene
     useSceneStore.getState().setScene('REFLECTION');
   };
 

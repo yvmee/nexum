@@ -3,7 +3,6 @@ export interface ReflectionNode {
   text: string;
   requiresInput?: boolean; // If true, show input field after this text
   inputPrompt?: string; // Placeholder text for input field
-  generateAIResponse?: boolean; // If true, generate AI response based on user input
   showBubbles?: boolean; // If true, show thought bubbles with database insights
   saveResponse?: boolean; // If true, save user response to database
   nextId?: string; // Next dialogue ID (undefined = end)
@@ -16,10 +15,12 @@ export interface UserResponse {
   timestamp: Date;
 }
 
-/**
- * Reflection dialogue data
- */
-export const reflectionDialogues: ReflectionNode[] = [
+
+// ___________ Dialogue Data for Reflection Scenes ____________
+
+
+// Dialogue for scenario 5 - work organization 
+const reflectionDialogue5: ReflectionNode[] = [
   {
     id: 'start',
     text: 'Let\'s take a moment to think about what happened.',
@@ -41,22 +42,22 @@ export const reflectionDialogues: ReflectionNode[] = [
   },
   {
     id: 'reflect_3',
-    text: 'Interesting...',
-    nextId: 'reflect_4',
-  },
-  {
-    id: 'reflect_4',
-    text: 'What do you think is the most important thing to consider when organizing a worksession like this?',
-    requiresInput: true,
-    inputPrompt: 'Describe your alternative approach...',
-    generateAIResponse: true, 
-    saveResponse: true,
+    text: 'Interesting... Others before you have mentioned similar things, but also some different aspects. Let\'s take a look at what they based their decisions on.',
     nextId: 'bubbles',
   },
   {
     id: 'bubbles',
-    text: 'This is what other students considered to be important:',
+    text: 'This is what other students considered to be important for their decision:',
     showBubbles: true,
+    nextId: 'record',
+  },
+  {
+    id: 'record',
+    text: 'Now, you can leave something behind too. What do you think is the most important thing to consider when organizing a worksession like this?',
+    requiresInput: true,
+    inputPrompt: 'Type your thoughts here...',
+    showBubbles: true,
+    saveResponse: true,
     nextId: 'ending',
   },
   {
@@ -64,3 +65,10 @@ export const reflectionDialogues: ReflectionNode[] = [
     text: 'Thank you for your reflections. Your insights have been recorded.',
   },
 ];
+
+
+// ___________ End Dialogue Data for Reflection Scenes ____________
+
+
+// Array of dialogue sets for different scenarios
+export const reflectionDialogues: ReflectionNode[][] = [reflectionDialogue5];

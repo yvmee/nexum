@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox';
 import { DialogueNode } from '../dialogue/dialogueData';
-import { introText } from './TextData';
+import { introText } from './textData.ts';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import { useSceneStore } from '../../store/useSceneStore';
 
 // Set the active dialogue dataset
 let activeDialogues = introText;
 let currentBackground = SchoolBackground;
-/**
- * Helper to find a dialogue node by ID
- */
+
 const findDialogueById = (id: string): DialogueNode | null => {
   return activeDialogues.find((d) => d.id === id) || null;
 };
 
 /**
- * LayoutDialogue component - handles dialogue flow with branching support
+ * React component that handles intro dialogue flow
  */
 export const Intro: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
@@ -31,9 +29,8 @@ export const Intro: React.FC = () => {
     }
   }, []);
 
-  /**
-   * Advance to the next dialogue (for non-branching dialogues)
-   */
+
+  // Advance to the next dialogue (for non-branching dialogues)
   const handleAdvance = (): void => {
     if (!currentDialogue) return;
 
@@ -50,9 +47,6 @@ export const Intro: React.FC = () => {
     }
   };
 
-  /**
-   * End the dialogue sequence
-   */
   const endDialogue = (): void => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
@@ -73,12 +67,8 @@ export const Intro: React.FC = () => {
 
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
-        {/* Game Title & Subtitle */}
-        <div className="flex flex-col items-center justify-center mt-20">
-          <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
-            
-          </h1>
-        </div>
+        {/* For spacing */}
+        <div className="flex flex-col items-center justify-center mt-20"> </div>
 
         {/* Dialogue Box */}
         <div className="pointer-events-auto mb-10">

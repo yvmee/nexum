@@ -3,7 +3,7 @@ import { supabase } from './dbClient'
 import profanityList from '@dsojevic/profanity-list';
 
 /**
- * Type for reflection data loaded from the database
+ * Type for basice reflection data loaded from the database
  */
 export interface ReflectionData {
   id: number;
@@ -13,9 +13,22 @@ export interface ReflectionData {
 }
 
 /**
- * Data structure to store loaded reflection texts
+ * Type for reflection answer data loaded from the database table 'reflectionanswers'
  */
-export let reflectionTexts: ReflectionData[] = [];
+export interface ReflectionAnswerData {
+  id: number;
+  user_id: string | null;
+  created_at: string;
+  thread_id: number | null;
+  reflection_id: number | null;
+  answer: string | null;
+}
+
+
+/**
+ * Data structure to store loaded reflection answers
+ */
+export let reflectionTexts: ReflectionAnswerData[] = [];
 
 let profanityRegex: RegExp | null = null;
 
@@ -24,7 +37,6 @@ const getProfanityRegex = () => {
 
   try {
     // Handle various import scenarios
-    // @ts-ignore
     const list = profanityList?.en || profanityList?.default?.en;
     
     if (!Array.isArray(list)) {
@@ -47,7 +59,8 @@ const getProfanityRegex = () => {
 }
 
 /**
- * Sanitizes user input to prevent XSS and SQL injection
+ * Sanitizes user input to prevent XSS and SQL injection and filters profanity. 
+ * This should be called before saving any user-generated content to the database.
  * @param input - The raw user input string
  * @returns Sanitized string safe for storage
  */
@@ -62,10 +75,10 @@ export const sanitizeInput = (input: string): string => {
     // Remove HTML tags to prevent XSS
     .replace(/<[^>]*>/g, '');
 
-  // Filter profanity
+  // Filter profanity by removing
   const badWordRegex = getProfanityRegex();
   if (badWordRegex) {
-    result = result.replace(badWordRegex, '***');
+    result = result.replace(badWordRegex, '');
   }
 
   return result
@@ -81,8 +94,8 @@ export const sanitizeInput = (input: string): string => {
     .slice(0, 5000);
 };
 
-/*
-* Function to get or create an anonymous user in Supabase
+/**
+* Function to get or create an anonymous user in Supabase, as policies prevent insertions without a user_id
 * @returns user ID
 */
 export const getOrCreateUser = async () => {
@@ -106,11 +119,18 @@ export const getOrCreateUser = async () => {
   return data.user?.id; // This is the UUID that has to be used for storing user-specific data
 }
 
-/* 
-* Function to save data to the 'reflections' table in Supabase
-* @param inputtext - The text to be saved (will be sanitized)
+
+
+// ___________________________ Direct Database Management __________________________
+
+
+/**
+* Function to save data to the 'reflectionanswers' table in Supabase. Includes input sanitization.
+* @param inputtext - The text to be saved
+* @param reflectionId - Optional ID of the reflection question this answer belongs to, should be provided!
+* @param threadId - Optional ID of the reflection thread this answer belongs to (not needed for now)
 */
-export const saveData = async (inputtext: string) => {
+export const saveData = async (inputtext: string, reflectionId?: number, threadId?: number) => {
   const userId = await getOrCreateUser();
 
   if (!userId) return;
@@ -124,10 +144,12 @@ export const saveData = async (inputtext: string) => {
   }
 
   const { error } = await supabase
-    .from('reflections') 
+    .from('reflectionanswers') 
     .upsert({ 
-      text: sanitizedText,
-      user_id: userId
+      answer: sanitizedText,
+      user_id: userId,
+      reflection_id: reflectionId,
+      thread_id: threadId
     });
 
   if (error) {
@@ -137,11 +159,64 @@ export const saveData = async (inputtext: string) => {
   }
 }
 
-/*
-* Function to load all data from the 'reflections' table in Supabase
+/**
+ * Function to load all reflection texts from database and store them in the reflectionTexts array
+ * Call this at the beginning of a reflection to have all previous texts available
+ * @returns Promise<ReflectionData[]> - Array of all reflection data
+ */
+export const loadReflectionAnswerTexts = async (reflectionId?: number): Promise<ReflectionAnswerData[]> => {
+  const data = await loadData(reflectionId);
+  
+  if (data) {
+    reflectionTexts = data;
+    console.log(`Loaded ${reflectionTexts.length} reflection answers into memory`);
+  } else {
+    reflectionTexts = [];
+    console.log('No reflection answers found or error loading');
+  }
+  
+  return reflectionTexts;
+};
+
+/**
+* Function to load data from the 'reflectionanswers' table in Supabase for a specific reflection question
 * @returns array of reflection data
 */
-export const loadData = async (): Promise<ReflectionData[] | null> => {
+export const loadData = async (reflectionId?: number): Promise<ReflectionAnswerData[] | null> => {
+
+  // Get 'reflectionanswers' table corresponding to the reflectionId, if provided, otherwise get all answers
+  let query = supabase
+    .from('reflectionanswers') 
+    .select('*');
+  if (reflectionId !== undefined) {
+    query = query.eq('reflection_id', reflectionId);
+  }
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error loading:', error);
+    return null;
+  }
+
+  // TypeScript knows 'data' has .score and .game_data
+  console.log('Done loading data'); 
+  return data as ReflectionAnswerData[];
+}
+
+/**
+ * Get the currently loaded reflection texts
+ * @returns The array of reflection data currently in memory
+ */
+export const getReflectionTexts = (): ReflectionAnswerData[] => {
+  return reflectionTexts;
+};
+
+
+/**
+* Deprecated function to load all data from the 'reflections' table in Supabase
+* @returns array of reflection data
+*/
+export const loadReflectionTableData = async (): Promise<ReflectionData[] | null> => {
   // Get all rows from 'reflections' table for now
   const { data, error } = await supabase
     .from('reflections') 
@@ -159,30 +234,3 @@ export const loadData = async (): Promise<ReflectionData[] | null> => {
   console.log('Done loading data'); 
   return data as ReflectionData[];
 }
-
-/**
- * Function to load all reflection texts from database and store them in the reflectionTexts array
- * Call this at the beginning of a reflection to have all previous texts available
- * @returns Promise<ReflectionData[]> - Array of all reflection data
- */
-export const loadReflectionTexts = async (): Promise<ReflectionData[]> => {
-  const data = await loadData();
-  
-  if (data) {
-    reflectionTexts = data;
-    console.log(`Loaded ${reflectionTexts.length} reflection texts into memory`);
-  } else {
-    reflectionTexts = [];
-    console.log('No reflection texts found or error loading');
-  }
-  
-  return reflectionTexts;
-};
-
-/**
- * Get the currently loaded reflection texts
- * @returns The array of reflection data currently in memory
- */
-export const getReflectionTexts = (): ReflectionData[] => {
-  return reflectionTexts;
-};

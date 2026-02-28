@@ -69,8 +69,8 @@ function sanitizeInput(input: string): string {
 
 /**
  * Sets up the AI with the scenario context and returns an initial reflection question
- * @param scenario - The teaching scenario description
- * @param decision - The student's chosen approach
+ * @param scenario The teaching scenario description
+ * @param decision The student's chosen approach
  * @returns Initial AI response with a thought-provoking question
  */
 export async function setUpAI(scenario: string, decision: string): Promise<string> {
@@ -97,7 +97,7 @@ Provide brief, encouraging feedback (1-2 sentences) on their choice, then ask ON
 /**
  * Generates an AI response to the student's reflection input
  * Input is wrapped with context to maintain focus and prevent prompt injection
- * @param userInput - The sanitized user input
+ * @param userInput The sanitized user input
  * @returns AI response continuing the reflection dialogue
  */
 export async function generateResponse(userInput: string): Promise<string> {

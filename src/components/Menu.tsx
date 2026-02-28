@@ -6,14 +6,14 @@ import { useNavigate } from 'react-router-dom';
 let currentBackground = SchoolBackground;
 
 /**
- * LayoutDialogue component - handles dialogue flow with branching support
+ * Menu page component that serves as the entry point to the game
  */
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
 
+    // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
         console.log('Start Game button clicked!');
-        // Navigate to GameContainer to start the game
         navigate('/game');
     }
 
@@ -30,7 +30,7 @@ export const Menu: React.FC = () => {
 
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
-        {/* Game Title & Subtitle */}
+        {/* Game Title */}
         <div className="flex flex-col items-center justify-center mt-20">
           <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
             NEXUM

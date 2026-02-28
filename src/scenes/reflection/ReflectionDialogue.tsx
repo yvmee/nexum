@@ -3,14 +3,16 @@ import * as ChoicesManager from '../dialogue/ChoicesManager';
 import { ReflectionNode, UserResponse, reflectionDialogues } from './reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
-import { setUpAI, generateResponse } from './ProcessAnswers';
-import { loadReflectionTexts, saveData, ReflectionData } from '../../db/database';
+import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
 
 // Set scene relevant variables
-let activeDialogues = reflectionDialogues;
+let activeDialogues = reflectionDialogues[0]; // Only one option for now
 let currentBackground = LectureHall;
+
+// 
+let session = 5; // This should be set based on the scenario the user just completed, to load the relevant dialogue and background
 
 // Helper function to find a dialogue node by its id
 function findNode(id: string): ReflectionNode | undefined {
@@ -26,7 +28,7 @@ export const ReflectionDialogue: React.FC = () => {
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
   const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [previousReflections, setPreviousReflections] = useState<ReflectionData[]>([]);
+  const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
   const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
   const [canContinue, setCanContinue] = useState<boolean>(true);
   const [showingAIResponse, setShowingAIResponse] = useState<boolean>(false);
@@ -46,11 +48,11 @@ export const ReflectionDialogue: React.FC = () => {
   // Scene initialisation
   useEffect(() => {
     const initializeReflection = async () => {
-      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.currentChoice);
+      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.currentChoiceScenario);
 
       // Load previous reflection texts from database
       try {
-        const loadedReflections = await loadReflectionTexts();
+        const loadedReflections = await loadReflectionAnswerTexts(session);
         setPreviousReflections(loadedReflections);
         console.log('Previous reflections loaded:', loadedReflections.length);
       } catch (error) {
@@ -64,20 +66,20 @@ export const ReflectionDialogue: React.FC = () => {
       }
 
       // Set up AI context if a choice was made 
-      if (ChoicesManager.currentChoice !== null) {
-        try {
-          const scenario = ChoicesManager.currentChoice.situation;
-          let decisions = '';
-          for (let i = 0; i < ChoicesManager.choiceIndeces.length; i++) {
-            const option = ChoicesManager.currentChoice.choices[i][ChoicesManager.choiceIndeces[i]];
-            decisions += option + ' ';
-          }
-          // Initialise AI context 
-          await setUpAI(scenario, decisions);
-        } catch (error) {
-          console.error('Error initializing AI context:', error);
-        }
-      }
+      // if (ChoicesManager.currentChoiceScenario !== null) {
+      //   try {
+      //     const scenario = ChoicesManager.currentChoiceScenario.situation;
+      //     let decisions = '';
+      //     for (let i = 0; i < ChoicesManager.choiceIndeces.length; i++) {
+      //       const option = ChoicesManager.currentChoiceScenario.choices[i][ChoicesManager.choiceIndeces[i]];
+      //       decisions += option + ' ';
+      //     }
+      //     // Initialise AI context 
+      //     await setUpAI(scenario, decisions);
+      //   } catch (error) {
+      //     console.error('Error initializing AI context:', error);
+      //   }
+      // }
     };
 
     initializeReflection();
@@ -108,6 +110,11 @@ export const ReflectionDialogue: React.FC = () => {
 
     // If thought bubbles are showing, dismiss them on click (when timer allows)
     if (showThoughtBubbles && canContinue) {
+      // If this node also requires input, show input field while keeping bubbles visible
+      if (currentDialogue.requiresInput && !isAwaitingInput) {
+        setIsAwaitingInput(true);
+        return;
+      }
       setShowThoughtBubbles(false);
       if (!showingAIResponse) {
         advanceToNode(currentDialogue.nextId);
@@ -148,41 +155,44 @@ export const ReflectionDialogue: React.FC = () => {
     });
 
     // Save the input to the database
-    try {
-      await saveData(input);
-      console.log('User response saved to database');
-    } catch (error) {
-      console.error('Error saving user response to database:', error);
+    if (currentDialogue.saveResponse) {
+      try {
+        await saveData(input, session);
+        console.log('User response saved to database');
+      } catch (error) {
+        console.error('Error saving user response to database:', error);
+      }
     }
 
     setIsAwaitingInput(false);
 
     // If this node requests an AI response, generate one and show it as intermediate text
-    if (currentDialogue.generateAIResponse) {
-      setIsLoading(true);
-      try {
-        const aiResponse = await generateResponse(input);
-        setCurrentDialogue({
-          id: `ai_response_${currentDialogue.id}`,
-          text: aiResponse,
-        });
-        setShowingAIResponse(true);
-        setNextNodeAfterAI(currentDialogue.nextId);
-      } catch (error) {
-        console.error('Error getting AI response:', error);
-        setCurrentDialogue({
-          id: `ai_response_${currentDialogue.id}`,
-          text: 'I appreciate your thoughts. Let\'s continue reflecting.',
-        });
-        setShowingAIResponse(true);
-        setNextNodeAfterAI(currentDialogue.nextId);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      // No AI response needed –> advance to the next node
+    // if (currentDialogue.generateAIResponse) {
+    //   setIsLoading(true);
+    //   try {
+    //     const aiResponse = await generateResponse(input);
+    //     setCurrentDialogue({
+    //       id: `ai_response_${currentDialogue.id}`,
+    //       text: aiResponse,
+    //     });
+    //     setShowingAIResponse(true);
+    //     setNextNodeAfterAI(currentDialogue.nextId);
+    //   } catch (error) {
+    //     console.error('Error getting AI response:', error);
+    //     setCurrentDialogue({
+    //       id: `ai_response_${currentDialogue.id}`,
+    //       text: 'I appreciate your thoughts. Let\'s continue reflecting.',
+    //     });
+    //     setShowingAIResponse(true);
+    //     setNextNodeAfterAI(currentDialogue.nextId);
+    //   } finally {
+    //     setIsLoading(false);
+    //   }
+    // } else {
+    //   // No AI response needed –> advance to the next node
+    //   advanceToNode(currentDialogue.nextId);
+    // }
       advanceToNode(currentDialogue.nextId);
-    }
   };
 
   return (
