@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DialogueBox } from './DialogueBox';
+import { DialogueBox } from './DialogueBox.tsx';
 import { scenario5Dialogue, DialogueNode } from './dialogueData.ts';
 import { useSceneStore } from '../../store/useSceneStore.ts';
-import * as ChoicesManager from './ChoicesManager';
+import * as ChoicesManager from './ChoicesManager.ts';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
 import LectureHall from '../../../assets/LectureHall.png';
 
@@ -18,9 +18,9 @@ const findDialogueById = (id: string): DialogueNode | null => {
 };
 
 /**
- * React component that handles dialogue flow with branching support
+ * Dialogue scene that handles dialogue flow with branching support
  */
-export const LayoutDialogue: React.FC = () => {
+export const DialogueScene: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
 

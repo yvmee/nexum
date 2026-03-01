@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { DialogueBox } from '../dialogue/DialogueBox';
-import { DialogueNode } from '../dialogue/dialogueData';
+import { DialogueBox } from '../dialogue/DialogueBox.tsx';
+import { DialogueNode } from '../dialogue/dialogueData.ts';
 import { introText } from './textData.ts';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
-import { useSceneStore } from '../../store/useSceneStore';
+import { useSceneStore } from '../../store/useSceneStore.ts';
 
 // Set the active dialogue dataset
 let activeDialogues = introText;
@@ -14,9 +14,9 @@ const findDialogueById = (id: string): DialogueNode | null => {
 };
 
 /**
- * React component that handles intro dialogue flow
+ * Intro scene that handles intro dialogue flow
  */
-export const Intro: React.FC = () => {
+export const IntroScene: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
 

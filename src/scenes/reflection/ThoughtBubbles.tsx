@@ -39,7 +39,6 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
   // Generate non-overlapping random positions for bubbles
   const bubblePositions = useMemo((): BubblePosition[] => {
     // Estimated bubble dimensions in viewport-percentage units.
-    // --bubble-max-w ≈ 20 vw → ~20 %; height varies, estimate ~12 %.
     const BUBBLE_W = 22; // % of viewport width (with a small margin)
     const BUBBLE_H = 14; // % of viewport height (with a small margin)
 
@@ -51,14 +50,12 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
       );
 
     const generateCandidate = (index: number) => ({
-      // Spread across left / right halves, avoiding the centre dialogue area
+      // Spread across left / right halves avoiding the centre
       x: 10 + (index % 2 === 0 ? Math.random() * 30 : 60 + Math.random() * 30),
       y: 35 + Math.random() * 50,
     });
 
-    console.debug('Generating bubble positions for reflections:', selectedReflections);
-    console.debug('Bubble amount:', selectedReflections.length);
-
+    // Try multiple candidates for each bubble to find a non-overlapping position
     for (let i = 0; i < selectedReflections.length; i++) {
       const MAX_ATTEMPTS = 60;
       let bestCandidate = generateCandidate(i);
@@ -102,17 +99,24 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
   // Animate bubbles appearing one by one
   useEffect(() => {
     if (!isVisible || selectedReflections.length === 0) {
+      console.debug('Setting visible bubbles to empty');
       setVisibleBubbles([]);
+      currentIndexRef.current = 0;
       return;
     }
 
+    setVisibleBubbles([]);
     currentIndexRef.current = 0;
     
     const showNextBubble = () => {
       if (currentIndexRef.current < selectedReflections.length) {
-        setVisibleBubbles(prev => [...prev, currentIndexRef.current]);
-        console.debug('Showing bubble index:', currentIndexRef.current);
+        const indexToAdd = currentIndexRef.current;
         currentIndexRef.current++;
+        setVisibleBubbles(prev => {
+          const next = [...prev, indexToAdd];
+          console.debug('Added bubble. Visible bubbles now:', next);
+          return next;
+        });
       }
     };
 
@@ -127,7 +131,10 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
       }
     }, 800);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      currentIndexRef.current = 0;
+    };
   }, [isVisible, selectedReflections]);
 
   if (!isVisible || selectedReflections.length === 0) {

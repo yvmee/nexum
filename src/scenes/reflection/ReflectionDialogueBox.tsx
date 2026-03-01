@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ReflectionNode } from './reflectionData';
 
 /**
- * ReflectionDialogueBox - Dialogue box positioned at the top
+ * Dialogue box positioned at the top for ReflectionNodes
  */
 export interface ReflectionDialogueBoxProps {
   dialogue: ReflectionNode | null;

@@ -20,19 +20,16 @@ function findNode(id: string): ReflectionNode | undefined {
 }
 
 /**
- * ReflectionDialogue - Main component for reflection scene driven by reflectionData
+ * Reflection scene driven by reflectionData
  */
-export const ReflectionDialogue: React.FC = () => {
+export const ReflectionScene: React.FC = () => {
   const [currentDialogue, setCurrentDialogue] = useState<ReflectionNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(true);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
   const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
   const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
   const [canContinue, setCanContinue] = useState<boolean>(true);
-  const [showingAIResponse, setShowingAIResponse] = useState<boolean>(false);
-  const [nextNodeAfterAI, setNextNodeAfterAI] = useState<string | undefined>(undefined);
 
   // Start 3-second timeout when thought bubbles appear
   useEffect(() => {
@@ -45,10 +42,9 @@ export const ReflectionDialogue: React.FC = () => {
     }
   }, [showThoughtBubbles]);
 
-  // Scene initialisation
   useEffect(() => {
     const initializeReflection = async () => {
-      console.debug('Selected choice in ReflectionDialogue:', ChoicesManager.currentChoiceScenario);
+      console.debug('Selected choice in ReflectionScene:', ChoicesManager.currentChoiceScenario);
 
       // Load previous reflection texts from database
       try {
@@ -64,29 +60,13 @@ export const ReflectionDialogue: React.FC = () => {
       if (firstNode) {
         setCurrentDialogue(firstNode);
       }
-
-      // Set up AI context if a choice was made 
-      // if (ChoicesManager.currentChoiceScenario !== null) {
-      //   try {
-      //     const scenario = ChoicesManager.currentChoiceScenario.situation;
-      //     let decisions = '';
-      //     for (let i = 0; i < ChoicesManager.choiceIndeces.length; i++) {
-      //       const option = ChoicesManager.currentChoiceScenario.choices[i][ChoicesManager.choiceIndeces[i]];
-      //       decisions += option + ' ';
-      //     }
-      //     // Initialise AI context 
-      //     await setUpAI(scenario, decisions);
-      //   } catch (error) {
-      //     console.error('Error initializing AI context:', error);
-      //   }
-      // }
     };
 
     initializeReflection();
   }, []);
 
 
-  // Advance to a node by its id. If id is undefined the dialogue ends.
+  // Advance to a node by its id
   const advanceToNode = (nodeId: string | undefined) => {
     if (!nodeId) {
       setIsDialogueVisible(false);
@@ -98,9 +78,8 @@ export const ReflectionDialogue: React.FC = () => {
       setCurrentDialogue(node);
       setShowThoughtBubbles(node.showBubbles === true);
       setIsAwaitingInput(false);
-      setShowingAIResponse(false);
     } else {
-      // Node not found – end dialogue
+      // Node not found –> end dialogue
       setIsDialogueVisible(false);
     }
   };
@@ -108,7 +87,7 @@ export const ReflectionDialogue: React.FC = () => {
   const handleAdvance = () => {
     if (!currentDialogue) return;
 
-    // If thought bubbles are showing, dismiss them on click (when timer allows)
+    // If thought bubbles are showing, dismiss them on click (when timer allows) and continue to next node
     if (showThoughtBubbles && canContinue) {
       // If this node also requires input, show input field while keeping bubbles visible
       if (currentDialogue.requiresInput && !isAwaitingInput) {
@@ -116,15 +95,7 @@ export const ReflectionDialogue: React.FC = () => {
         return;
       }
       setShowThoughtBubbles(false);
-      if (!showingAIResponse) {
-        advanceToNode(currentDialogue.nextId);
-      }
-      return;
-    }
-
-    // If we are showing an AI response, dismiss it and go to the saved next node
-    if (showingAIResponse) {
-      advanceToNode(nextNodeAfterAI);
+      advanceToNode(currentDialogue.nextId);
       return;
     }
 
@@ -166,33 +137,7 @@ export const ReflectionDialogue: React.FC = () => {
 
     setIsAwaitingInput(false);
 
-    // If this node requests an AI response, generate one and show it as intermediate text
-    // if (currentDialogue.generateAIResponse) {
-    //   setIsLoading(true);
-    //   try {
-    //     const aiResponse = await generateResponse(input);
-    //     setCurrentDialogue({
-    //       id: `ai_response_${currentDialogue.id}`,
-    //       text: aiResponse,
-    //     });
-    //     setShowingAIResponse(true);
-    //     setNextNodeAfterAI(currentDialogue.nextId);
-    //   } catch (error) {
-    //     console.error('Error getting AI response:', error);
-    //     setCurrentDialogue({
-    //       id: `ai_response_${currentDialogue.id}`,
-    //       text: 'I appreciate your thoughts. Let\'s continue reflecting.',
-    //     });
-    //     setShowingAIResponse(true);
-    //     setNextNodeAfterAI(currentDialogue.nextId);
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // } else {
-    //   // No AI response needed –> advance to the next node
-    //   advanceToNode(currentDialogue.nextId);
-    // }
-      advanceToNode(currentDialogue.nextId);
+    advanceToNode(currentDialogue.nextId);
   };
 
   return (
@@ -207,23 +152,14 @@ export const ReflectionDialogue: React.FC = () => {
 
       {/* Dialogue box at the top */}
       <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
-        {isLoading ? (
-          <div className="flex flex-col z-10 justify-center items-center gap-[var(--box-gap)] w-[var(--box-width)] max-w-[90vw] min-h-[var(--box-min-height)] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-[var(--box-padding)]">
-            <div className="flex items-center gap-3">
-              <div className="animate-spin rounded-full h-[var(--spinner-size)] w-[var(--spinner-size)] border-b-2 border-primary"></div>
-              <span className="text-[var(--text-body)] text-foreground font-medium">Thinking...</span>
-            </div>
-          </div>
-        ) : (
-          <ReflectionDialogueBox
-            dialogue={currentDialogue}
-            onAdvance={handleAdvance}
-            onSubmitInput={handleSubmitInput}
-            isVisible={isDialogueVisible}
-            isAwaitingInput={isAwaitingInput}
-            canContinue={canContinue}
-          />
-        )}
+        <ReflectionDialogueBox
+          dialogue={currentDialogue}
+          onAdvance={handleAdvance}
+          onSubmitInput={handleSubmitInput}
+          isVisible={isDialogueVisible}
+          isAwaitingInput={isAwaitingInput}
+          canContinue={canContinue}
+        />
       </div>
 
       {/* Thought Bubbles - shown after user input */}

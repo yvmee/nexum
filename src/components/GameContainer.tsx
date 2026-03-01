@@ -1,7 +1,7 @@
 import { useSceneStore } from '../store/useSceneStore';
-import { Intro } from '../scenes/intro/IntroLayout';
-import { LayoutDialogue } from '../scenes/dialogue/LayoutDialogue';
-import { ReflectionDialogue } from '../scenes/reflection/ReflectionDialogue';
+import { IntroScene } from '../scenes/intro/IntroScene';
+import { DialogueScene } from '../scenes/dialogue/DialogueScene';
+import { ReflectionScene } from '../scenes/reflection/ReflectionScene';
 
 /** 
  * Page that contains the entire game and renders different game scenes based on the SceneStore.
@@ -11,9 +11,9 @@ export default function GameContainer() {
 
   return (
     <div className="w-full h-screen bg-gray-900">
-      {currentScene === 'INTRO' && <Intro />}
-      {currentScene === 'STORY' && <LayoutDialogue />}
-      {currentScene === 'REFLECTION' && <ReflectionDialogue />}
+      {currentScene === 'INTRO' && <IntroScene />}
+      {currentScene === 'STORY' && <DialogueScene />}
+      {currentScene === 'REFLECTION' && <ReflectionScene />}
     </div>
   );
 }

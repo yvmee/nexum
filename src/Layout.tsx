@@ -4,7 +4,7 @@ import GameContainer from './components/GameContainer.tsx';
 import { Menu } from './components/Menu.tsx';
 
 /**
- * Layout component - provides the main layout structure for the app
+ * Provides the main layout structure for the app and sets up routing between pages
  */
 export const Layout: React.FC = () => {
 

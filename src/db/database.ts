@@ -1,5 +1,5 @@
 import { supabase } from './dbClient'
-// @ts-ignore
+// @ts-ignore-next-line
 import profanityList from '@dsojevic/profanity-list';
 
 /**

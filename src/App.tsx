@@ -3,7 +3,7 @@ import { Layout } from './Layout';
 import './style.css';
 
 /**
- * Main App component for the Nexum game
+ * Main App component for the game
  */
 export const App: React.FC = () => {
   return <Layout />;
