@@ -16,8 +16,37 @@ export interface DialogueNode {
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
+  background?: string; // Optional background image for this dialogue node
 }
 
+export const startDialogue: DialogueNode[] = [
+  {
+    id: 'start',
+    text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
+    speaker: 'Narrator',
+    nextId: 'intro_0',
+  },
+  {
+    id: 'intro_0',
+    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
+    speaker: 'Narrator',
+    nextId: 'intro_1',
+  },
+  {
+    id: 'intro_1',
+    text: 'In the next scene, Mayra is currently in one of her tutorial sessions. Help her through the session and enjoy your journey!',
+    speaker: 'Narrator',
+  }
+]
+
+export const endDialogue: DialogueNode[] = [
+  {
+    id: 'end',
+    text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
+    speaker: 'Narrator',
+    background: 'SchoolBackground',
+  }
+]
 
 export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
   {

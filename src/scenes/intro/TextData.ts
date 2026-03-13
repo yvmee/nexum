@@ -1,4 +1,4 @@
-import { DialogueNode } from "../dialogue/dialogueData";
+import { DialogueNode } from "../../storydata/dialogueData";
 
 export const introText: DialogueNode[] = [
   {

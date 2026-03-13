@@ -1,37 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
-import { scenario5Dialogue, DialogueNode } from './dialogueData.ts';
-import { useSceneStore } from '../../store/useSceneStore.ts';
+import { DialogueNode } from '../../storydata/dialogueData.ts';
+import { useGameStore } from '../../store/useGameStore.ts';
 import * as ChoicesManager from './ChoicesManager.ts';
-import SchoolBackground from '../../../assets/SchoolBackground.png';
-import LectureHall from '../../../assets/LectureHall.png';
+import LectureHall from '../../../assets/backgrounds/LectureHall.png';
 
 // Set scene relevant variables
-let activeDialogues = scenario5Dialogue; // default for now, later set by a manager
 let currentBackground = LectureHall;
 let choiceIndeces: number[] = []; // To track the indices of choices made
 let startingDialogueId = 'start'; // Default starting dialogue id, can be set by a manager
-
-/** Helper function to find a dialogue node by its id */
-const findDialogueById = (id: string): DialogueNode | null => {
-  return activeDialogues.find((d) => d.id === id) || null;
-};
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
  */
 export const DialogueScene: React.FC = () => {
+  const activeDialogues = useGameStore((state) => state.activeDialogues);
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
 
+  const findDialogueById = (id: string): DialogueNode | null =>
+    activeDialogues.find((d) => d.id === id) || null;
+
   useEffect(() => {
     // Start with the first dialogue node (id: 'start')
-    const startDialogue = findDialogueById(startingDialogueId);
+    const id = useGameStore.getState().startNodeId;
+    const startDialogue = findDialogueById(id);
     if (startDialogue) {
       setCurrentDialogue(startDialogue);
       setIsDialogueVisible(true);
     }
-  }, []);
+  }, [activeDialogues]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -72,9 +70,9 @@ export const DialogueScene: React.FC = () => {
   const endDialogue = (): void => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
-    ChoicesManager.setChoiceIndeces(choiceIndeces);
-    choiceIndeces = []; // Reset for next scene
-    useSceneStore.getState().setScene('REFLECTION');
+    // ChoicesManager.setChoiceIndeces(choiceIndeces);
+    // choiceIndeces = []; // Reset for next scene
+    useGameStore.getState().completeChunk();
   };
 
   return (

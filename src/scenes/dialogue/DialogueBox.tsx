@@ -1,5 +1,5 @@
 import React from 'react';
-import { DialogueNode } from './dialogueData.ts';
+import { DialogueNode } from '../../storydata/dialogueData.ts';
 
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;

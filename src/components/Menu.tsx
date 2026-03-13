@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import SchoolBackground from '../../assets/SchoolBackground.png';
+import SchoolBackground from '../../assets/backgrounds/SchoolBackground.png';
 import { useNavigate } from 'react-router-dom';
+import { useGameStore } from '../store/useGameStore';
 
-// Set the background image 
 let currentBackground = SchoolBackground;
 
 /**
@@ -14,6 +14,7 @@ export const Menu: React.FC = () => {
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
         console.log('Start Game button clicked!');
+        useGameStore.getState().startGame(); 
         navigate('/game');
     }
 

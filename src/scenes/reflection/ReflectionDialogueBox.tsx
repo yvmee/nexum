@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ReflectionNode } from './reflectionData';
+import { ReflectionNode } from '../../storydata/reflectionData';
 
 /**
  * Dialogue box positioned at the top for ReflectionNodes
