@@ -4,7 +4,7 @@ import { DialogueNode } from '../../storydata/dialogueData.ts';
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;
   onAdvance: () => void;
-  onSelectOption: (nextId: string, choiceKey?: number) => void;
+  onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
   isVisible: boolean;
 };
 
@@ -48,7 +48,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
             <button
               key={index}
               className="w-full text-left px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground hover:bg-accent/20 hover:border-accent transition-all duration-150 cursor-pointer"
-              onClick={() => onSelectOption(option.nextId, option.choiceKey)}
+              onClick={() => onSelectOption(option.nextId, option.choice)}
             >
               <span className="text-primary mr-2 font-bold">{index + 1}.</span>
               {option.text}

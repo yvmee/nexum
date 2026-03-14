@@ -2,13 +2,10 @@ import React, { useState, useEffect, use } from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
 import { DialogueNode } from '../../storydata/dialogueData.ts';
 import { useGameStore } from '../../store/useGameStore.ts';
-import * as ChoicesManager from './ChoicesManager.ts';
-import LectureHall from '../../../assets/backgrounds/LectureHall.png';
+import { backgrounds } from '../../storydata/assetData.ts';
 
 // Set scene relevant variables
-let currentBackground = LectureHall;
-let choiceIndeces: number[] = []; // To track the indices of choices made
-let startingDialogueId = 'start'; // Default starting dialogue id, can be set by a manager
+let currentBackground = backgrounds.lectureHall;
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -17,6 +14,10 @@ export const DialogueScene: React.FC = () => {
   const activeDialogues = useGameStore((state) => state.activeDialogues);
   const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
+
+  if (currentDialogue?.background) {
+    currentBackground = backgrounds[currentDialogue.background as keyof typeof backgrounds] || currentBackground;
+  }
 
   const findDialogueById = (id: string): DialogueNode | null =>
     activeDialogues.find((d) => d.id === id) || null;
@@ -39,6 +40,10 @@ export const DialogueScene: React.FC = () => {
       const nextDialogue = findDialogueById(currentDialogue.nextId);
       if (nextDialogue) {
         setCurrentDialogue(nextDialogue);
+        // check if the background should change with the new dialogue
+        if (nextDialogue.background) {
+          currentBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds] || currentBackground;
+        }
       } else {
         endDialogue();
       }
@@ -49,17 +54,18 @@ export const DialogueScene: React.FC = () => {
   };
 
 
-  // Handle player selecting a dialogue option (for branching)
-  const handleSelectOption = (nextId: string, choiceKey?: number): void => {
-    // Save the selected choice if a choiceKey is provided
-    if (choiceKey !== undefined) {
-      choiceIndeces.push(choiceKey);
-      console.log('Selected choices:', choiceIndeces);
+  // Handle player selecting a dialogue option for dialogue branching
+  const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>): void => {
+    if (choice) { // Save the selected choice in game manager for chunk branching
+      useGameStore.getState().makeChoice(Object.keys(choice)[0], Object.values(choice)[0], nextId);
     }
 
     const nextDialogue = findDialogueById(nextId);
     if (nextDialogue) {
       setCurrentDialogue(nextDialogue);
+      if (nextDialogue.background) {
+        currentBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds] || currentBackground;
+      }
     } else {
       endDialogue();
     }

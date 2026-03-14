@@ -1,5 +1,5 @@
 import { StoryFlow } from './storyFlow';
-import { endDialogue, scenario5Dialogue, startDialogue } from './dialogueData';
+import { endDialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
 
 // Simple story flow for now
@@ -13,7 +13,7 @@ export const exampleStoryFlow: StoryFlow = {
       id: 'intro',
       dialogueNodes: startDialogue,
       transitions: [
-        { targetChunkId: 'work_organization' }, // Unconditional transition 
+        { targetChunkId: 'work_organization' }, 
       ],
     },
 
@@ -22,6 +22,7 @@ export const exampleStoryFlow: StoryFlow = {
       dialogueNodes: scenario5Dialogue,
       reflectionNodes: reflectionDialogues[0],
       transitions: [
+        { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
         { targetChunkId: 'end' },
       ],
     },
@@ -30,6 +31,12 @@ export const exampleStoryFlow: StoryFlow = {
       id: 'end',
       startingNodeId: 'endnote', // optional override (defaults to 'start')
       dialogueNodes: endDialogue, 
+    },
+
+    secretEnd: {
+      id: 'secretEnd',
+      startingNodeId: 'end',
+      dialogueNodes: secretEnd,
     }
 
   },

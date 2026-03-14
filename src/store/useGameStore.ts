@@ -35,7 +35,7 @@ interface GameManagerState {
   //advanceStory: (nextNodeId: string, newBackground?: string) => void; // maybe not needed, advance in chunks
   completeChunk: () => void;
   completeReflection: () => void;
-  makeChoice: (variableId: string, value: string | boolean, nextNodeId: string) => void;
+  makeChoice: (variableId: string, value: string | boolean | number, nextNodeId: string) => void;
   submitReflection: (promptId: string, answer: string) => void; 
 }
 
@@ -43,7 +43,6 @@ interface GameManagerState {
 function activateChunk(
   flow: StoryFlow,
   chunkId: string,
-  currentBackground: string,
 ): Partial<GameManagerState> {
   const chunk = flow.chunks[chunkId];
   if (!chunk) {
@@ -55,7 +54,6 @@ function activateChunk(
     activeDialogues: chunk.dialogueNodes,
     activeReflectionNodes: chunk.reflectionNodes ?? [],
     startNodeId: chunk.dialogueNodes[0]?.id ?? 'start',
-    currentBackground: chunk.initialBackground ?? currentBackground,
     currentScene: 'STORY' as Scene,
   };
 }
@@ -78,14 +76,14 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
 
   // Start the game loop – activates the first chunk of the loaded story flow
   startGame: () => {
-    const { storyFlow, currentBackground } = get();
+    const { storyFlow } = get();
     if (storyFlow) {
       // DEBUG
       console.log('Starting game with story flow:', storyFlow.id);
       set({
         currentScene: 'STORY',
         gameState: 'PLAYING',
-        ...activateChunk(storyFlow, storyFlow.initialChunkId, currentBackground),
+        ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
       set({ currentScene: 'STORY', startNodeId: 'start', gameState: 'PLAYING', currentBackground: backgrounds.schoolBackground });
@@ -103,13 +101,16 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
   // })),
 
   // Save player choice for branching and move the story
-  makeChoice: (variableId, value, nextNodeId) => set((state) => ({
-    playerChoices: {
-      ...state.playerChoices,
-      [variableId]: value,
-    },
-    startNodeId: nextNodeId,
-  })),
+  makeChoice: (variableId, value, nextNodeId) => set((state) => {
+    console.log('Choice made:', { variableId, value, nextNodeId });
+    return {
+      playerChoices: {
+        ...state.playerChoices,
+        [variableId]: value,
+      },
+      //startNodeId: nextNodeId,
+    };
+  }),
 
   // Save reflection and transition back to dialogue
   submitReflection: (promptId, answer) => set((state) => ({
@@ -138,20 +139,20 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
     const { playerChoices, currentBackground } = get();
     const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
     if (nextChunkId) {
-      set(activateChunk(storyFlow, nextChunkId, currentBackground));
+      set(activateChunk(storyFlow, nextChunkId));
     } else {
       set({ currentScene: 'END' });
     }
   },
 
   completeReflection: () => {
-    const { storyFlow, currentChunkId, playerChoices, currentBackground } = get();
+    const { storyFlow, currentChunkId, playerChoices } = get();
     if (!storyFlow || !currentChunkId) return;
 
     console.log('Reflection completed. Evaluating next chunk');
     const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
     if (nextChunkId) {
-      set(activateChunk(storyFlow, nextChunkId, currentBackground));
+      set(activateChunk(storyFlow, nextChunkId));
     } else {
       set({ currentScene: 'END' });
     }

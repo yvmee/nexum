@@ -4,7 +4,7 @@
 export interface DialogueOption {
   text: string;
   nextId: string;
-  choiceKey?: number; 
+  choice?: Record<string, string | boolean | number>; // key-value pair to track player choices for story flow evaluation
 }
 
 /**
@@ -19,18 +19,22 @@ export interface DialogueNode {
   background?: string; // Optional background image for this dialogue node
 }
 
+// start and end dialogue for prototyping
+
 export const startDialogue: DialogueNode[] = [
   {
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     speaker: 'Narrator',
     nextId: 'intro_0',
+    background: 'classroom',
   },
   {
     id: 'intro_0',
     text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
     speaker: 'Narrator',
     nextId: 'intro_1',
+    background: 'classroom',
   },
   {
     id: 'intro_1',
@@ -47,6 +51,18 @@ export const endDialogue: DialogueNode[] = [
     background: 'SchoolBackground',
   }
 ]
+
+export const secretEnd: DialogueNode[] = [
+  {
+    id: 'end',
+    text: 'Congratulations! You have found the secret ending by making all the right choices! \\(^_^)/',
+    speaker: 'Narrator',
+    background: 'SchoolBackground',
+  }
+]
+
+
+// ___________ Actual Dialogue Data ____________
 
 export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
@@ -65,9 +81,9 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'decision_0',
     text: 'How should Mayra organize the work on the exercise?',
     options: [
-      { text: 'Let them work on their own.', nextId: 'choice_0_0', choiceKey: 0 },
-      { text: 'Have them work in groups', nextId: 'choice_0_1', choiceKey: 1 },
-      { text: 'Have them work in pairs', nextId: 'choice_0_2', choiceKey: 2 },
+      { text: 'Let them work on their own.', nextId: 'choice_0_0', choice: { workOrganization: 'individual' } },
+      { text: 'Have them work in groups', nextId: 'choice_0_1', choice: { workOrganization: 'groups' } },
+      { text: 'Have them work in pairs', nextId: 'choice_0_2', choice: { workOrganization: 'pairs' } },
     ],
   },
   // Option 0 of Choice 0 start
@@ -108,8 +124,8 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'decision_1',
     text: 'What should Mayra do?',
     options: [
-      { text: 'Stay at the front and tell them that they can just ask questions anytime', nextId: 'choice_1_0', choiceKey: 0 },
-      { text: 'Walk from desk to desk and ask them how they are doing individually', nextId: 'choice_1_1', choiceKey: 1 },
+      { text: 'Stay at the front and tell them that they can just ask questions anytime', nextId: 'choice_1_0', choice: { supportStyle: 'front' } },
+      { text: 'Walk from desk to desk and ask them how they are doing individually', nextId: 'choice_1_1', choice: { supportStyle: 'walk' } },
     ],
   },
   // Option 0 of Choice 1 start
@@ -181,6 +197,9 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
   },
 ]
 
+// ___________ Dialogue Data End ____________
+
+
 /**
  * Debugging dialogue data from TUM's Tutor Academy
  */
@@ -200,9 +219,9 @@ export const tutorAcademyDialogues: DialogueNode[] = [
     id: 'choice_1',
     text: 'How should Emma address this situation?',
     options: [
-      { text: 'She should ask the class why they are so quiet and if they are finding the material difficult to understand.', nextId: 'ask', choiceKey: 0 },
-      { text: 'She should decide to include more group activities and games that require interaction.', nextId: 'groupwork', choiceKey: 1 },
-      { text: 'She should opt to modify her teaching style by speaking less and prompting the students with open-ended questions to think critically.', nextId: 'teachingstyle', choiceKey: 2 },
+      { text: 'She should ask the class why they are so quiet and if they are finding the material difficult to understand.', nextId: 'ask' },
+      { text: 'She should decide to include more group activities and games that require interaction.', nextId: 'groupwork', },
+      { text: 'She should opt to modify her teaching style by speaking less and prompting the students with open-ended questions to think critically.', nextId: 'teachingstyle' },
     ],
   },
   {

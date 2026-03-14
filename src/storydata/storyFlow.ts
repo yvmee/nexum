@@ -12,7 +12,6 @@ export interface StoryChunk {
   dialogueNodes: DialogueNode[];
   startingNodeId?: string; // optional override for starting node (defaults 'start')
   reflectionNodes?: ReflectionNode[];
-  initialBackground?: string; // maybe not needed if we set background at dialogue node level?
   transitions?: ChunkTransition[]; // chunk-level transitions 
 }
 
