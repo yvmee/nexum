@@ -23,7 +23,7 @@ export const DialogueScene: React.FC = () => {
     activeDialogues.find((d) => d.id === id) || null;
 
   useEffect(() => {
-    // Start with the first dialogue node (id: 'start')
+    // Start with the first dialogue node when a new story chunk is activated
     const id = useGameStore.getState().startNodeId;
     const startDialogue = findDialogueById(id);
     if (startDialogue) {
@@ -57,7 +57,7 @@ export const DialogueScene: React.FC = () => {
   // Handle player selecting a dialogue option for dialogue branching
   const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>): void => {
     if (choice) { // Save the selected choice in game manager for chunk branching
-      useGameStore.getState().makeChoice(Object.keys(choice)[0], Object.values(choice)[0], nextId);
+      useGameStore.getState().makeChoice(Object.keys(choice)[0], Object.values(choice)[0]);
     }
 
     const nextDialogue = findDialogueById(nextId);

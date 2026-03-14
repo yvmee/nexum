@@ -11,7 +11,7 @@ import { backgrounds } from '../storydata/assetData';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
 type Scene = 'INTRO' | 'STORY' | 'REFLECTION' | 'MINIGAME' | 'END'; // All scenes with different layouts
-type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' ; // Overall game state (for future use, e.g. pause menu)
+type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
 interface GameManagerState {
   currentScene: Scene;
@@ -35,7 +35,7 @@ interface GameManagerState {
   //advanceStory: (nextNodeId: string, newBackground?: string) => void; // maybe not needed, advance in chunks
   completeChunk: () => void;
   completeReflection: () => void;
-  makeChoice: (variableId: string, value: string | boolean | number, nextNodeId: string) => void;
+  makeChoice: (variableId: string, value: string | boolean | number) => void;
   submitReflection: (promptId: string, answer: string) => void; 
 }
 
@@ -101,8 +101,8 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
   // })),
 
   // Save player choice for branching and move the story
-  makeChoice: (variableId, value, nextNodeId) => set((state) => {
-    console.log('Choice made:', { variableId, value, nextNodeId });
+  makeChoice: (variableId, value) => set((state) => {
+    console.log('Choice made:', { variableId, value });
     return {
       playerChoices: {
         ...state.playerChoices,
@@ -136,12 +136,13 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
     }
 
     // No reflection, go straight to next chunk
-    const { playerChoices, currentBackground } = get();
+    const { playerChoices } = get();
     const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
       set({ currentScene: 'END' });
+      set({ gameState: 'END' });
     }
   },
 
@@ -155,6 +156,7 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
       set(activateChunk(storyFlow, nextChunkId));
     } else {
       set({ currentScene: 'END' });
+      set({ gameState: 'END' });
     }
   },
 }));
