@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox.tsx';
-import { DialogueNode } from '../dialogue/dialogueData.ts';
+import { DialogueNode } from '../../storydata/dialogueData.ts';
 import { introText } from './textData.ts';
-import SchoolBackground from '../../../assets/SchoolBackground.png';
-import { useSceneStore } from '../../store/useSceneStore.ts';
+import SchoolBackground from '../../../assets/backgrounds/SchoolBackground.png';
+import { useGameStore } from '../../store/useGameStore.ts';
 
 // Set the active dialogue dataset
 let activeDialogues = introText;
@@ -51,7 +51,7 @@ export const IntroScene: React.FC = () => {
     setIsDialogueVisible(false);
     console.log('Dialogue sequence completed!');
     // Change scene in SceneStore
-    useSceneStore.getState().setScene('STORY');
+    useGameStore.getState().setScene('STORY');
   };
 
   return (

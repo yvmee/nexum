@@ -6,14 +6,14 @@ import { useGameStore } from '../store/useGameStore';
 let currentBackground = SchoolBackground;
 
 /**
- * Menu page component that serves as the entry point to the game
+ * End page component stand-in
  */
-export const Menu: React.FC = () => {
+export const EndPage: React.FC = () => {
     const navigate = useNavigate();
 
-    // Navigate to GameContainer to start the game
-    const handleStartGame = (): void => {
-        console.log('Start Game button clicked!');
+    // Navigate to GameContainer to restart the game
+    const handleRestartGame = (): void => {
+        console.log('Restart button clicked, restarting game...');
         useGameStore.getState().startGame(); 
         navigate('/game');
     }
@@ -34,7 +34,7 @@ export const Menu: React.FC = () => {
         {/* Game Title */}
         <div className="flex flex-col items-center justify-center mt-20">
           <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
-            NEXUM
+            The End
           </h1>
         </div>
 
@@ -45,8 +45,8 @@ export const Menu: React.FC = () => {
                 text-[var(--menu-btn-text)]
                 py-[var(--menu-btn-py)]
                 px-[var(--menu-btn-px)]
-            " onClick={handleStartGame}>
-                Start Game
+            " onClick={handleRestartGame}>
+                Restart Game
             </button>
         </div>
       </div>

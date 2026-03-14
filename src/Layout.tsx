@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GameContainer from './components/GameContainer.tsx';
+import { EndPage } from './components/EndPage.tsx';
 import { Menu } from './components/Menu.tsx';
 
 /**
@@ -18,6 +19,7 @@ export const Layout: React.FC = () => {
         <Routes>
           <Route path="/" element={<Menu />} />
           <Route path="/game" element={<GameContainer />} />
+          <Route path="/endpage" element={<EndPage />} />
         </Routes>
       </div>
     </BrowserRouter>

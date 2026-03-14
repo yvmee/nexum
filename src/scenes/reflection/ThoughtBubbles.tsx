@@ -99,7 +99,6 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
   // Animate bubbles appearing one by one
   useEffect(() => {
     if (!isVisible || selectedReflections.length === 0) {
-      console.debug('Setting visible bubbles to empty');
       setVisibleBubbles([]);
       currentIndexRef.current = 0;
       return;
@@ -114,7 +113,6 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
         currentIndexRef.current++;
         setVisibleBubbles(prev => {
           const next = [...prev, indexToAdd];
-          console.debug('Added bubble. Visible bubbles now:', next);
           return next;
         });
       }

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import * as ChoicesManager from '../dialogue/ChoicesManager';
-import { ReflectionNode, UserResponse, reflectionDialogues } from './reflectionData';
+import { useGameStore } from '../../store/useGameStore';
+import { ReflectionNode, UserResponse, reflectionDialogues } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
 import SchoolBackground from '../../../assets/SchoolBackground.png';
-import LectureHall from '../../../assets/LectureHall.png';
+import LectureHall from '../../../assets/backgrounds/LectureHall.png';
 
 // Set scene relevant variables
 let activeDialogues = reflectionDialogues[0]; // Only one option for now
@@ -44,7 +44,6 @@ export const ReflectionScene: React.FC = () => {
 
   useEffect(() => {
     const initializeReflection = async () => {
-      console.debug('Selected choice in ReflectionScene:', ChoicesManager.currentChoiceScenario);
 
       // Load previous reflection texts from database
       try {
@@ -71,6 +70,7 @@ export const ReflectionScene: React.FC = () => {
     if (!nodeId) {
       setIsDialogueVisible(false);
       console.log('Reflection complete. User responses:', userResponses);
+      useGameStore.getState().completeReflection();
       return;
     }
     const node = findNode(nodeId);
@@ -81,6 +81,8 @@ export const ReflectionScene: React.FC = () => {
     } else {
       // Node not found –> end dialogue
       setIsDialogueVisible(false);
+      console.log('Wrong node id provided. Ending reflection.');
+      useGameStore.getState().completeReflection();
     }
   };
 
