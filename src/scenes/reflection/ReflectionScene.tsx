@@ -172,13 +172,15 @@ export const ReflectionScene: React.FC = () => {
       />
       
       {/* Character image */}
-      {/* <div className="flex flex-row justify-center h-full items-end pb-8">
-        <img
-          className="z-10 object-contain scale-[90%] max-w-full max-h-[50%]"
-          src="../../assets/Sphere.png"
-          alt="sphere"
-        />
-      </div> */}
+      {currentDialogue?.showCharacter === true && (
+        <div className="flex flex-row justify-center h-full items-end pb-8">
+          <img
+            className="z-10 object-contain scale-[90%] max-w-full max-h-[50%]"
+            src="../../assets/Sphere.png"
+            alt="sphere"
+          />
+        </div>
+      )}
     </div>
   );
 };

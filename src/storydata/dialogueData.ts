@@ -31,15 +31,14 @@ export const startDialogue: DialogueNode[] = [
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     speaker: 'Narrator',
     nextId: 'intro_0',
-    background: 'classroom',
+    background: 'hallway',
+    characterRight: mayra,
   },
   {
     id: 'intro_0',
     text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
     speaker: 'Narrator',
     nextId: 'intro_1',
-    characterRight: mayra,
-    background: 'classroom',
   },
   {
     id: 'intro_1',

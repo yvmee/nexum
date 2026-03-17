@@ -100,21 +100,21 @@ export const DialogueScene: React.FC = () => {
           {/* Optional Speaker Portraits */}
           {isDialogueVisible && (leftPortrait || rightPortrait) && (
             <div className="w-[var(--box-width)] max-w-[90vw] mb-3 px-2 flex items-end justify-between">
-              <div className="min-h-[clamp(100px,16vh,190px)] flex items-end">
+              <div className="min-h-(--portrait-size) flex items-end">
                 {leftPortrait && (
                   <img
                     src={leftPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className="h-[clamp(100px,16vh,190px)] w-auto object-contain drop-shadow-lg"
+                    className="h-(--portrait-size) w-auto object-contain drop-shadow-lg"
                   />
                 )}
               </div>
-              <div className="min-h-[clamp(300px,32vh,600px)] flex items-end justify-end">
+              <div className="min-h-(--portrait-size) flex items-end justify-end">
                 {rightPortrait && (
                   <img
                     src={rightPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className="h-[clamp(300px,32vh,600px)] w-auto object-contain drop-shadow-lg"
+                    className="h-(--portrait-size) w-auto object-contain drop-shadow-lg"
                   />
                 )}
               </div>
