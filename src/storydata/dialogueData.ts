@@ -1,3 +1,5 @@
+import mayra from '../../assets/CharacterPortrait.png';
+
 /**
  * Dialogue option for branching choices
  */
@@ -16,6 +18,8 @@ export interface DialogueNode {
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
+  characterLeft?: string; // Optional character image on the left side of the dialogue box
+  characterRight?: string; // Optional character image on the right side of the dialogue box
   background?: string; // Optional background image for this dialogue node
 }
 
@@ -34,6 +38,7 @@ export const startDialogue: DialogueNode[] = [
     text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
     speaker: 'Narrator',
     nextId: 'intro_1',
+    characterRight: mayra,
     background: 'classroom',
   },
   {
