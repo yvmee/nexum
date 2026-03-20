@@ -61,7 +61,6 @@ export const secretEnd: DialogueNode[] = [
     id: 'end',
     text: 'Congratulations! You have found the secret ending by making all the right choices! \\(^_^)/',
     speaker: 'Narrator',
-    background: 'SchoolBackground',
   }
 ]
 
@@ -160,7 +159,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
   },
   {
     id: 'walking_1',
-    text: 'Uhmm…. I just don’t really know how to start…',
+    text: 'Uhmm…. I just don\’t really know how to start…',
     speaker: 'Student',
     nextId: 'walking_2',
   },

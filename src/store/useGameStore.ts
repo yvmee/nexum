@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { DialogueNode } from '../storydata/dialogueData';
 import { ReflectionNode } from '../storydata/reflectionData';
 import {
@@ -17,9 +18,11 @@ interface GameManagerState {
   currentScene: Scene;
   startNodeId: string;
   currentBackground: string;
+  currentDialogueId: string | null;
+  currentReflectionNodeId: string | null;
   gameState: GameState;
 
-  // ── Story flow state ──
+  // Story flow state
   storyFlow: StoryFlow | null;
   currentChunkId: string | null;
   activeDialogues: DialogueNode[];
@@ -32,14 +35,24 @@ interface GameManagerState {
   // Actions to manage game flow
   startGame: () => void;
   setScene: (scene: Scene) => void;
-  //advanceStory: (nextNodeId: string, newBackground?: string) => void; // maybe not needed, advance in chunks
+  advanceDialogue: (nextDialogueId?: string) => void;
+  advanceReflection: (nextReflectionNodeId?: string) => void;
   completeChunk: () => void;
   completeReflection: () => void;
   makeChoice: (variableId: string, value: string | boolean | number) => void;
   submitReflection: (promptId: string, answer: string) => void; 
 }
 
-// ── Helper: activate a chunk by loading its dialogue / reflection into state ──
+// Hooks for derived state
+export const useCurrentDialogue = () => useGameStore((state) => 
+  state.activeDialogues.find((d) => d.id === state.currentDialogueId) || null
+);
+
+export const useCurrentReflection = () => useGameStore((state) => 
+  state.activeReflectionNodes.find((n) => n.id === state.currentReflectionNodeId) || null
+);
+
+//  Helper: activate a chunk by loading its dialogue / reflection into state
 function activateChunk(
   flow: StoryFlow,
   chunkId: string,
@@ -48,20 +61,30 @@ function activateChunk(
   if (!chunk) {
     return { currentScene: 'END' as Scene };
   }
-  console.debug(`Activating chunk with node id:`, chunk.dialogueNodes[0]?.id);
+  const firstDialogueId = chunk.dialogueNodes[0]?.id ?? 'start';
+  const firstBackground = chunk.dialogueNodes[0]?.background 
+    ? backgrounds[chunk.dialogueNodes[0].background as keyof typeof backgrounds]
+    : backgrounds.schoolBackground;
+  const firstReflectionNodeId = chunk.reflectionNodes?.[0]?.id ?? null;
+  console.debug(`Activating chunk with node id:`, firstDialogueId);
   return {
     currentChunkId: chunkId,
     activeDialogues: chunk.dialogueNodes,
     activeReflectionNodes: chunk.reflectionNodes ?? [],
-    startNodeId: chunk.dialogueNodes[0]?.id ?? 'start',
+    startNodeId: firstDialogueId,
+    currentDialogueId: firstDialogueId,
+    currentReflectionNodeId: firstReflectionNodeId,
+    currentBackground: firstBackground,
     currentScene: 'STORY' as Scene,
   };
 }
 
-export const useGameStore = create<GameManagerState>((set, get) => ({
+export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentScene: 'STORY',
   startNodeId: 'start',
   currentBackground: backgrounds.schoolBackground, // set by chunk or default to intro background
+  currentDialogueId: null,
+  currentReflectionNodeId: null,
   gameState: 'IDLE',
 
   // Story flow state
@@ -74,7 +97,7 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
   playerChoices: {},
   reflectionAnswers: {},
 
-  // Start the game loop – activates the first chunk of the loaded story flow
+  // Start the game loop by activating the first chunk of the loaded story flow
   startGame: () => {
     const { storyFlow } = get();
     if (storyFlow) {
@@ -93,12 +116,56 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
   // Simple scene switcher for manual overrides
   setScene: (scene) => set({ currentScene: scene }),
 
-  // Moves the story forward (Next button)
-  // advanceStory: (nextNodeId, newBackground) => set((state) => ({
-  //   startNodeId: nextNodeId,
-  //   // Keep current background if a new one isn't provided
-  //   currentBackground: newBackground || state.currentBackground,
-  // })),
+  // Advance to the next dialogue node
+  advanceDialogue: (nextDialogueId?: string) => {
+    const { activeDialogues, currentDialogueId, completeChunk } = get();
+    
+    let targetId = nextDialogueId;
+    if (!targetId && currentDialogueId) {
+      const currentDialogue = activeDialogues.find((d) => d.id === currentDialogueId);
+      targetId = currentDialogue?.nextId;
+    }
+
+    if (targetId) {
+      const nextDialogue = activeDialogues.find((d) => d.id === targetId);
+      if (nextDialogue) {
+        if (nextDialogue.background) {
+          const newBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds];
+          if (newBackground) {
+            set({ currentBackground: newBackground });
+          }
+        }
+        set({ currentDialogueId: targetId });
+        return;
+      }
+    }
+
+    // No next node or target found, complete the chunk
+    console.log('Dialogue sequence completed!');
+    completeChunk();
+  },
+
+  // Advance to the next reflection node
+  advanceReflection: (nextReflectionNodeId?: string) => {
+    const { activeReflectionNodes, currentReflectionNodeId, completeReflection } = get();
+
+    let targetId = nextReflectionNodeId;
+    if (!targetId && currentReflectionNodeId) {
+      const currentReflection = activeReflectionNodes.find((n) => n.id === currentReflectionNodeId);
+      targetId = currentReflection?.nextId;
+    }
+
+    if (targetId) {
+      const nextReflection = activeReflectionNodes.find((n) => n.id === targetId);
+      if (nextReflection) {
+        set({ currentReflectionNodeId: targetId });
+        return;
+      }
+    }
+
+    console.log('Reflection sequence completed!');
+    completeReflection();
+  },
 
   // Save player choice for branching and move the story
   makeChoice: (variableId, value) => set((state) => {
@@ -108,7 +175,6 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
         ...state.playerChoices,
         [variableId]: value,
       },
-      //startNodeId: nextNodeId,
     };
   }),
 
@@ -130,6 +196,7 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
       set({
         currentScene: 'REFLECTION',
         activeReflectionNodes: chunk?.reflectionNodes ?? [],
+        currentReflectionNodeId: chunk?.reflectionNodes?.[0]?.id ?? null,
         startNodeId: chunk?.reflectionNodes?.[0]?.id ?? 'start',
       });
       return;
@@ -159,4 +226,20 @@ export const useGameStore = create<GameManagerState>((set, get) => ({
       set({ gameState: 'END' });
     }
   },
+}), { // persist gameStore so refreshing doesn't lose progress
+  name: 'nexum-game-store',
+  storage: createJSONStorage(() => localStorage),
+  partialize: (state) => ({
+    currentScene: state.currentScene,
+    startNodeId: state.startNodeId,
+    currentBackground: state.currentBackground,
+    currentDialogueId: state.currentDialogueId,
+    currentReflectionNodeId: state.currentReflectionNodeId,
+    gameState: state.gameState,
+    currentChunkId: state.currentChunkId,
+    activeDialogues: state.activeDialogues,
+    activeReflectionNodes: state.activeReflectionNodes,
+    playerChoices: state.playerChoices,
+    reflectionAnswers: state.reflectionAnswers,
+  }),
 }));

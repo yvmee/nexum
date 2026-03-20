@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useGameStore } from '../../store/useGameStore';
-import { ReflectionNode, UserResponse, reflectionDialogues } from '../../storydata/reflectionData';
+import { useGameStore, useCurrentReflection } from '../../store/useGameStore';
+import { UserResponse } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
-import SchoolBackground from '../../../assets/SchoolBackground.png';
-import LectureHall from '../../../assets/backgrounds/LectureHall.png';
 
 // Set scene relevant variables
-let activeDialogues = reflectionDialogues[0]; // Only one option for now
-let currentBackground = LectureHall;
-
-// 
-let session = 5; // This should be set based on the scenario the user just completed, to load the relevant dialogue and background
-
-// Helper function to find a dialogue node by its id
-function findNode(id: string): ReflectionNode | undefined {
-  return activeDialogues.find((n) => n.id === id);
-}
+let session = 5; 
 
 /**
  * Reflection scene driven by reflectionData
  */
 export const ReflectionScene: React.FC = () => {
-  const [currentDialogue, setCurrentDialogue] = useState<ReflectionNode | null>(null);
-  const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(true);
+  const currentBackground = useGameStore((state) => state.currentBackground);
+  const advanceReflection = useGameStore((state) => state.advanceReflection);
+  const submitReflection = useGameStore((state) => state.submitReflection);
+
+  const currentDialogue = useCurrentReflection();
+
+  const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
   const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
   const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
@@ -53,38 +47,17 @@ export const ReflectionScene: React.FC = () => {
       } catch (error) {
         console.error('Error loading previous reflections:', error);
       }
-
-      // Start with the first node from reflectionDialogues
-      const firstNode = activeDialogues[0];
-      if (firstNode) {
-        setCurrentDialogue(firstNode);
-      }
     };
 
     initializeReflection();
   }, []);
 
-
-  // Advance to a node by its id
-  const advanceToNode = (nodeId: string | undefined) => {
-    if (!nodeId) {
-      setIsDialogueVisible(false);
-      console.log('Reflection complete. User responses:', userResponses);
-      useGameStore.getState().completeReflection();
-      return;
-    }
-    const node = findNode(nodeId);
-    if (node) {
-      setCurrentDialogue(node);
-      setShowThoughtBubbles(node.showBubbles === true);
-      setIsAwaitingInput(false);
-    } else {
-      // Node not found –> end dialogue
-      setIsDialogueVisible(false);
-      console.log('Wrong node id provided. Ending reflection.');
-      useGameStore.getState().completeReflection();
-    }
-  };
+  // Update visibility when current dialogue changes
+  useEffect(() => {
+    setIsDialogueVisible(currentDialogue !== null);
+    setShowThoughtBubbles(currentDialogue?.showBubbles === true);
+    setIsAwaitingInput(false);
+  }, [currentDialogue]);
 
   const handleAdvance = () => {
     if (!currentDialogue) return;
@@ -97,7 +70,7 @@ export const ReflectionScene: React.FC = () => {
         return;
       }
       setShowThoughtBubbles(false);
-      advanceToNode(currentDialogue.nextId);
+      advanceReflection();
       return;
     }
 
@@ -107,11 +80,14 @@ export const ReflectionScene: React.FC = () => {
       return;
     }
 
-    advanceToNode(currentDialogue.nextId);
+    advanceReflection();
   };
 
   const handleSubmitInput = async (input: string) => {
     if (!currentDialogue) return;
+
+    // Save to the store so everything stays centralized
+    submitReflection(currentDialogue.id, input);
 
     // Save the user's response to local state
     const newResponse: UserResponse = {
@@ -139,7 +115,7 @@ export const ReflectionScene: React.FC = () => {
 
     setIsAwaitingInput(false);
 
-    advanceToNode(currentDialogue.nextId);
+    advanceReflection();
   };
 
   return (
