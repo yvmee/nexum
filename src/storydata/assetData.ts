@@ -1,11 +1,12 @@
-import lectureHall from "../../assets/backgrounds/LectureHall.png";
-import schoolBackground from "../../assets/backgrounds/SchoolBackground.png";
-import classroom from "../../assets/backgrounds/smp_classroom4_day2.webp";
-import hallway from "../../assets/backgrounds/Hallway.png";
+import lecturehall from "../../assets/backgrounds/BackgroundLecturehall.png";
+import hallway from "../../assets/backgrounds/BackgroundHallway.png";
+import office from "../../assets/backgrounds/BackgroundOffice.png";
+import studyroom from "../../assets/backgrounds/BackgroundStudyroom.png";
+
 
 export const backgrounds = {
-  lectureHall,
-  schoolBackground,
-  classroom,
+  lecturehall,
   hallway,
+  office,
+  studyroom,
 };

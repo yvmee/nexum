@@ -128,6 +128,9 @@ export const ReflectionScene: React.FC = () => {
         />
       </div>
 
+      {/* Blur overlay on background*/}
+      {<div className="absolute inset-0 z-5 bg-black/10 backdrop-blur-[1px] pointer-events-none" />}
+
       {/* Dialogue box at the top */}
       <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
         <ReflectionDialogueBox

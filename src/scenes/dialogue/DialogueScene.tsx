@@ -15,6 +15,8 @@ export const DialogueScene: React.FC = () => {
   const isDialogueVisible = currentDialogue !== null;
   const leftPortrait = currentDialogue?.characterLeft;
   const rightPortrait = currentDialogue?.characterRight;
+  const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
+  const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'}; // add subtle drop shadow to portraits 
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -40,6 +42,11 @@ export const DialogueScene: React.FC = () => {
         />
       </div>
 
+      {/* Blur overlay on background*/}
+      {isDialogueVisible && (
+        <div className="absolute inset-0 z-5 bg-black/15 backdrop-blur-[1px] pointer-events-none" />
+      )}
+
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
         <div className="flex flex-col items-center justify-center mt-20"></div>
@@ -47,13 +54,14 @@ export const DialogueScene: React.FC = () => {
         <div className="pointer-events-auto mb-10 flex flex-col items-center w-full">
           {/* Optional Speaker Portraits */}
           {isDialogueVisible && (leftPortrait || rightPortrait) && (
-            <div className="w-[var(--box-width)] max-w-[90vw] mb-3 px-2 flex items-end justify-between">
+            <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
               <div className="min-h-(--portrait-size) flex items-end">
                 {leftPortrait && (
                   <img
                     src={leftPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className="h-(--portrait-size) w-auto object-contain drop-shadow-lg"
+                    className={portraitImageClass}
+                    style={portraitImageStyle}
                   />
                 )}
               </div>
@@ -62,7 +70,8 @@ export const DialogueScene: React.FC = () => {
                   <img
                     src={rightPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className="h-(--portrait-size) w-auto object-contain drop-shadow-lg"
+                    className={portraitImageClass}
+                    style={portraitImageStyle}
                   />
                 )}
               </div>

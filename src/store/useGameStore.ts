@@ -14,6 +14,8 @@ import { backgrounds } from '../storydata/assetData';
 type Scene = 'INTRO' | 'STORY' | 'REFLECTION' | 'MINIGAME' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
+let backupBackground = backgrounds.hallway; // Fallback background 
+
 interface GameManagerState {
   currentScene: Scene;
   startNodeId: string;
@@ -64,7 +66,7 @@ function activateChunk(
   const firstDialogueId = chunk.dialogueNodes[0]?.id ?? 'start';
   const firstBackground = chunk.dialogueNodes[0]?.background 
     ? backgrounds[chunk.dialogueNodes[0].background as keyof typeof backgrounds]
-    : backgrounds.schoolBackground;
+    : backupBackground;
   const firstReflectionNodeId = chunk.reflectionNodes?.[0]?.id ?? null;
   console.debug(`Activating chunk with node id:`, firstDialogueId);
   return {
@@ -82,7 +84,7 @@ function activateChunk(
 export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentScene: 'STORY',
   startNodeId: 'start',
-  currentBackground: backgrounds.schoolBackground, // set by chunk or default to intro background
+  currentBackground: backupBackground, // set by chunk or default to intro background
   currentDialogueId: null,
   currentReflectionNodeId: null,
   gameState: 'IDLE',
@@ -109,7 +111,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
-      set({ currentScene: 'STORY', startNodeId: 'start', gameState: 'PLAYING', currentBackground: backgrounds.schoolBackground });
+      set({ currentScene: 'STORY', startNodeId: 'start', gameState: 'PLAYING' });
     }
   },
 
