@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox.tsx';
 import { DialogueNode } from '../../storydata/dialogueData.ts';
 import { introText } from './textData.ts';
-import SchoolBackground from '../../../assets/backgrounds/SchoolBackground.png';
+import SchoolBackground from '../../../assets/backgrounds/BackgroundLecturehall.png';
 import { useGameStore } from '../../store/useGameStore.ts';
 
 // Set the active dialogue dataset

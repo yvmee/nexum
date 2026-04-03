@@ -1,84 +1,34 @@
-import React, { useState, useEffect, use } from 'react';
+import React from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
-import { DialogueNode } from '../../storydata/dialogueData.ts';
-import { useGameStore } from '../../store/useGameStore.ts';
-import { backgrounds } from '../../storydata/assetData.ts';
-
-// Set scene relevant variables
-let currentBackground = backgrounds.lectureHall;
+import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
  */
 export const DialogueScene: React.FC = () => {
-  const activeDialogues = useGameStore((state) => state.activeDialogues);
-  const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
-  const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
+  const currentBackground = useGameStore((state) => state.currentBackground);
+  const advanceDialogue = useGameStore((state) => state.advanceDialogue);
+  const makeChoice = useGameStore((state) => state.makeChoice);
 
-  if (currentDialogue?.background) {
-    currentBackground = backgrounds[currentDialogue.background as keyof typeof backgrounds] || currentBackground;
-  }
+  const currentDialogue = useCurrentDialogue();
 
-  const findDialogueById = (id: string): DialogueNode | null =>
-    activeDialogues.find((d) => d.id === id) || null;
-
-  useEffect(() => {
-    // Start with the first dialogue node when a new story chunk is activated
-    const id = useGameStore.getState().startNodeId;
-    const startDialogue = findDialogueById(id);
-    if (startDialogue) {
-      setCurrentDialogue(startDialogue);
-      setIsDialogueVisible(true);
-    }
-  }, [activeDialogues]);
+  const isDialogueVisible = currentDialogue !== null;
+  const leftPortrait = currentDialogue?.characterLeft;
+  const rightPortrait = currentDialogue?.characterRight;
+  const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
+  const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'}; // add subtle drop shadow to portraits 
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
-    if (!currentDialogue) return;
-
-    if (currentDialogue.nextId) {
-      const nextDialogue = findDialogueById(currentDialogue.nextId);
-      if (nextDialogue) {
-        setCurrentDialogue(nextDialogue);
-        // check if the background should change with the new dialogue
-        if (nextDialogue.background) {
-          currentBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds] || currentBackground;
-        }
-      } else {
-        endDialogue();
-      }
-    } else {
-      // No nextId means end of dialogue
-      endDialogue();
-    }
+    advanceDialogue();
   };
-
 
   // Handle player selecting a dialogue option for dialogue branching
   const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>): void => {
     if (choice) { // Save the selected choice in game manager for chunk branching
-      useGameStore.getState().makeChoice(Object.keys(choice)[0], Object.values(choice)[0]);
+      makeChoice(Object.keys(choice)[0], Object.values(choice)[0]);
     }
-
-    const nextDialogue = findDialogueById(nextId);
-    if (nextDialogue) {
-      setCurrentDialogue(nextDialogue);
-      if (nextDialogue.background) {
-        currentBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds] || currentBackground;
-      }
-    } else {
-      endDialogue();
-    }
-  };
-
-
-  // End the dialogue sequence and transition to reflection 
-  const endDialogue = (): void => {
-    setIsDialogueVisible(false);
-    console.log('Dialogue sequence completed!');
-    // ChoicesManager.setChoiceIndeces(choiceIndeces);
-    // choiceIndeces = []; // Reset for next scene
-    useGameStore.getState().completeChunk();
+    advanceDialogue(nextId);
   };
 
   return (
@@ -92,11 +42,41 @@ export const DialogueScene: React.FC = () => {
         />
       </div>
 
+      {/* Blur overlay on background*/}
+      {isDialogueVisible && (
+        <div className="absolute inset-0 z-5 bg-black/15 backdrop-blur-[1px] pointer-events-none" />
+      )}
+
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
         <div className="flex flex-col items-center justify-center mt-20"></div>
-        {/* Dialogue Box */}
-        <div className="pointer-events-auto mb-10">
+        {/* Dialogue Box Area */}
+        <div className="pointer-events-auto mb-10 flex flex-col items-center w-full">
+          {/* Optional Speaker Portraits */}
+          {isDialogueVisible && (leftPortrait || rightPortrait) && (
+            <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
+              <div className="min-h-(--portrait-size) flex items-end">
+                {leftPortrait && (
+                  <img
+                    src={leftPortrait}
+                    alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                    className={portraitImageClass}
+                    style={portraitImageStyle}
+                  />
+                )}
+              </div>
+              <div className="min-h-(--portrait-size) flex items-end justify-end">
+                {rightPortrait && (
+                  <img
+                    src={rightPortrait}
+                    alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                    className={portraitImageClass}
+                    style={portraitImageStyle}
+                  />
+                )}
+              </div>
+            </div>
+          )}
           <DialogueBox
             dialogue={currentDialogue}
             onAdvance={handleAdvance}
