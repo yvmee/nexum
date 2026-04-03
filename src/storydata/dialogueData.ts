@@ -42,7 +42,7 @@ export const startDialogue: DialogueNode[] = [
   },
   {
     id: 'intro_1',
-    text: 'In the next scene, Mayra is currently in one of her tutorial sessions. Help her through the session and enjoy your journey!',
+    text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
   }
 ]
@@ -66,6 +66,152 @@ export const secretEnd: DialogueNode[] = [
 
 
 // ___________ Actual Dialogue Data ____________
+
+export const introDialogue: DialogueNode[] = [
+  {
+    id: 'start',  
+    text: 'The lecture hall hums with quiet conversation.',
+    speaker: 'Narrator',
+    background: 'lecturehall',
+    nextId: 'intro_0',
+  },
+  {
+    id: 'intro_0',  
+    text: 'The low click sounds of keys being tapped fills the space between the professors words.',
+    speaker: 'Narrator',
+    nextId: 'intro_1',
+  },
+  {
+    id: 'intro_1',  
+    text: '… and we will build on this concept in the coming weeks!',
+    speaker: 'Professor',
+    nextId: 'intro_2',
+  },
+  {
+    id: 'intro_2',  
+    text: 'Also please don’t forget that the tutorial sessions will begin this week.',
+    speaker: 'Professor',
+    background: 'hallway',
+    nextId: 'intro_3',
+  },
+  {
+    id: 'intro_3',  
+    text: '(Right, almost all tutorials start this week… Including mine.)',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'intro_4',
+  },
+  {
+    id: 'intro_4',  
+    text: '(*Sigh*… I don’t really feel ready for this… )',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'intro_5',
+  },
+  {
+    id: 'intro_5',  
+    text: '(But the professor leading the lecture and tutorials has asked me to come by for some last words of advice. Maybe that’s all I need.)',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'intro_6',
+  },
+  {
+    id: 'intro_6',
+    text: '(The lecture is over. I should get going to the meeting room the professor told me. Let’s see…)',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+   nextId: 'intro_7',
+  },
+  {
+    id: 'intro_7',
+    text: 'Mayra looks at the last email and leaves the lecture hall.',
+    speaker: 'Narrator',
+    nextId: 'intro_8',
+  },
+  {
+    id: 'intro_8',
+    text: 'Oh, hello! Please come on in.',
+    speaker: 'Professor',
+    background: 'office',
+    nextId: 'intro_9',
+  },
+  {
+    id: 'intro_9',
+    text: 'This is kind of our department’s meeting room. And our work room. It’s for all sorts of things really.',
+    speaker: 'Professor',
+    nextId: 'intro_10',
+  },
+  {
+    id: 'intro_10',
+    text: 'All tutors can feel free to use this room at any time when it isn’t currently blocked by someone. To prepare or discuss with students.',
+    speaker: 'Professor',
+    nextId: 'intro_11',
+  },
+  {
+    id: 'intro_11',
+    text: 'Oh, and there is some material on that desk over there. If you want to have a look before your first session.',
+    speaker: 'Professor',
+    nextId: 'intro_12',
+  },
+  {
+    id: 'intro_12',
+    text: 'I have to go now, but please, stay and take a look around.',
+    speaker: 'Professor',
+    nextId: 'intro_13',
+  },
+  {
+    id: 'intro_13',
+    text: 'The Professor rushes out the door.',
+    speaker: 'Narrator',
+    nextId: 'intro_14',
+  },
+  {
+    id: 'intro_14',
+    text: 'Uhm, alright! Thank you!',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'intro_15',
+  },
+  {
+    id: 'intro_15',
+    text: '(I don’t think the professor heard that…)',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'decision_0',
+  },
+  {
+    id: 'decision_0',
+    text: 'What should Mayra do?',
+    options: [
+      { text: 'Stay and take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
+      { text: 'Leave', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
+    ],
+  },
+  {
+    id: 'choice_look',
+    text: 'Mayra moves over to the desk. Several paper sheets lie scattered on the wooden surface next to a stack of books.',
+    speaker: 'Narrator',
+    nextId: 'choice_look_2',
+  },
+  {
+    id: 'choice_look_2',
+    text: 'She picks up up one of the sheets and starts reading.',
+    speaker: 'Narrator',
+    nextId: 'choice_look_3',
+  },
+  {
+    id: 'choice_look_3',
+    text: 'How to motivate students...',
+    speaker: 'Mayra',
+    characterLeft: mayra,
+    nextId: 'choice_leave',
+  },
+  {
+    id: 'choice_leave',
+    text: 'Mayra moves to the door to leave the room.',
+    speaker: 'Narrator',
+  },
+]
 
 export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
