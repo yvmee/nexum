@@ -24,7 +24,6 @@ export interface SceneNode {
   background?: string; // Optional background key (from assetData.backgrounds)
 }
 
-
 // start and end dialogue for prototyping
 
 export const startDialogue: SceneNode[] = [
@@ -133,7 +132,7 @@ export const introDialogue: SceneNode[] = [
     characterRight: 'mayra',
     nextId: 'glimmer_cutscene',
   },
-  // ----- insert cutscene glowing shimmer ------
+  // cutscene glowing shimmer
   {
     id: 'glimmer_cutscene',
     type: 'cutscene',
@@ -271,6 +270,7 @@ export const pipIntroDialogue: SceneNode[] = [
     background: 'office',
     nextId: 'glimmer_cutscene',
   },
+  // cutscene glowing shimmer
   {
     id: 'glimmer_cutscene',
     type: 'cutscene',
@@ -284,6 +284,7 @@ export const pipIntroDialogue: SceneNode[] = [
     characterRight: 'mayraThinking',
     nextId: 'flash_cutscene',
   },
+  // cutscene light flash
   {
     id: 'flash_cutscene',
     type: 'cutscene',
@@ -297,6 +298,7 @@ export const pipIntroDialogue: SceneNode[] = [
     characterRight: 'mayraShocked',
     nextId: 'pip_appearance_cutscene',
   },
+  // cutscene pip appearance flash
   {
     id: 'pip_appearance_cutscene',
     type: 'cutscene',
@@ -307,6 +309,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Wh... what?? Who are you? Where did you come from?!',
     speaker: 'Mayra',
+    characterLeft: 'pip',
     characterRight: 'mayraShocked',
     nextId: 'intro_2',
   },

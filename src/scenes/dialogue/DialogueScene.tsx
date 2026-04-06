@@ -2,7 +2,7 @@ import React from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
-import { characters } from '../../storydata/assetData.ts';
+import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -30,6 +30,8 @@ export const DialogueScene: React.FC = () => {
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
   const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'};
   const mirroredPortraitStyle: React.CSSProperties = {...portraitImageStyle, transform: 'scaleX(-1)'};
+  const leftPortraitClass = `${portraitImageClass} ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
+  const rightPortraitClass = `${portraitImageClass} ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -83,7 +85,7 @@ export const DialogueScene: React.FC = () => {
                   <img
                     src={leftPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className={portraitImageClass}
+                    className={leftPortraitClass}
                     style={portraitImageStyle}
                   />
                 )}
@@ -93,7 +95,7 @@ export const DialogueScene: React.FC = () => {
                   <img
                     src={rightPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className={portraitImageClass}
+                    className={rightPortraitClass}
                     style={mirroredPortraitStyle}
                   />
                 )}

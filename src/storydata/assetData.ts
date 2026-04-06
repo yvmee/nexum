@@ -32,3 +32,8 @@ export const characters = { // Add character assets here
   boyStudent,
   professor,
 };
+
+// Reduce size of pip's character portrait
+export const characterRenderClasses: Partial<Record<keyof typeof characters, string>> = {
+  pip: 'scale-[0.55] origin-bottom',
+};
