@@ -282,17 +282,27 @@ export const pipIntroDialogue: SceneNode[] = [
     text: '(Huh? It\'s that glowing shimmer again...)',
     speaker: 'Mayra',
     characterRight: 'mayraThinking',
+    nextId: 'flash_cutscene',
+  },
+  {
+    id: 'flash_cutscene',
+    type: 'cutscene',
+    animationId: 'light_flash',
     nextId: 'intro_0',
   },
-  // insert cut scene flash
   {
     id: 'intro_0',
     text: 'Ahhhhhh! What was that?!',
     speaker: 'Mayra',
     characterRight: 'mayraShocked',
+    nextId: 'pip_appearance_cutscene',
+  },
+  {
+    id: 'pip_appearance_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_appearance_flash',
     nextId: 'intro_1',
   },
-  // insert cut scene pip appearing
   {
     id: 'intro_1',
     text: 'Wh... what?? Who are you? Where did you come from?!',

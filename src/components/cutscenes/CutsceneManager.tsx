@@ -1,5 +1,7 @@
 import React from 'react';
 import { GlowParticleScene } from './GlowParticleScene';
+import { LightFlashScene } from './LightFlashScene';
+import { PipAppearanceScene } from './PipAppearanceScene';
 import { SceneNode } from '../../storydata/dialogueData';
 
 interface CutsceneProps {
@@ -13,6 +15,12 @@ export const CutsceneManager: React.FC<CutsceneProps> = ({ node, onComplete }) =
   switch (node.animationId) {
     case 'glow_burst':
       return <GlowParticleScene onComplete={onComplete} />;
+
+    case 'light_flash':
+      return <LightFlashScene onComplete={onComplete} />;
+
+    case 'pip_appearance_flash':
+      return <PipAppearanceScene onComplete={onComplete} />;
       
     default:
       // Failsafe for missing Ids
