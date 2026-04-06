@@ -213,6 +213,209 @@ export const introDialogue: DialogueNode[] = [
   },
 ]
 
+export const pipIntroDialogue: DialogueNode[] = [
+  {
+    id: 'start',
+    text: 'As Mayra moves her hand to push down the door handle, a flash suddenly illuminates the room.',
+    speaker: 'Narrator',
+    background: 'studyroom',
+    nextId: 'intro_0',
+  },
+  // insert cut scene flash
+  {
+    id: 'intro_0',
+    text: 'Ahhhhhh! What was that?!',
+    speaker: 'Mayra',
+    nextId: 'intro_1',
+  },
+  // insert cut scene pip appearing
+  {
+    id: 'intro_1',
+    text: 'Wh... what?? Who are you? Where did you come from?!',
+    speaker: 'Mayra',
+    nextId: 'intro_2',
+  },
+  {
+    id: 'intro_2',
+    text: '....Huh.',
+    speaker: 'Floating Ball',
+    nextId: 'intro_3',
+  },
+  {
+    id: 'intro_3',
+    text: 'Is... Am I imagining this?',
+    speaker: 'Mayra',
+    nextId: 'intro_4',
+  },
+  {
+    id: 'intro_4',
+    text: 'No, this is real. I am here to help you. But I have been asleep for a long time, so I am also really surprised to be here.',
+    speaker: 'Floating Ball',
+    nextId: 'intro_5',
+  },
+  {
+    id: 'intro_5',
+    text: 'How... What are you? How can you talk?',
+    speaker: 'Mayra',
+    nextId: 'intro_6',
+  },
+  {
+    id: 'intro_6',
+    text: 'Pffft, how can you talk? You can talk too, can\'t you? That\'s just how it is.',
+    speaker: 'Floating Ball',
+    nextId: 'intro_7',
+  },
+  {
+    id: 'intro_7',
+    text: 'I am Pip. You can think of me as the manifestation of learning and reflection.',
+    speaker: 'Floating Ball',
+    nextId: 'intro_8',
+  },
+  {
+    id: 'intro_8',
+    text: 'I appear when people are in need of guidance.',
+    speaker: 'Pip',
+    nextId: 'intro_9',
+  },
+  {
+    id: 'intro_9',
+    text: 'Pip?... I am Mayra. Nice to meet you, Pip.',
+    speaker: 'Mayra',
+    nextId: 'intro_10',
+  },
+  {
+    id: 'intro_10',
+    text: 'Hey, I actually have to confess something to you, Mayra.',
+    speaker: 'Pip',
+    nextId: 'intro_11',
+  },
+  {
+    id: 'intro_11',
+    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am this ugly grey… and I feel so weak…',
+    speaker: 'Pip',
+    nextId: 'intro_12',
+  },
+  {
+    id: 'intro_12',
+    text: 'But you will help me to get stronger again, right??',
+    speaker: 'Pip',
+    nextId: 'choice_help',
+  },
+  {
+    id: 'choice_help',
+    text: 'But you will help me to get stronger again, right??',
+    speaker: 'Pip',
+    options: [
+      { text: 'Yes, sure!', nextId: 'help_0', choice: { helpPip: true } }, 
+      { text: 'I have to leave, actually', nextId: 'leave_0', choice: { helpPip: false } },
+    ],
+  },
+  // _____ Help Pip Option Start _____
+  {
+    id: 'help_0',
+    text: 'Okay, sure. What can I do?',
+    speaker: 'Mayra',
+    nextId: 'help_1',
+  },
+  {
+    id: 'help_1',
+    text: 'Oh great! Thank youuuuuuu, you are my rescue!',
+    speaker: 'Pip',
+    nextId: 'help_2',
+  },
+  {
+    id: 'help_2',
+    text: 'I will just follow you around and absorb the energy you create.',
+    speaker: 'Pip',
+    nextId: 'help_3',
+  },
+  {
+    id: 'help_3',
+    text: 'What? What does that even mean? How do I create energy? And what do you mean by absorb? Are you like a vampire or something??',
+    speaker: 'Mayra',
+    nextId: 'help_4',
+  },
+  {
+    id: 'help_4',
+    text: 'Pffft, no, I am not a vampire! I just need to be around you and see you doing things. That will give me energy. I will get stronger the more you do things and the more energy I have. You will see.',
+    speaker: 'Mayra',
+    nextId: 'help_5',
+  },
+  {
+    id: 'help_5',
+    text: 'Do you have plans now? Where are we going next?',
+    speaker: 'Pip',
+    nextId: 'help_6',
+  },
+  {
+    id: 'help_6',
+    text: 'Yes, I will teach a tutorial session now. I should actually be on my way to the classroom right now.',
+    speaker: 'Mayra',
+    nextId: 'help_7',
+  },
+  {
+    id: 'help_7',
+    text: 'Perfect, lead the way!',
+    speaker: 'Pip',
+    nextId: 'toclassroom_0',
+  },
+  // _____ Help Pip Option End _____
+  // _____ Leave Option Start _____
+  {
+    id: 'leave_0',
+    text: 'Sorry, I have to leave now. I am holding a tutorial session in a bit.',
+    speaker: 'Mayra',
+    nextId: 'leave_1',
+  },
+  {
+    id: 'leave_1',
+    text: 'Oh, that\'s actually perfect! You don\'t have to worry about me, I will be just behind you and absorb the energy you create.',
+    speaker: 'Pip',
+    nextId: 'leave_2',
+  },
+  {
+    id: 'leave_2',
+    text: 'What? What does that even mean? How do I create energy? And what do you mean by absorb? Are you like a vampire or something??',
+    speaker: 'Mayra',
+    nextId: 'leave_3',
+  },
+  {
+    id: 'leave_3',
+    text: 'Pffft, no, I am not a vampire! I just need to be around you and see you doing things. That will give me energy. I will get stronger the more you do things and the more energy I have. You will see.',
+    speaker: 'Mayra',
+    nextId: 'toclassroom_0',
+  },
+  // _____ Leave Option Start _____
+
+  {
+    id: 'toclassroom_0',
+    text: 'How do I explain the floating ball behind me to the students?',
+    speaker: 'Mayra',
+    nextId: 'toclassroom_1',
+  },
+  {
+    id: 'toclassroom_1',
+    text: 'Don\'t worry, they can\'t see me',
+    speaker: 'Pip',
+    nextId: 'toclassroom_2',
+  },
+  {
+    id: 'toclassroom_2',
+    text: '(Okay... If he says so...)',
+    speaker: 'Mayra',
+  },
+]
+
+export const scenario1Dialogue: DialogueNode[] = [
+  {
+    id: 'start',
+    text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
+    speaker: 'Narrator',
+    background: 'studyroom',
+    nextId: 'intro_0',
+  },
+]
+
 export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
     id: 'start',
