@@ -177,7 +177,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_9',
-    text: 'This is kind of our department’s meeting room. And our work room. It’s for all sorts of things really.',
+    text: 'This is kind of our department’s meeting room. And our work room. It’s for all sorts of things, really.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
@@ -223,7 +223,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_15',
-    text: '(I don’t think the professor heard that…)',
+    text: '(I don’t think the professor heard that anymore… He seemed to be in a rush. But maybe I can find some useful stuff on the desk?)',
     speaker: 'Mayra',
     characterRight: 'mayraThinking',
     nextId: 'decision_0',
@@ -521,7 +521,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'toclassroom_1',
-    text: 'Don\'t worry, they can\'t see me',
+    text: 'Don\'t worry, they can\'t see me.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -621,7 +621,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'decision_0',
     text: 'How should Mayra organize the work on the exercise?',
     options: [
-      { text: 'Let them work on their own.', nextId: 'choice_0_0', choice: { workOrganization: 'individual' } },
+      { text: 'Let them work on their own', nextId: 'choice_0_0', choice: { workOrganization: 'individual' } },
       { text: 'Have them work in groups', nextId: 'choice_0_1', choice: { workOrganization: 'groups' } },
       { text: 'Have them work in pairs', nextId: 'choice_0_2', choice: { workOrganization: 'pairs' } },
     ],
