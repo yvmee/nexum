@@ -9,11 +9,13 @@ export interface DialogueOption {
 }
 
 /**
- * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id
+ * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id; or a cutscene with id
  */
-export interface DialogueNode {
+export interface SceneNode {
   id: string;
-  text: string;
+  type?: 'dialogue' | 'cutscene'; // 'dialogue' is default if undefined
+  animationId?: string; // Used if type is 'cutscene'
+  text?: string;
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
@@ -22,9 +24,10 @@ export interface DialogueNode {
   background?: string; // Optional background key (from assetData.backgrounds)
 }
 
+
 // start and end dialogue for prototyping
 
-export const startDialogue: DialogueNode[] = [
+export const startDialogue: SceneNode[] = [
   {
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
@@ -42,10 +45,28 @@ export const startDialogue: DialogueNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-  }
+    //nextId: 'cutscene_1',
+  },
+  {
+    id: 'cutscene_1',
+    text: 'Now, a cutscene test',
+    speaker: 'Narrator',
+    nextId: 'cutscene_2',
+  },
+  {
+    id: 'cutscene_2',
+    type: 'cutscene',
+    animationId: 'glow_burst',
+    nextId: 'cutscene_3',
+  },
+  {
+    id: 'cutscene_3',
+    text: 'How did it look? Pretty cool, right?',
+    speaker: 'Narrator',
+  },
 ]
 
-export const endDialogue: DialogueNode[] = [
+export const endDialogue: SceneNode[] = [
   {
     id: 'end',
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
@@ -54,7 +75,7 @@ export const endDialogue: DialogueNode[] = [
   }
 ]
 
-export const secretEnd: DialogueNode[] = [
+export const secretEnd: SceneNode[] = [
   {
     id: 'end',
     text: 'Congratulations! You have found the secret ending by making all the right choices! \\(^_^)/',
@@ -65,7 +86,7 @@ export const secretEnd: DialogueNode[] = [
 
 // ___________ Actual Dialogue Data ____________
 
-export const introDialogue: DialogueNode[] = [
+export const introDialogue: SceneNode[] = [
   {
     id: 'start',  
     text: 'The lecture hall hums with quiet conversation.',
@@ -110,6 +131,27 @@ export const introDialogue: DialogueNode[] = [
     text: '(But the professor leading the lecture and tutorials has asked me to come by for some last words of advice. Maybe that’s all I need.)',
     speaker: 'Mayra',
     characterRight: 'mayra',
+    nextId: 'glimmer_cutscene',
+  },
+  // ----- insert cutscene glowing shimmer ------
+  {
+    id: 'glimmer_cutscene',
+    type: 'cutscene',
+    animationId: 'glow_burst',
+    nextId: 'glimmer_1',
+  },
+  {
+    id: 'glimmer_1',  
+    text: '(Huh? What was that glowing shimmer?)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'glimmer_2',
+  },
+  {
+    id: 'glimmer_2',  
+    text: '(Hmmm, no one else seems to notice it. Maybe I imagined it?)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
     nextId: 'intro_6',
   },
   {
@@ -221,12 +263,25 @@ export const introDialogue: DialogueNode[] = [
   },
 ]
 
-export const pipIntroDialogue: DialogueNode[] = [
+export const pipIntroDialogue: SceneNode[] = [
   {
     id: 'start',
-    text: 'As Mayra moves her hand to push down the door handle, a flash suddenly illuminates the room.',
+    text: 'As Mayra moves her hand to push down the door handle, another glimmer suddenly illuminates the room.',
     speaker: 'Narrator',
     background: 'office',
+    nextId: 'glimmer_cutscene',
+  },
+  {
+    id: 'glimmer_cutscene',
+    type: 'cutscene',
+    animationId: 'glow_burst',
+    nextId: 'glimmer_text',
+  },
+  {
+    id: 'glimmer_text',
+    text: '(Huh? It\'s that glowing shimmer again...)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
     nextId: 'intro_0',
   },
   // insert cut scene flash
@@ -467,7 +522,7 @@ export const pipIntroDialogue: DialogueNode[] = [
   },
 ]
 
-export const scenario1Dialogue: DialogueNode[] = [
+export const scenario1Dialogue: SceneNode[] = [
   {
     id: 'start',
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
@@ -534,7 +589,7 @@ export const scenario1Dialogue: DialogueNode[] = [
   },
 ]
 
-export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
+export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
     id: 'start',
     text: 'Infront of Mayra lies a silent classroom filled with students. Most of them are looking down at their tablets or exercise sheets, some look directly at her with an expectant gaze.',
@@ -694,7 +749,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
 /**
  * Debugging dialogue data from TUM's Tutor Academy
  */
-export const tutorAcademyDialogues: DialogueNode[] = [
+export const tutorAcademyDialogues: SceneNode[] = [
   {
     id: 'start',
     text: 'Hello! This is a prototype for a self reflection system based on a scenario from the Tutor Academy by ProLehre. Enjoy your journey!',

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { DialogueNode } from '../storydata/dialogueData';
+import { SceneNode } from '../storydata/dialogueData';
 import { ReflectionNode } from '../storydata/reflectionData';
 import {
   StoryFlow,
@@ -27,7 +27,7 @@ interface GameManagerState {
   // Story flow state
   storyFlow: StoryFlow | null;
   currentChunkId: string | null;
-  activeDialogues: DialogueNode[];
+  activeDialogues: SceneNode[];
   activeReflectionNodes: ReflectionNode[];
 
   // Player Data for tracking choices and branching

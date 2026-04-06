@@ -1,6 +1,6 @@
-import { DialogueNode } from "../../storydata/dialogueData";
+import { SceneNode } from "../../storydata/dialogueData";
 
-export const introText: DialogueNode[] = [
+export const introText: SceneNode[] = [
   {
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',

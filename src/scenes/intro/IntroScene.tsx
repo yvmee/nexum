@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox.tsx';
-import { DialogueNode } from '../../storydata/dialogueData.ts';
+import { SceneNode } from '../../storydata/dialogueData.ts';
 import { introText } from './textData.ts';
 import SchoolBackground from '../../../assets/backgrounds/BackgroundLecturehall.png';
 import { useGameStore } from '../../store/useGameStore.ts';
@@ -9,7 +9,7 @@ import { useGameStore } from '../../store/useGameStore.ts';
 let activeDialogues = introText;
 let currentBackground = SchoolBackground;
 
-const findDialogueById = (id: string): DialogueNode | null => {
+const findDialogueById = (id: string): SceneNode | null => {
   return activeDialogues.find((d) => d.id === id) || null;
 };
 
@@ -17,7 +17,7 @@ const findDialogueById = (id: string): DialogueNode | null => {
  * Intro scene that handles intro dialogue flow
  */
 export const IntroScene: React.FC = () => {
-  const [currentDialogue, setCurrentDialogue] = useState<DialogueNode | null>(null);
+  const [currentDialogue, setCurrentDialogue] = useState<SceneNode | null>(null);
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(false);
 
   useEffect(() => {

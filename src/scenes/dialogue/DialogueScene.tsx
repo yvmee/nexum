@@ -1,5 +1,6 @@
 import React from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
+import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 import { characters } from '../../storydata/assetData.ts';
 
@@ -13,14 +14,18 @@ export const DialogueScene: React.FC = () => {
 
   const currentDialogue = useCurrentDialogue();
 
-  const isDialogueVisible = currentDialogue !== null;
+  const nodeType = currentDialogue?.type || 'dialogue'; 
+  const isCutsceneActive = currentDialogue !== null && nodeType === 'cutscene';
+  const isDialogueActive = currentDialogue !== null && nodeType === 'dialogue';
+
+  //const isDialogueVisible = currentDialogue !== null;
   const leftPortrait = currentDialogue?.characterLeft
     ? characters[currentDialogue.characterLeft as keyof typeof characters]
     : undefined;
   const rightPortrait = currentDialogue?.characterRight
     ? characters[currentDialogue.characterRight as keyof typeof characters]
     : undefined;
-    
+
   // Common styles for portraits with drop shadow, mirrored for right portrait
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
   const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'};
@@ -50,8 +55,18 @@ export const DialogueScene: React.FC = () => {
         />
       </div>
 
+      {/* Cutscene Layer */}
+      {isCutsceneActive && (
+        <div className="absolute inset-0 z-10 pointer-events-auto">
+          <CutsceneManager 
+            node={currentDialogue} 
+            onComplete={handleAdvance} 
+          />
+        </div>
+      )}
+
       {/* Blur overlay on background*/}
-      {isDialogueVisible && (
+      {isDialogueActive && (
         <div className="absolute inset-0 z-5 bg-black/15 backdrop-blur-[1px] pointer-events-none" />
       )}
 
@@ -61,7 +76,7 @@ export const DialogueScene: React.FC = () => {
         {/* Dialogue Box Area */}
         <div className="pointer-events-auto mb-10 flex flex-col items-center w-full">
           {/* Optional Speaker Portraits */}
-          {isDialogueVisible && (leftPortrait || rightPortrait) && (
+          {isDialogueActive && (leftPortrait || rightPortrait) && (
             <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
               <div className="min-h-(--portrait-size) flex items-end">
                 {leftPortrait && (
@@ -89,7 +104,7 @@ export const DialogueScene: React.FC = () => {
             dialogue={currentDialogue}
             onAdvance={handleAdvance}
             onSelectOption={handleSelectOption}
-            isVisible={isDialogueVisible}
+            isVisible={isDialogueActive}
           />
         </div>
       </div>
