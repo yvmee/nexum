@@ -1,6 +1,7 @@
 import React from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
+import { characters } from '../../storydata/assetData.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -13,10 +14,17 @@ export const DialogueScene: React.FC = () => {
   const currentDialogue = useCurrentDialogue();
 
   const isDialogueVisible = currentDialogue !== null;
-  const leftPortrait = currentDialogue?.characterLeft;
-  const rightPortrait = currentDialogue?.characterRight;
+  const leftPortrait = currentDialogue?.characterLeft
+    ? characters[currentDialogue.characterLeft as keyof typeof characters]
+    : undefined;
+  const rightPortrait = currentDialogue?.characterRight
+    ? characters[currentDialogue.characterRight as keyof typeof characters]
+    : undefined;
+    
+  // Common styles for portraits with drop shadow, mirrored for right portrait
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
-  const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'}; // add subtle drop shadow to portraits 
+  const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'};
+  const mirroredPortraitStyle: React.CSSProperties = {...portraitImageStyle, transform: 'scaleX(-1)'};
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -71,7 +79,7 @@ export const DialogueScene: React.FC = () => {
                     src={rightPortrait}
                     alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                     className={portraitImageClass}
-                    style={portraitImageStyle}
+                    style={mirroredPortraitStyle}
                   />
                 )}
               </div>

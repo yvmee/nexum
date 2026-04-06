@@ -1,5 +1,5 @@
 import { StoryFlow } from './storyFlow';
-import { endDialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
+import { endDialogue, introDialogue, pipIntroDialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
 
 // Simple story flow for now
@@ -12,6 +12,22 @@ export const exampleStoryFlow: StoryFlow = {
     intro: {
       id: 'intro',
       dialogueNodes: startDialogue,
+      transitions: [
+        { targetChunkId: 'introMayra' }, 
+      ],
+    },
+
+    introMayra: {
+      id: 'introMayra',
+      dialogueNodes: introDialogue,
+      transitions: [
+        { targetChunkId: 'introPip' }, 
+      ],
+    },
+
+    introPip: {
+      id: 'introPip',
+      dialogueNodes: pipIntroDialogue,
       transitions: [
         { targetChunkId: 'work_organization' }, 
       ],
