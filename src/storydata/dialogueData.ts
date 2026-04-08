@@ -13,8 +13,9 @@ export interface DialogueOption {
  */
 export interface SceneNode {
   id: string;
-  type?: 'dialogue' | 'cutscene'; // 'dialogue' is default if undefined
+  type?: 'dialogue' | 'cutscene' | 'minigame'; // 'dialogue' is default if undefined
   animationId?: string; // Used if type is 'cutscene'
+  minigameId?: string; // Used if type is 'minigame'
   text?: string;
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)

@@ -1,8 +1,8 @@
 import React from 'react';
+import { SceneNode } from '../../storydata/dialogueData';
 import { GlowParticleScene } from './GlowParticleScene';
 import { LightFlashScene } from './LightFlashScene';
 import { PipAppearanceScene } from './PipAppearanceScene';
-import { SceneNode } from '../../storydata/dialogueData';
 
 interface CutsceneProps {
   node: SceneNode;

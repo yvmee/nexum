@@ -1,6 +1,7 @@
 import React from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
+import { MinigameManager } from '../../components/minigames/MinigameManager.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
 
@@ -16,6 +17,7 @@ export const DialogueScene: React.FC = () => {
 
   const nodeType = currentDialogue?.type || 'dialogue'; 
   const isCutsceneActive = currentDialogue !== null && nodeType === 'cutscene';
+  const isMinigameActive = currentDialogue !== null && nodeType === 'minigame';
   const isDialogueActive = currentDialogue !== null && nodeType === 'dialogue';
 
   //const isDialogueVisible = currentDialogue !== null;
