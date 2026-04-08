@@ -45,18 +45,18 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    //nextId: 'cutscene_1',
+    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
-    text: 'Now, a cutscene test',
+    text: 'Now, a minigame test',
     speaker: 'Narrator',
     nextId: 'cutscene_2',
   },
   {
     id: 'cutscene_2',
-    type: 'cutscene',
-    animationId: 'glow_burst',
+    type: 'minigame',
+    minigameId: 'sorting_game',
     nextId: 'cutscene_3',
   },
   {
@@ -241,6 +241,12 @@ export const introDialogue: SceneNode[] = [
     id: 'choice_look',
     text: 'Mayra moves over to the desk. Several paper sheets lie scattered on the wooden surface next to a stack of books.',
     speaker: 'Narrator',
+    nextId: 'table_game',
+  },
+  {
+    id: 'table_game',
+    type: 'minigame',
+    minigameId: 'paper_table',
     nextId: 'choice_look_2',
   },
   {

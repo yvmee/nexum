@@ -69,6 +69,13 @@ export const DialogueScene: React.FC = () => {
         </div>
       )}
 
+      {/* Minigame Layer */}
+      {isMinigameActive && (
+        <div className="absolute inset-0 z-10 pointer-events-auto bg-black/80">
+          <MinigameManager node={currentDialogue} onComplete={handleAdvance} />
+        </div>
+      )}
+
       {/* Blur overlay on background*/}
       {isDialogueActive && (
         <div className="absolute inset-0 z-5 bg-black/15 backdrop-blur-[1px] pointer-events-none" />

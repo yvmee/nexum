@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import * as motion from "motion/react-client";
 import { AnimatePresence } from 'motion/react';
+import tableimage from '../../../assets/props/TableTop.png';
 
 interface PaperTableGameProps {
   onComplete: () => void;
 }
 
-const PAPERS = [ // Paper text data etc
-  { id: 1, title: 'Motivation', text: 'blabla bla', x: '20%', y: '30%', rotate: -15 },
-  { id: 2, title: 'How to talk to students', text: 'Be friendly and open', x: '60%', y: '40%', rotate: 25 },
-  { id: 3, title: 'Starting', text: 'Give an overview over all the topics', x: '35%', y: '65%', rotate: 5 },
+const PAPERS = [ // Paper text data 
+  { id: 1, title: 'Motivate Your Students!', text: 'Bring along visual aids or establish a practical connection.\n\nUse your own enthusiasm for the topic to interest the students in the subject and the content being covered.', 
+      x: '60%', y: '40%', rotate: 25 },
+  { id: 2, title: 'A Positive Atmosphere ', text: 'Create a positive atmosphere by approaching students with openness. Create eye contact and use open facial expressions and gestures. Take their wishes and concerns seriously. This isn’t the place for fearmongering, irony or sarcasm.', 
+      x: '35%', y: '20%', rotate: 5 },
+  { id: 3, title: 'Structure', text: 'At the beginning of the tutorial, provide an overview of the topics to be covered. An agenda, a simple list, a mind map, or a learning map are great options for this.\n\nSpecifically state the learning outcomes your event should achieve so that students know what learning gains they can expect.\n\n At the beginning of each lesson, make a connection to the previous one in order to build on the students\' prior knowledge. You can use a mind map, cluster or a quiz for this.', 
+      x: '10%', y: '30%', rotate: -15 },
 ];
 
 export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete }) => {
@@ -19,13 +23,14 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete }) =>
   const activePaper = PAPERS.find((p) => p.id === activePaperId);
 
   return (
-    <div className="relative w-full h-full bg-[#3e2723] flex items-center justify-center overflow-hidden">
-      {/* Top-Down Table View */}
+    // Table background 
+    <div className="relative w-full h-full flex items-center justify-center overflow-hidden" style={{ backgroundImage: `url(${tableimage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      {/* Top-Down Table View with Papers */}
       <div className="absolute inset-0">
         {PAPERS.map((paper) => (
           <motion.div
             key={paper.id}
-            className="absolute w-24 h-32 bg-[#f4e4bc] shadow-lg cursor-pointer hover:shadow-xl transition-shadow flex items-center justify-center p-2 text-xs text-center border border-[#d2b48c]"
+            className="absolute w-65 h-90 bg-[#f4e4bc] shadow-lg cursor-pointer hover:shadow-xl transition-shadow flex items-center justify-center p-2 text-xs text-center border border-[#d2b48c]"
             style={{ left: paper.x, top: paper.y, rotate: paper.rotate }}
             whileHover={{ scale: 1.05 }}
             onClick={() => setActivePaperId(paper.id)}
@@ -35,7 +40,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete }) =>
         ))}
       </div>
 
-      {/* Paper Reading Overlay (Modal) */}
+      {/* Paper Reading Overlay */}
       <AnimatePresence>
         {activePaper && (
           <motion.div

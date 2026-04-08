@@ -1,6 +1,7 @@
 import React from 'react';
 import { SceneNode } from '../../storydata/dialogueData';
 import { PaperTableGame } from './PaperTableGame';
+import { SortingGame } from './SortingGame';
 
 interface MinigameProps {
   node: SceneNode;
@@ -13,6 +14,9 @@ export const MinigameManager: React.FC<MinigameProps> = ({ node, onComplete }) =
   switch (node.minigameId) {
     case 'paper_table':
       return <PaperTableGame onComplete={onComplete} />;
+
+    case 'sorting_game':
+      return <SortingGame onComplete={onComplete} />;
 
       
     default:
