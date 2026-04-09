@@ -2,6 +2,7 @@ import React from 'react';
 import { SceneNode } from '../../storydata/dialogueData';
 import { PaperTableGame } from './PaperTableGame';
 import { SortingGame } from './SortingGame';
+import { useGameStore } from '../../store/useGameStore';
 
 interface MinigameProps {
   node: SceneNode;
@@ -9,6 +10,7 @@ interface MinigameProps {
 }
 
 export const MinigameManager: React.FC<MinigameProps> = ({ node, onComplete }) => {
+  const submitSortingChoices = useGameStore((state) => state.submitSortingGame);
   
   // Route to specific minigame component based on minigameId
   switch (node.minigameId) {
@@ -16,7 +18,10 @@ export const MinigameManager: React.FC<MinigameProps> = ({ node, onComplete }) =
       return <PaperTableGame onComplete={onComplete} />;
 
     case 'sorting_game':
-      return <SortingGame onComplete={onComplete} />;
+      return <SortingGame onComplete={(choices) => {
+        submitSortingChoices(choices);
+        onComplete();
+      }} />;
 
       
     default:

@@ -49,14 +49,14 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'cutscene_1',
-    text: 'Now, a minigame test',
+    text: 'Now, a cutscene test',
     speaker: 'Narrator',
     nextId: 'cutscene_2',
   },
   {
     id: 'cutscene_2',
-    type: 'minigame',
-    minigameId: 'sorting_game',
+    type: 'cutscene',
+    animationId: 'clock_spin',
     nextId: 'cutscene_3',
   },
   {
@@ -605,7 +605,65 @@ export const scenario1Dialogue: SceneNode[] = [
     text: '(Alright, now how to start…)',
     speaker: 'Mayra',
     characterRight: 'mayraThinking',
-    nextId: 'node_5',
+    nextId: 'minigame_sorting',
+  },
+  {
+    id: 'minigame_sorting',
+    type: 'minigame',
+    minigameId: 'sorting_game',
+    nextId: 'after_minigame',
+  },
+  {
+    id: 'after_minigame',
+    text: '(I know how to start now. I feel ready.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'clock_cutscene',
+  },
+  // insert choice based dialogue
+  // insert clock animation cutscene
+  {
+    id: 'clock_cutscene',
+    type: 'cutscene',
+    animationId: 'clock_spin',
+    nextId: 'end_0',
+  },
+  {
+    id: 'end_0',
+    text: 'Seems like this is it for today. I hope you enjoyed your time and I will see you all next week!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'end_1',
+  },
+  {
+    id: 'end_1',
+    text: 'The students mumble a quiet goodbye and start packing their things. They leave the classroom one by one.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'end_2',
+  },
+  {
+    id: 'end_2',
+    text: 'Mayra\'s gaze falls on Pip. She hadn\'t noticed him at all during the tutorial and had almost forgotten about him.',
+    speaker: 'Narrator',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'end_3',
+  },
+  {
+    id: 'end_3',
+    text: 'Hey, congratulations on finishing your first tutorial session!',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'end_4',
+  },
+  {
+    id: 'end_4',
+    text: 'I would like to talk to you about it for a bit. It is important that you not only make decisions but also think about them retrospectively.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
   },
 ]
 

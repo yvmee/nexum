@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 interface SortingGameProps {
-  onComplete: () => void;
+  onComplete: (selectedItemIds: number[]) => void;
 }
 
 const ITEMS = [
@@ -158,7 +158,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
       {/* Done button */}
       <div className="absolute bottom-10 flex justify-center w-full">
         <button
-          onClick={onComplete}
+          onClick={() => onComplete(slots.filter((s): s is number => s !== null))}
           className="px-6 py-3 font-bold uppercase tracking-wider rounded shadow transition-colors" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
         >
           Done

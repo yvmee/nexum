@@ -7,7 +7,7 @@ import {
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { exampleStoryFlow } from '../storydata/storyFlowData';
+import { storyFlow, testFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
@@ -33,6 +33,8 @@ interface GameManagerState {
   // Player Data for tracking choices and branching
   playerChoices: Record<string, string | boolean | number>;
   reflectionAnswers: Record<string, string>; // maybe not needed bc db
+  // for sorting minigame, seperated from playerChoices for easier handling
+  sortingGameChoices: number[];
 
   // Actions to manage game flow
   startGame: () => void;
@@ -43,6 +45,7 @@ interface GameManagerState {
   completeReflection: () => void;
   makeChoice: (variableId: string, value: string | boolean | number) => void;
   submitReflection: (promptId: string, answer: string) => void; 
+  submitSortingGame: (ids: number[]) => void;
 }
 
 // Hooks for derived state
@@ -90,7 +93,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   gameState: 'IDLE',
 
   // Story flow state
-  storyFlow: exampleStoryFlow, // Load example flow by default for testing
+  storyFlow: testFlow, // Load test flow by default for testing
   currentChunkId: null,
   activeDialogues: [],
   activeReflectionNodes: [],
@@ -98,6 +101,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   // Player data
   playerChoices: {},
   reflectionAnswers: {},
+  sortingGameChoices: [],
 
   // Start the game loop by activating the first chunk of the loaded story flow
   startGame: () => {
@@ -187,6 +191,14 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       [promptId]: answer,
     }
   })),
+
+  // Save sorting minigame choices
+  submitSortingGame: (ids: number[]) => set(() => {
+    console.log('sorted ids:', { ids });
+    return {
+      sortingGameChoices: ids,
+    };
+  }),
 
   completeChunk: () => {
     const { storyFlow, currentChunkId } = get();

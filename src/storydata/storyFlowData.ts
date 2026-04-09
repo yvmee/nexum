@@ -1,10 +1,32 @@
 import { StoryFlow } from './storyFlow';
-import { endDialogue, introDialogue, pipIntroDialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
+import { endDialogue, introDialogue, pipIntroDialogue, scenario1Dialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
 
+// Debugging story flow
+
+export const testFlow: StoryFlow = {
+  id: 'test_flow',
+  initialChunkId: 'intro',
+  chunks: {
+    intro: {
+      id: 'intro',
+      dialogueNodes: startDialogue,
+      transitions: [
+        { targetChunkId: 'scenario1' }, 
+      ],
+    },
+
+    scenario1: {
+      id: 'scenario1',
+      dialogueNodes: scenario1Dialogue,
+      // add reflection
+    },
+  },
+};
+
 // Simple story flow for now
-export const exampleStoryFlow: StoryFlow = {
-  id: 'example_flow',
+export const storyFlow: StoryFlow = {
+  id: 'story_flow',
   initialChunkId: 'intro',
 
   chunks: {
@@ -31,6 +53,12 @@ export const exampleStoryFlow: StoryFlow = {
       transitions: [
         { targetChunkId: 'work_organization' }, 
       ],
+    },
+
+    scenario1: {
+      id: 'scenario1',
+      dialogueNodes: scenario1Dialogue,
+      // add reflection
     },
 
     work_organization: {
