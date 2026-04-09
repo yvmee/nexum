@@ -19,6 +19,36 @@ export interface UserResponse {
 
 // ___________ Dialogue Data for Reflection Scenes ____________
 
+// Dialogue for scenario 1 - tutorial start
+export const reflectionDialogue1: ReflectionNode[] = [
+  {
+    id: 'start',
+    text: 'Let\'s take a moment to think about what happened.',
+    showCharacter: true,
+    nextId: 'reflect_1',
+  },
+  {
+    id: 'reflect_1',
+    text: 'Why did you decide to organize the tutorial the way you did?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'record',
+  },
+  {
+    id: 'record',
+    text: 'Now, leave advice behind for future students. What do you think is the most important thing to consider when planning the start of a tutorial?',
+    requiresInput: true,
+    inputPrompt: 'Type your thoughts here...',
+    saveResponse: true,
+    nextId: 'ending',
+  },
+  {
+    id: 'ending',
+    text: 'Thank you for your time.',
+    showCharacter: true,
+  },
+];
 
 // Dialogue for scenario 5 - work organization 
 const reflectionDialogue5: ReflectionNode[] = [
@@ -77,4 +107,4 @@ const reflectionDialogue5: ReflectionNode[] = [
 
 
 // Array of dialogue sets for different scenarios
-export const reflectionDialogues: ReflectionNode[][] = [reflectionDialogue5];
+export const reflectionDialogues: ReflectionNode[][] = [reflectionDialogue1, reflectionDialogue5];

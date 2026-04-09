@@ -159,7 +159,8 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
       <div className="absolute bottom-10 flex justify-center w-full">
         <button
           onClick={() => onComplete(slots.filter((s): s is number => s !== null))}
-          className="px-6 py-3 font-bold uppercase tracking-wider rounded shadow transition-colors" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          disabled={placedIds.length === 0}
+          className="px-6 py-3 font-bold uppercase tracking-wider rounded shadow transition-colors disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => { if (placedIds.length > 0) e.currentTarget.style.opacity = '0.85'; }} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
         >
           Done
         </button>

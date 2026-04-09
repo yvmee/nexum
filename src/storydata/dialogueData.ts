@@ -13,16 +13,22 @@ export interface DialogueOption {
  */
 export interface SceneNode {
   id: string;
-  type?: 'dialogue' | 'cutscene' | 'minigame'; // 'dialogue' is default if undefined
+  type?: 'dialogue' | 'cutscene' | 'minigame' | 'branching'; // 'dialogue' is default if undefined
   animationId?: string; // Used if type is 'cutscene'
   minigameId?: string; // Used if type is 'minigame'
   text?: string;
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
+  branchConditions?: BranchCondition[]; // Defines branching based on player choices
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
   characterLeft?: string; // Optional character key (from assetData.characters) on the left
   characterRight?: string; // Optional character key (from assetData.characters) on the right
   background?: string; // Optional background key (from assetData.backgrounds)
+}
+
+export interface BranchCondition {
+  nextId: string;
+  condition: (choices: number[]) => boolean;
 }
 
 // start and end dialogue for prototyping
@@ -45,7 +51,6 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -618,8 +623,37 @@ export const scenario1Dialogue: SceneNode[] = [
     text: '(I know how to start now. I feel ready.)',
     speaker: 'Mayra',
     characterRight: 'mayra',
+    nextId: 'starting',
+  },
+  {
+    id: 'starting',
+    type: 'branching',
+    text: 'Mayra starts the tutorial and follows her plan.', 
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(5) && ids.includes(6),
+        nextId: 'doubleintro',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'doubleintro',
+    text: '(Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    nextId: 'path_default',
+  },
+  {
+    id: 'path_default',
+    text: '(…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
     nextId: 'clock_cutscene',
   },
+
   // insert choice based dialogue
   // insert clock animation cutscene
   {

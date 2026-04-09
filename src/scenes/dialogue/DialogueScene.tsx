@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
 import { MinigameManager } from '../../components/minigames/MinigameManager.tsx';
@@ -12,6 +12,7 @@ export const DialogueScene: React.FC = () => {
   const currentBackground = useGameStore((state) => state.currentBackground);
   const advanceDialogue = useGameStore((state) => state.advanceDialogue);
   const makeChoice = useGameStore((state) => state.makeChoice);
+  const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
 
   const currentDialogue = useCurrentDialogue();
 
@@ -20,7 +21,6 @@ export const DialogueScene: React.FC = () => {
   const isMinigameActive = currentDialogue !== null && nodeType === 'minigame';
   const isDialogueActive = currentDialogue !== null && nodeType === 'dialogue';
 
-  //const isDialogueVisible = currentDialogue !== null;
   const leftPortrait = currentDialogue?.characterLeft
     ? characters[currentDialogue.characterLeft as keyof typeof characters]
     : undefined;
@@ -34,6 +34,13 @@ export const DialogueScene: React.FC = () => {
   const mirroredPortraitStyle: React.CSSProperties = {...portraitImageStyle, transform: 'scaleX(-1)'};
   const leftPortraitClass = `${portraitImageClass} ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
   const rightPortraitClass = `${portraitImageClass} ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
+
+  useEffect(() => {
+    if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
+      const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
+      if (match) advanceDialogue(match.nextId);
+    }
+  }, [currentDialogue]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {

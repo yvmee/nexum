@@ -29,6 +29,7 @@ interface GameManagerState {
   currentChunkId: string | null;
   activeDialogues: SceneNode[];
   activeReflectionNodes: ReflectionNode[];
+  session: number; // for db
 
   // Player Data for tracking choices and branching
   playerChoices: Record<string, string | boolean | number>;
@@ -97,6 +98,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentChunkId: null,
   activeDialogues: [],
   activeReflectionNodes: [],
+  session: 0,
 
   // Player data
   playerChoices: {},
@@ -209,6 +211,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       const chunk = storyFlow.chunks[currentChunkId];
       set({
         currentScene: 'REFLECTION',
+        session: chunk.reflectionSessionNumber ?? 0,
         activeReflectionNodes: chunk?.reflectionNodes ?? [],
         currentReflectionNodeId: chunk?.reflectionNodes?.[0]?.id ?? null,
         startNodeId: chunk?.reflectionNodes?.[0]?.id ?? 'start',

@@ -1,6 +1,7 @@
 import { StoryFlow } from './storyFlow';
 import { endDialogue, introDialogue, pipIntroDialogue, scenario1Dialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
+import { reflectionDialogue1 } from './reflectionData';
 
 // Debugging story flow
 
@@ -19,7 +20,8 @@ export const testFlow: StoryFlow = {
     scenario1: {
       id: 'scenario1',
       dialogueNodes: scenario1Dialogue,
-      // add reflection
+      reflectionNodes: reflectionDialogue1,
+      reflectionSessionNumber: 1,
     },
   },
 };

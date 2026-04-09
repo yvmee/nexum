@@ -6,7 +6,7 @@ import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
 
 // Set scene relevant variables
-let session = 5; 
+//let session = 5; 
 
 /**
  * Reflection scene driven by reflectionData
@@ -17,6 +17,7 @@ export const ReflectionScene: React.FC = () => {
   const submitReflection = useGameStore((state) => state.submitReflection);
 
   const currentDialogue = useCurrentReflection();
+  const session = useGameStore((state) => state.session);
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);

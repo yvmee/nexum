@@ -12,6 +12,7 @@ export interface StoryChunk {
   dialogueNodes: SceneNode[];
   startingNodeId?: string; // optional override for starting node (defaults 'start')
   reflectionNodes?: ReflectionNode[];
+  reflectionSessionNumber?: number; // for db tracking, only used if reflectionNodes is defined
   transitions?: ChunkTransition[]; // chunk-level transitions 
 }
 
