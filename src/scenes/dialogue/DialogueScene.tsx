@@ -4,6 +4,7 @@ import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx'
 import { MinigameManager } from '../../components/minigames/MinigameManager.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
+import { PipImage } from '../../components/PipImage.tsx';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -30,8 +31,13 @@ export const DialogueScene: React.FC = () => {
 
   // Common styles for portraits with drop shadow, mirrored for right portrait
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
-  const portraitImageStyle: React.CSSProperties = {filter: 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))'};
+  const dropShadowFilter = 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))';
+  const portraitImageStyle: React.CSSProperties = {filter: dropShadowFilter};
   const mirroredPortraitStyle: React.CSSProperties = {...portraitImageStyle, transform: 'scaleX(-1)'};
+
+  const isPipLeft = currentDialogue?.characterLeft === 'pip';
+  const isPipRight = currentDialogue?.characterRight === 'pip';
+
   const leftPortraitClass = `${portraitImageClass} ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
   const rightPortraitClass = `${portraitImageClass} ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
 
@@ -98,22 +104,39 @@ export const DialogueScene: React.FC = () => {
             <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
               <div className="min-h-(--portrait-size) flex items-end">
                 {leftPortrait && (
-                  <img
-                    src={leftPortrait}
-                    alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className={leftPortraitClass}
-                    style={portraitImageStyle}
-                  />
+                  isPipLeft ? (
+                    <PipImage
+                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      className={leftPortraitClass}
+                      extraFilter={dropShadowFilter}
+                    />
+                  ) : (
+                    <img
+                      src={leftPortrait}
+                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      className={leftPortraitClass}
+                      style={portraitImageStyle}
+                    />
+                  )
                 )}
               </div>
               <div className="min-h-(--portrait-size) flex items-end justify-end">
                 {rightPortrait && (
-                  <img
-                    src={rightPortrait}
-                    alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
-                    className={rightPortraitClass}
-                    style={mirroredPortraitStyle}
-                  />
+                  isPipRight ? (
+                    <PipImage
+                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      className={rightPortraitClass}
+                      extraFilter={dropShadowFilter}
+                      style={{ transform: 'scaleX(-1)' }}
+                    />
+                  ) : (
+                    <img
+                      src={rightPortrait}
+                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      className={rightPortraitClass}
+                      style={mirroredPortraitStyle}
+                    />
+                  )
                 )}
               </div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client";
-import pipSprite from '../../../assets/characters/Sphere.png';
+import { MotionPipImage } from '../MotionPipImage';
 
 interface PipAppearanceSceneProps {
     onComplete: () => void;
@@ -76,9 +76,7 @@ export const PipAppearanceScene: React.FC<PipAppearanceSceneProps> = ({ onComple
                 animate={{ opacity: [0, 1], scale: [0.3, 1], y: [22, 0], filter: ['blur(5px)', 'blur(0px)'] }}
                 transition={{ duration: 0.65, delay: 0.16, ease: 'easeOut' }}
             >
-                <motion.img
-                    src={pipSprite}
-                    alt="Pip"
+                <MotionPipImage
                     className="w-45 h-auto drop-shadow-[0_0_24px_rgba(255,248,212,0.95)]"
                     animate={{ y: [0, -8, 0, -6, 0] }}
                     transition={{

@@ -51,6 +51,7 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
+    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -61,7 +62,7 @@ export const startDialogue: SceneNode[] = [
   {
     id: 'cutscene_2',
     type: 'cutscene',
-    animationId: 'clock_spin',
+    animationId: 'energy_gain',
     nextId: 'cutscene_3',
   },
   {
@@ -252,11 +253,11 @@ export const introDialogue: SceneNode[] = [
     id: 'table_game',
     type: 'minigame',
     minigameId: 'paper_table',
-    nextId: 'choice_look_2',
+    nextId: 'choice_leave',
   },
   {
     id: 'choice_look_2',
-    text: 'She picks up up one of the sheets and starts reading.',
+    text: 'She picks up one of the sheets and starts reading.',
     speaker: 'Narrator',
     nextId: 'choice_look_3',
   },
@@ -633,27 +634,112 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(5) && ids.includes(6),
+        condition: (ids) => ids.includes(1) || ids.includes(3),
+        nextId: 'overview',
+      },
+      { 
+        condition: (ids) => ids.includes(1) || ids.includes(3),
         nextId: 'doubleintro',
+      },
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'overview',
+    type: 'branching',
+    text: '(The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(1) || ids.includes(3),
+        nextId: 'doubleintro',
+      },
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
     ],
   },
   {
     id: 'doubleintro',
+    type: 'branching',
     text: '(Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'doomed',
+    text: '(They don’t look amused at all about my sarcastic joke…)',
     speaker: 'Mayra',
     characterRight: 'mayraStressed',
     nextId: 'path_default',
   },
   {
-    id: 'path_default',
-    text: '(…)',
+    id: 'fail',
+    type: 'branching',
+    text: '(The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.)',
     speaker: 'Mayra',
     characterRight: 'mayraStressed',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'faildoomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'faildoomed',
+    text: '(And they don’t look amused at all about my sarcastic joke…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    nextId: 'faildoomed2',
+  },
+  {
+    id: 'faildoomed2',
+    text: '(The student in the back looks genuinely panicked. I think this was a bad start….)',
+    speaker: 'Mayra',
+    characterRight: 'mayraWorried',
+    nextId: 'path_default',
+  },
+  {
+    id: 'path_default',
+    text: '...',
+    speaker: 'Narrator',
+    nextId: 'path_default2',
+  },
+  {
+    id: 'path_default2',
+    text: 'I think we are ready to start with exercise 1 now. Please, look at the exercise sheet and…',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
     nextId: 'clock_cutscene',
   },
-
   // insert choice based dialogue
   // insert clock animation cutscene
   {
@@ -695,6 +781,23 @@ export const scenario1Dialogue: SceneNode[] = [
   {
     id: 'end_4',
     text: 'I would like to talk to you about it for a bit. It is important that you not only make decisions but also think about them retrospectively.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+  },
+]
+
+export const scenario1outro: SceneNode[] = [
+  // start with cutscene of pip gaining color and energy
+  {
+    id: 'pip_energy_cutscene',
+    type: 'cutscene',
+    animationId: 'energy_gain',
+    nextId: 'pip_energy_1',
+  },
+  {
+    id: 'pip_energy_1',
+    text: 'Wonderful! I can already feel that I am getting stronger! Thank you for that!',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',

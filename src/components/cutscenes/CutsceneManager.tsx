@@ -4,6 +4,7 @@ import { GlowParticleScene } from './GlowParticleScene';
 import { LightFlashScene } from './LightFlashScene';
 import { PipAppearanceScene } from './PipAppearanceScene';
 import { ClockScene } from './ClockScene';
+import { EnergyGainScene } from './EnergyGainScene';
 
 interface CutsceneProps {
   node: SceneNode;
@@ -25,6 +26,9 @@ export const CutsceneManager: React.FC<CutsceneProps> = ({ node, onComplete }) =
 
     case 'clock_spin':
       return <ClockScene onComplete={onComplete} />;
+
+    case 'energy_gain':
+      return <EnergyGainScene onComplete={onComplete} />;
       
     default:
       // Failsafe for missing Ids

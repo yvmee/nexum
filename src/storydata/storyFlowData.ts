@@ -1,5 +1,5 @@
 import { StoryFlow } from './storyFlow';
-import { endDialogue, introDialogue, pipIntroDialogue, scenario1Dialogue, scenario5Dialogue, secretEnd, startDialogue } from './dialogueData';
+import { endDialogue, introDialogue, pipIntroDialogue, scenario1Dialogue, scenario5Dialogue, secretEnd, startDialogue, scenario1outro } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
 import { reflectionDialogue1 } from './reflectionData';
 
@@ -22,6 +22,14 @@ export const testFlow: StoryFlow = {
       dialogueNodes: scenario1Dialogue,
       reflectionNodes: reflectionDialogue1,
       reflectionSessionNumber: 1,
+      transitions: [
+        { targetChunkId: 'outro' }, 
+      ],
+    },
+
+    outro: {
+      id: 'outro',
+      dialogueNodes: scenario1outro,
     },
   },
 };

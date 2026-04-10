@@ -1,12 +1,26 @@
+export interface BranchCondition {
+  nextId: string;
+  condition: (sortingChoices: number[]) => boolean;
+}
+
+export interface ReflectionOption {
+  text: string;
+  nextId: string;
+  choice?: Record<string, string | boolean | number>;
+}
+
 export interface ReflectionNode {
   id: string;
+  type?: 'branching'; // If set, auto-advance based on branchConditions
   text: string;
   requiresInput?: boolean; // If true, show input field after this text
   inputPrompt?: string; // Placeholder text for input field
   showBubbles?: boolean; // If true, show thought bubbles with database insights
   showCharacter?: boolean; // If true, show the character image
   saveResponse?: boolean; // If true, save user response to database
+  options?: ReflectionOption[]; // If present, show clickable choices
   nextId?: string; // Next dialogue ID (undefined = end)
+  branchConditions?: BranchCondition[]; // Used if type is 'branching'
 }
 
 export interface UserResponse {
@@ -25,14 +39,53 @@ export const reflectionDialogue1: ReflectionNode[] = [
     id: 'start',
     text: 'Let\'s take a moment to think about what happened.',
     showCharacter: true,
+    nextId: 'reflect_0',
+  },
+  {
+    id: 'reflect_0',
+    text: 'If you had to plan the start of the tutorial again, would you do anything differently?',
+    showCharacter: true,
+    options: [
+      { text: 'Yes, I would change my approach.', nextId: 'change_approach', },
+      { text: 'No, I would do it the same way.', nextId: 'same_approach', },
+    ],
+  },
+  {
+    id: 'change_approach',
+    text: 'What would you change about your approach?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'reflect_1',
+  },
+  {
+    id: 'same_approach',
+    text: 'Why do you think your original approach was the best choice?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
     nextId: 'reflect_1',
   },
   {
     id: 'reflect_1',
-    text: 'Why did you decide to organize the tutorial the way you did?',
+    text: 'Can you finish this sentence: "The most important thing to consider when planning the start of a tutorial is..."',
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
+    nextId: 'reflect_2',
+  },
+  {
+    id: 'reflect_2',
+    text: 'Can you finish this sentence: "What was most surprising to me was..."',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'bubbles',
+  },
+  {
+    id: 'bubbles',
+    text: 'Other students had a variety of thoughts about what is important when planning the start of a tutorial. Let\'s take a look at some of their insights.',
+    showBubbles: true,
     nextId: 'record',
   },
   {
@@ -41,6 +94,7 @@ export const reflectionDialogue1: ReflectionNode[] = [
     requiresInput: true,
     inputPrompt: 'Type your thoughts here...',
     saveResponse: true,
+    showBubbles: true,
     nextId: 'ending',
   },
   {
