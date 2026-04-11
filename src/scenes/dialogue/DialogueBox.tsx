@@ -1,8 +1,8 @@
 import React from 'react';
-import { DialogueNode } from '../../storydata/dialogueData.ts';
+import { SceneNode } from '../../storydata/dialogueData.ts';
 
 type DialogueBoxProps = {
-  dialogue: DialogueNode | null;
+  dialogue: SceneNode | null;
   onAdvance: () => void;
   onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
   isVisible: boolean;

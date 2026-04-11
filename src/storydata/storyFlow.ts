@@ -1,4 +1,4 @@
-import { DialogueNode } from './dialogueData';
+import { SceneNode } from './dialogueData';
 import { ReflectionNode } from './reflectionData';
 
 // ───────────────── Types ─────────────────
@@ -9,9 +9,10 @@ import { ReflectionNode } from './reflectionData';
  */
 export interface StoryChunk {
   id: string;
-  dialogueNodes: DialogueNode[];
+  dialogueNodes: SceneNode[];
   startingNodeId?: string; // optional override for starting node (defaults 'start')
   reflectionNodes?: ReflectionNode[];
+  reflectionSessionNumber?: number; // for db tracking, only used if reflectionNodes is defined
   transitions?: ChunkTransition[]; // chunk-level transitions 
 }
 

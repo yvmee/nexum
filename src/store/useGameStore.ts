@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { DialogueNode } from '../storydata/dialogueData';
+import { SceneNode } from '../storydata/dialogueData';
 import { ReflectionNode } from '../storydata/reflectionData';
 import {
   StoryFlow,
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { exampleStoryFlow } from '../storydata/storyFlowData';
+import { storyFlow, testFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
@@ -15,6 +15,34 @@ type Scene = 'INTRO' | 'STORY' | 'REFLECTION' | 'MINIGAME' | 'END'; // All scene
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
 let backupBackground = backgrounds.hallway; // Fallback background 
+
+// Score a single reflection input based on quality heuristics
+function scoreReflectionInput(input: string): number {
+  const trimmed = input.trim();
+  if (trimmed.length === 0) return 0;
+
+  let score = 1; // Base score for any non-empty input
+
+  // Length-based scoring
+  if (trimmed.length > 30) score += 1;
+  if (trimmed.length > 80) score += 1;
+  if (trimmed.length > 150) score += 1;
+
+  // Reflective language bonus (very basic heuristics)
+  const reflectivePatterns = [
+    /\b(because|since|therefore|realized|learned|understand|think|feel|notice|consider)\b/i,
+    /\b(maybe|perhaps|could|would|should|might|wonder)\b/i,
+    /\b(perspective|approach|differently|important|improve|challenge|reflect)\b/i,
+  ];
+  for (const pattern of reflectivePatterns) {
+    if (pattern.test(trimmed)) {
+      score += 1;
+      break; // Max +1 from reflective language
+    }
+  }
+
+  return Math.min(score, 5); // Cap at 5 per answer
+}
 
 interface GameManagerState {
   currentScene: Scene;
@@ -24,15 +52,22 @@ interface GameManagerState {
   currentReflectionNodeId: string | null;
   gameState: GameState;
 
+  // Pip color value: 0 = fully grey, 100 = fully colorful
+  pipColorValue: number;
+  reflectionInputScores: number[]; // scores for current reflection section
+
   // Story flow state
   storyFlow: StoryFlow | null;
   currentChunkId: string | null;
-  activeDialogues: DialogueNode[];
+  activeDialogues: SceneNode[];
   activeReflectionNodes: ReflectionNode[];
+  session: number; // for db
 
   // Player Data for tracking choices and branching
   playerChoices: Record<string, string | boolean | number>;
   reflectionAnswers: Record<string, string>; // maybe not needed bc db
+  // for sorting minigame, seperated from playerChoices for easier handling
+  sortingGameChoices: number[];
 
   // Actions to manage game flow
   startGame: () => void;
@@ -42,7 +77,9 @@ interface GameManagerState {
   completeChunk: () => void;
   completeReflection: () => void;
   makeChoice: (variableId: string, value: string | boolean | number) => void;
-  submitReflection: (promptId: string, answer: string) => void; 
+  submitReflection: (promptId: string, answer: string) => void;
+  evaluateReflectionInput: (input: string) => number;
+  submitSortingGame: (ids: number[]) => void;
 }
 
 // Hooks for derived state
@@ -89,15 +126,21 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentReflectionNodeId: null,
   gameState: 'IDLE',
 
+  // Pip color
+  pipColorValue: 0,
+  reflectionInputScores: [],
+
   // Story flow state
-  storyFlow: exampleStoryFlow, // Load example flow by default for testing
+  storyFlow: testFlow, // Load test flow by default for testing
   currentChunkId: null,
   activeDialogues: [],
   activeReflectionNodes: [],
+  session: 0,
 
   // Player data
   playerChoices: {},
   reflectionAnswers: {},
+  sortingGameChoices: [],
 
   // Start the game loop by activating the first chunk of the loaded story flow
   startGame: () => {
@@ -188,6 +231,23 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     }
   })),
 
+  // Evaluate a reflection input and return its score
+  evaluateReflectionInput: (input: string) => {
+    const score = scoreReflectionInput(input);
+    set((state) => ({
+      reflectionInputScores: [...state.reflectionInputScores, score],
+    }));
+    return score;
+  },
+
+  // Save sorting minigame choices
+  submitSortingGame: (ids: number[]) => set(() => {
+    console.log('sorted ids:', { ids });
+    return {
+      sortingGameChoices: ids,
+    };
+  }),
+
   completeChunk: () => {
     const { storyFlow, currentChunkId } = get();
     if (!storyFlow || !currentChunkId) return;
@@ -197,6 +257,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       const chunk = storyFlow.chunks[currentChunkId];
       set({
         currentScene: 'REFLECTION',
+        session: chunk.reflectionSessionNumber ?? 0,
         activeReflectionNodes: chunk?.reflectionNodes ?? [],
         currentReflectionNodeId: chunk?.reflectionNodes?.[0]?.id ?? null,
         startNodeId: chunk?.reflectionNodes?.[0]?.id ?? 'start',
@@ -216,8 +277,19 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   },
 
   completeReflection: () => {
-    const { storyFlow, currentChunkId, playerChoices } = get();
+    const { storyFlow, currentChunkId, playerChoices, reflectionInputScores, pipColorValue } = get();
     if (!storyFlow || !currentChunkId) return;
+
+    // Calculate color increase from this reflection section
+    if (reflectionInputScores.length > 0) {
+      const totalScore = reflectionInputScores.reduce((sum, s) => sum + s, 0);
+      const maxPossible = reflectionInputScores.length * 5;
+      const scoreRatio = totalScore / maxPossible; // 0 to 1
+      const colorIncrease = Math.round(scoreRatio * 20); // Up to +20 per reflection
+      const newColorValue = Math.min(pipColorValue + colorIncrease, 100);
+      console.log(`Reflection score: ${totalScore}/${maxPossible} (${Math.round(scoreRatio * 100)}%). Color: ${pipColorValue} -> ${newColorValue}`);
+      set({ pipColorValue: newColorValue, reflectionInputScores: [] });
+    }
 
     console.log('Reflection completed. Evaluating next chunk');
     const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
@@ -243,5 +315,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     activeReflectionNodes: state.activeReflectionNodes,
     playerChoices: state.playerChoices,
     reflectionAnswers: state.reflectionAnswers,
+    pipColorValue: state.pipColorValue,
   }),
 }));

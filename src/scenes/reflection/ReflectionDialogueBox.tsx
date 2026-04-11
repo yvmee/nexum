@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ReflectionNode } from '../../storydata/reflectionData';
+import { ReflectionNode, ReflectionOption } from '../../storydata/reflectionData';
 
 /**
  * Dialogue box positioned at the top for ReflectionNodes
@@ -8,6 +8,7 @@ export interface ReflectionDialogueBoxProps {
   dialogue: ReflectionNode | null;
   onAdvance: () => void;
   onSubmitInput: (input: string) => void;
+  onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
   isVisible: boolean;
   isAwaitingInput: boolean;
   canContinue?: boolean;
@@ -17,6 +18,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
   dialogue,
   onAdvance,
   onSubmitInput,
+  onSelectOption,
   isVisible,
   isAwaitingInput,
   canContinue = true,
@@ -48,7 +50,8 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
     }
   };
 
-  const canClick = !isAwaitingInput && canContinue;
+  const hasOptions = !!dialogue?.options?.length;
+  const canClick = !isAwaitingInput && !hasOptions && canContinue;
 
   return (
     <div
@@ -84,8 +87,23 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
         </div>
       )}
 
-      {/* Footer (only for non-input dialogue) */}
-      {!isAwaitingInput && canContinue && (
+      {/* Options (if present) */}
+      {hasOptions && !isAwaitingInput && (
+        <div className="flex flex-col gap-2 mt-[var(--inner-mt)]">
+          {dialogue!.options!.map((option: ReflectionOption) => (
+            <button
+              key={option.nextId}
+              onClick={(e) => { e.stopPropagation(); onSelectOption(option.nextId, option.choice); }}
+              className="w-full px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground font-medium hover:bg-primary/20 hover:border-primary transition-all duration-150 cursor-pointer text-left"
+            >
+              {option.text}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Footer (only for non-input, non-options dialogue) */}
+      {!isAwaitingInput && !hasOptions && canContinue && (
         <div className="flex text-[var(--text-hint)] text-primary text-right blink-animation self-end">
           Click to continue...
         </div>

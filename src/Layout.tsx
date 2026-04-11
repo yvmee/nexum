@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import GameContainer from './components/GameContainer.tsx';
-import { EndPage } from './components/EndPage.tsx';
-import { Menu } from './components/Menu.tsx';
+import GameContainer from './pages/GameContainer.tsx';
+import { EndPage } from './pages/EndPage.tsx';
+import { Menu } from './pages/Menu.tsx';
 
 /**
  * Provides the main layout structure for the app and sets up routing between pages

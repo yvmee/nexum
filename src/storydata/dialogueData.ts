@@ -1,5 +1,3 @@
-import mayra from '../../assets/StudentPortrait.png';
-import guy from '../../assets/GuyPortrait.png';
 
 /**
  * Dialogue option for branching choices
@@ -11,22 +9,31 @@ export interface DialogueOption {
 }
 
 /**
- * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id
+ * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id; or a cutscene with id
  */
-export interface DialogueNode {
+export interface SceneNode {
   id: string;
-  text: string;
+  type?: 'dialogue' | 'cutscene' | 'minigame' | 'branching'; // 'dialogue' is default if undefined
+  animationId?: string; // Used if type is 'cutscene'
+  minigameId?: string; // Used if type is 'minigame'
+  text?: string;
   speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
   options?: DialogueOption[]; // If present, show choices (max 3)
+  branchConditions?: BranchCondition[]; // Defines branching based on player choices
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
-  characterLeft?: string; // Optional character image on the left side of the dialogue box
-  characterRight?: string; // Optional character image on the right side of the dialogue box
-  background?: string; // Optional background image for this dialogue node
+  characterLeft?: string; // Optional character key (from assetData.characters) on the left
+  characterRight?: string; // Optional character key (from assetData.characters) on the right
+  background?: string; // Optional background key (from assetData.backgrounds)
+}
+
+export interface BranchCondition {
+  nextId: string;
+  condition: (choices: number[]) => boolean;
 }
 
 // start and end dialogue for prototyping
 
-export const startDialogue: DialogueNode[] = [
+export const startDialogue: SceneNode[] = [
   {
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
@@ -42,12 +49,29 @@ export const startDialogue: DialogueNode[] = [
   },
   {
     id: 'intro_1',
-    text: 'In the next scene, Mayra is currently in one of her tutorial sessions. Help her through the session and enjoy your journey!',
+    text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-  }
+  },
+  {
+    id: 'cutscene_1',
+    text: 'Now, a cutscene test',
+    speaker: 'Narrator',
+    nextId: 'cutscene_2',
+  },
+  {
+    id: 'cutscene_2',
+    type: 'cutscene',
+    animationId: 'energy_gain',
+    nextId: 'cutscene_3',
+  },
+  {
+    id: 'cutscene_3',
+    text: 'How did it look? Pretty cool, right?',
+    speaker: 'Narrator',
+  },
 ]
 
-export const endDialogue: DialogueNode[] = [
+export const endDialogue: SceneNode[] = [
   {
     id: 'end',
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
@@ -56,7 +80,7 @@ export const endDialogue: DialogueNode[] = [
   }
 ]
 
-export const secretEnd: DialogueNode[] = [
+export const secretEnd: SceneNode[] = [
   {
     id: 'end',
     text: 'Congratulations! You have found the secret ending by making all the right choices! \\(^_^)/',
@@ -67,7 +91,793 @@ export const secretEnd: DialogueNode[] = [
 
 // ___________ Actual Dialogue Data ____________
 
-export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario 5 - Work organization
+export const introDialogue: SceneNode[] = [
+  {
+    id: 'start',  
+    text: 'The lecture hall hums with quiet conversation.',
+    speaker: 'Narrator',
+    background: 'lecturehall',
+    nextId: 'intro_0',
+  },
+  {
+    id: 'intro_0',  
+    text: 'The low click sounds of keys being tapped fills the space between the professors words.',
+    speaker: 'Narrator',
+    nextId: 'intro_1',
+  },
+  {
+    id: 'intro_1',  
+    text: '… and we will build on this concept in the coming weeks!',
+    speaker: 'Professor',
+    nextId: 'intro_2',
+  },
+  {
+    id: 'intro_2',  
+    text: 'Also please don’t forget that the tutorial sessions will begin this week.',
+    speaker: 'Professor',
+    nextId: 'intro_3',
+  },
+  {
+    id: 'intro_3',  
+    text: '(Right, almost all tutorials start this week… Including mine.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'intro_4',
+  },
+  {
+    id: 'intro_4',  
+    text: '(*Sigh*… I don’t really feel ready for this… )',
+    speaker: 'Mayra',
+    characterRight: 'mayraWorried',
+    nextId: 'intro_5',
+  },
+  {
+    id: 'intro_5',  
+    text: '(But the professor leading the lecture and tutorials has asked me to come by for some last words of advice. Maybe that’s all I need.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'glimmer_cutscene',
+  },
+  // cutscene glowing shimmer
+  {
+    id: 'glimmer_cutscene',
+    type: 'cutscene',
+    animationId: 'glow_burst',
+    nextId: 'glimmer_1',
+  },
+  {
+    id: 'glimmer_1',  
+    text: '(Huh? What was that glowing shimmer?)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'glimmer_2',
+  },
+  {
+    id: 'glimmer_2',  
+    text: '(Hmmm, no one else seems to notice it. Maybe I imagined it?)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'intro_6',
+  },
+  {
+    id: 'intro_6',
+    text: '(The lecture is over. I should get going to the meeting room the professor told me. Let’s see…)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'intro_7',
+  },
+  {
+    id: 'intro_7',
+    text: 'Mayra looks at the last email and leaves the lecture hall.',
+    speaker: 'Narrator',
+    nextId: 'intro_8',
+  },
+  {
+    id: 'intro_8',
+    text: 'Oh, hello! Please come on in.',
+    speaker: 'Professor',
+    background: 'office',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_9',
+  },
+  {
+    id: 'intro_9',
+    text: 'This is kind of our department’s meeting room. And our work room. It’s for all sorts of things, really.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_10',
+  },
+  {
+    id: 'intro_10',
+    text: 'All tutors can feel free to use this room at any time when it isn’t currently blocked by someone. To prepare or discuss with students.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_11',
+  },
+  {
+    id: 'intro_11',
+    text: 'Oh, and there is some material on that desk over there. If you want to have a look before your first session.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_12',
+  },
+  {
+    id: 'intro_12',
+    text: 'I have to go now, but please, stay and take a look around.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_13',
+  },
+  {
+    id: 'intro_13',
+    text: 'The Professor rushes out the door.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'intro_14',
+  },
+  {
+    id: 'intro_14',
+    text: 'Uhm, alright! Thank you!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'intro_15',
+  },
+  {
+    id: 'intro_15',
+    text: '(I don’t think the professor heard that anymore… He seemed to be in a rush. But maybe I can find some useful stuff on the desk?)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'decision_0',
+  },
+  {
+    id: 'decision_0',
+    text: 'What should Mayra do?',
+    options: [
+      { text: 'Stay and take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
+      { text: 'Leave', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
+    ],
+  },
+  {
+    id: 'choice_look',
+    text: 'Mayra moves over to the desk. Several paper sheets lie scattered on the wooden surface next to a stack of books.',
+    speaker: 'Narrator',
+    nextId: 'table_game',
+  },
+  {
+    id: 'table_game',
+    type: 'minigame',
+    minigameId: 'paper_table',
+    nextId: 'choice_leave',
+  },
+  {
+    id: 'choice_look_2',
+    text: 'She picks up one of the sheets and starts reading.',
+    speaker: 'Narrator',
+    nextId: 'choice_look_3',
+  },
+  {
+    id: 'choice_look_3',
+    text: 'How to motivate students...',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'choice_leave',
+  },
+  {
+    id: 'choice_leave',
+    text: 'Mayra moves to the door to leave the room.',
+    speaker: 'Narrator',
+  },
+]
+
+export const pipIntroDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'As Mayra moves her hand to push down the door handle, another glimmer suddenly illuminates the room.',
+    speaker: 'Narrator',
+    background: 'office',
+    nextId: 'glimmer_cutscene',
+  },
+  // cutscene glowing shimmer
+  {
+    id: 'glimmer_cutscene',
+    type: 'cutscene',
+    animationId: 'glow_burst',
+    nextId: 'glimmer_text',
+  },
+  {
+    id: 'glimmer_text',
+    text: '(Huh? It\'s that glowing shimmer again...)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'flash_cutscene',
+  },
+  // cutscene light flash
+  {
+    id: 'flash_cutscene',
+    type: 'cutscene',
+    animationId: 'light_flash',
+    nextId: 'intro_0',
+  },
+  {
+    id: 'intro_0',
+    text: 'Ahhhhhh! What was that?!',
+    speaker: 'Mayra',
+    characterRight: 'mayraShocked',
+    nextId: 'pip_appearance_cutscene',
+  },
+  // cutscene pip appearance flash
+  {
+    id: 'pip_appearance_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_appearance_flash',
+    nextId: 'intro_1',
+  },
+  {
+    id: 'intro_1',
+    text: 'Wh... what?? Who are you? Where did you come from?!',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'intro_2',
+  },
+  {
+    id: 'intro_2',
+    text: '....Huh.',
+    speaker: 'Floating Ball',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'intro_3',
+  },
+  {
+    id: 'intro_3',
+    text: 'Is... Am I imagining this?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'intro_4',
+  },
+  {
+    id: 'intro_4',
+    text: 'No, this is real. I am here to help you. But I have been asleep for a long time, so I am also really surprised to be here.',
+    speaker: 'Floating Ball',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'intro_5',
+  },
+  {
+    id: 'intro_5',
+    text: 'How... What are you? How can you talk?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'intro_6',
+  },
+  {
+    id: 'intro_6',
+    text: 'Pffft, how can you talk? You can talk too, can\'t you? That\'s just how it is.',
+    speaker: 'Floating Ball',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'intro_7',
+  },
+  {
+    id: 'intro_7',
+    text: 'I am Pip. You can think of me as the manifestation of learning and reflection.',
+    speaker: 'Floating Ball',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'intro_8',
+  },
+  {
+    id: 'intro_8',
+    text: 'I appear when people are in need of guidance.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'intro_9',
+  },
+  {
+    id: 'intro_9',
+    text: 'Pip?... I am Mayra. Nice to meet you, Pip.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'intro_10',
+  },
+  {
+    id: 'intro_10',
+    text: 'Hey, I actually have to confess something to you, Mayra.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'intro_11',
+  },
+  {
+    id: 'intro_11',
+    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am this ugly grey… and I feel so weak…',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'intro_12',
+  },
+  {
+    id: 'intro_12',
+    text: 'But you will help me to get stronger again, right??',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'choice_help',
+  },
+  {
+    id: 'choice_help',
+    text: 'But you will help me to get stronger again, right??',
+    speaker: 'Pip',
+    options: [
+      { text: 'Yes, sure!', nextId: 'help_0', choice: { helpPip: true } }, 
+      { text: 'I have to leave, actually', nextId: 'leave_0', choice: { helpPip: false } },
+    ],
+  },
+  // _____ Help Pip Option Start _____
+  {
+    id: 'help_0',
+    text: 'Okay, sure. What can I do?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'help_1',
+  },
+  {
+    id: 'help_1',
+    text: 'Oh great! Thank youuuuuuu, you are my rescue!',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'help_2',
+  },
+  {
+    id: 'help_2',
+    text: 'I will just follow you around and absorb the energy you create.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'help_3',
+  },
+  {
+    id: 'help_3',
+    text: 'What? What does that even mean? How do I create energy? And what do you mean by absorb? Are you like a vampire or something??',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'help_4',
+  },
+  {
+    id: 'help_4',
+    text: 'Pffft, no, I am not a vampire! I just need to be around you and see you doing things. That will give me energy. I will get stronger the more you do things and the more energy I have. You will see.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'help_5',
+  },
+  {
+    id: 'help_5',
+    text: 'Do you have plans now? Where are we going next?',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'help_6',
+  },
+  {
+    id: 'help_6',
+    text: 'Yes, I will teach a tutorial session now. I should actually be on my way to the classroom right now.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'help_7',
+  },
+  {
+    id: 'help_7',
+    text: 'Perfect, lead the way!',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'toclassroom_0',
+  },
+  // _____ Help Pip Option End _____
+  // _____ Leave Option Start _____
+  {
+    id: 'leave_0',
+    text: 'Sorry, I have to leave now. I am holding a tutorial session in a bit.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'leave_1',
+  },
+  {
+    id: 'leave_1',
+    text: 'Oh, that\'s actually perfect! You don\'t have to worry about me, I will be just behind you and absorb the energy you create.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'leave_2',
+  },
+  {
+    id: 'leave_2',
+    text: 'What? What does that even mean? How do I create energy? And what do you mean by absorb? Are you like a vampire or something??',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'leave_3',
+  },
+  {
+    id: 'leave_3',
+    text: 'Pffft, no, I am not a vampire! I just need to be around you and see you doing things. That will give me energy. I will get stronger the more you do things and the more energy I have. You will see.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraStressed',
+    nextId: 'toclassroom_0',
+  },
+  // _____ Leave Option Start _____
+
+  {
+    id: 'toclassroom_0',
+    text: 'How do I explain the floating ball behind me to the students?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'toclassroom_1',
+  },
+  {
+    id: 'toclassroom_1',
+    text: 'Don\'t worry, they can\'t see me.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'toclassroom_2',
+  },
+  {
+    id: 'toclassroom_2',
+    text: '(Okay... If he says so...)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+  },
+]
+
+export const scenario1Dialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
+    speaker: 'Narrator',
+    background: 'studyroom',
+    nextId: 'node_0',
+  },
+  {
+    id: 'node_0',
+    text: 'Hey everyone!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'node_1',
+  },
+  {
+    id: 'node_1',
+    text: 'The students look up and mumble quiet hellos back before averting their gaze again. Mayra moves to the front desk and sits down.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'node_2',
+  },
+  {
+    id: 'node_2',
+    text: '(Alrigth, the tutorial starts in a few minutes. I can do this.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'node_3',
+  },
+  {
+    id: 'node_3',
+    text: '(I remember that the start of the tutorial is the most important part. But first, I should probably introduce myself.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'choice_introduction',
+  },
+  {
+    id: 'choice_introduction',
+    text: 'How will Mayra introduce herself to the students?',
+    options: [
+      { text: 'Friendly introduction', nextId: 'friendly', choice: { introStyle: 'friendly' } },
+      { text: 'Straight forward introduction', nextId: 'forward', choice: { introStyle: 'forward' } },
+    ],
+  },
+  {
+    id: 'friendly',
+    text: 'It is nice to meet you all! My name is Mayra and I will be your tutor for this semester. I am really looking forward to working with you all and having a great time together!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'node_4',
+  },
+  {
+    id: 'forward',
+    text: 'Hello everyone, I am Mayra and I will be your tutor for this semester. Let\'s get started.',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'node_4',
+  },
+  {
+    id: 'node_4',
+    text: '(Alright, now how to start…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraThinking',
+    nextId: 'minigame_sorting',
+  },
+  {
+    id: 'minigame_sorting',
+    type: 'minigame',
+    minigameId: 'sorting_game',
+    nextId: 'after_minigame',
+  },
+  {
+    id: 'after_minigame',
+    text: '(I know how to start now. I feel ready.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'starting',
+  },
+  {
+    id: 'starting',
+    type: 'branching',
+    text: 'Mayra starts the tutorial and follows her plan.', 
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(1) || ids.includes(3),
+        nextId: 'overview',
+      },
+      { 
+        condition: (ids) => ids.includes(1) || ids.includes(3),
+        nextId: 'doubleintro',
+      },
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'overview',
+    type: 'branching',
+    text: '(The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.)',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(1) || ids.includes(3),
+        nextId: 'doubleintro',
+      },
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'doubleintro',
+    type: 'branching',
+    text: '(Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(2),
+        nextId: 'fail',
+      },
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'doomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'doomed',
+    text: '(They don’t look amused at all about my sarcastic joke…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    nextId: 'path_default',
+  },
+  {
+    id: 'fail',
+    type: 'branching',
+    text: '(The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    branchConditions: [
+      { 
+        condition: (ids) => ids.includes(8),
+        nextId: 'faildoomed',
+      },
+      { condition: () => true, nextId: 'path_default' }, // fallback
+    ],
+  },
+  {
+    id: 'faildoomed',
+    text: '(And they don’t look amused at all about my sarcastic joke…)',
+    speaker: 'Mayra',
+    characterRight: 'mayraStressed',
+    nextId: 'faildoomed2',
+  },
+  {
+    id: 'faildoomed2',
+    text: '(The student in the back looks genuinely panicked. I think this was a bad start….)',
+    speaker: 'Mayra',
+    characterRight: 'mayraWorried',
+    nextId: 'path_default',
+  },
+  {
+    id: 'path_default',
+    text: '...',
+    speaker: 'Narrator',
+    nextId: 'path_default2',
+  },
+  {
+    id: 'path_default2',
+    text: 'I think we are ready to start with exercise 1 now. Please, look at the exercise sheet and…',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'clock_cutscene',
+  },
+  // insert choice based dialogue
+  // insert clock animation cutscene
+  {
+    id: 'clock_cutscene',
+    type: 'cutscene',
+    animationId: 'clock_spin',
+    nextId: 'end_0',
+  },
+  {
+    id: 'end_0',
+    text: 'Seems like this is it for today. I hope you enjoyed your time and I will see you all next week!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'end_1',
+  },
+  {
+    id: 'end_1',
+    text: 'The students mumble a quiet goodbye and start packing their things. They leave the classroom one by one.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'end_2',
+  },
+  {
+    id: 'end_2',
+    text: 'Mayra\'s gaze falls on Pip. She hadn\'t noticed him at all during the tutorial and had almost forgotten about him.',
+    speaker: 'Narrator',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'end_3',
+  },
+  {
+    id: 'end_3',
+    text: 'Hey, congratulations on finishing your first tutorial session!',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'end_4',
+  },
+  {
+    id: 'end_4',
+    text: 'I would like to talk to you about it for a bit. It is important that you not only make decisions but also think about them retrospectively.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+  },
+]
+
+export const scenario1outro: SceneNode[] = [
+  // start with cutscene of pip gaining color and energy
+  {
+    id: 'pip_energy_cutscene',
+    type: 'cutscene',
+    animationId: 'energy_gain',
+    background: 'studyroom',
+    nextId: 'pip_energy_1',
+  },
+  {
+    id: 'pip_energy_1',
+    text: 'Wonderful! I can already feel that I am getting stronger! Thank you for that!',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_2',
+  },
+  {
+    id: 'pip_energy_2',
+    text: 'Oh, that\'s great to hear! I am glad I could help you with that.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_3',
+  },
+  {
+    id: 'pip_energy_2',
+    text: '(Although I still don\'t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.)',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_3',
+  },
+  {
+    id: 'pip_energy_3',
+    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me there thoughts?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_4',
+  },
+  {
+    id: 'pip_energy_4',
+    text: 'Yes, that is correct! It is a part of my power to sense the thoughts and feelings of people that have been in your situtation before.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_5',
+  },
+  {
+    id: 'pip_energy_5',
+    text: 'See it as a sort of asynchronous discussion with those who were there before you. It might help you to get a better understanding of your thoughts and decisions.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_6',
+  },
+  {
+    id: 'pip_energy_6',
+    text: 'Wow, that is a really intruiging power...',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'pip_energy_7',
+  },
+  {
+    id: 'pip_energy_7',
+    text: 'Hey, I think I will leave now and go home. What are you going to do now?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_8',
+  },
+  {
+    id: 'pip_energy_8',
+    text: 'Oh don\'t worry about me, I will be just fine. You will see me again when you need me.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+  },
+]
+
+export const scenario2intro: SceneNode[] = [
+  {
+    id: 'start',
+    text: '',
+    speaker: 'Narrator',
+    background: 'meetingroom',
+  },
+]
+
+export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
     id: 'start',
     text: 'Infront of Mayra lies a silent classroom filled with students. Most of them are looking down at their tablets or exercise sheets, some look directly at her with an expectant gaze.',
@@ -79,14 +889,14 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'intro_0',
     text: '(Alright, so far so good. The next step is exercise one. I should let them work on it in some way. Hmmm, should I maybe split them into groups? Or is it more effective if everyone is on their own?)',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'decision_0',
   },
   {
     id: 'decision_0',
     text: 'How should Mayra organize the work on the exercise?',
     options: [
-      { text: 'Let them work on their own.', nextId: 'choice_0_0', choice: { workOrganization: 'individual' } },
+      { text: 'Let them work on their own', nextId: 'choice_0_0', choice: { workOrganization: 'individual' } },
       { text: 'Have them work in groups', nextId: 'choice_0_1', choice: { workOrganization: 'groups' } },
       { text: 'Have them work in pairs', nextId: 'choice_0_2', choice: { workOrganization: 'pairs' } },
     ],
@@ -96,7 +906,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'choice_0_0',
     text: 'Okay everyone! Next, please work on exercise one by yourself. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
@@ -104,7 +914,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'choice_0_1',
     text: 'Okay everyone! Next, please work on exercise one together in groups. Try to group together with the people next to you so you build groups of four. Five or three people are also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
@@ -112,7 +922,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'choice_0_2',
     text: 'Okay everyone! Next, please pair up to work on exercise one. You can just turn to the person sitting next to you. If someone is left, one group of three is also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'work_0',
   },
   // Work Scenario start
@@ -120,14 +930,14 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'work_0',
     text: '(Okay, looks like everyone is starting to work. At least they are looking at the exercise sheet and some already starting writing.)',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'work_1',
   },
   {
     id: 'work_1',
     text: '(Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.)',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'decision_1',
   },
   {
@@ -143,14 +953,14 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'choice_1_0',
     text: 'Remember, if you have any questions, you can ask anytime. I am right here to answer them.',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'front_0',
   },
   {
     id: 'front_0',
     text: 'Mayra sits in a rather quiet room for a while. A slight murmur goes through the room, while most students keep their eyes averted to their paper. Then a girl raises her hand. Mayra helps her and a few more students with their questions until the first students seem to have finished the task.',
     speaker: 'Narrator',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'ending_0',
   },
   // Option 1 of Choice 1 start
@@ -158,39 +968,39 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'choice_1_1',
     text: 'Mayra starts walking around from table to table to see how the students are doing. She comes across a boy that does not seem to have written anything yet. He stares at the paper with a frown.',
     speaker: 'Narrator',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'walking_0',
   },
   {
     id: 'walking_0',
     text: 'Hey, are you managing okay? Do you need any help?',
     speaker: 'Mayra',
-    characterLeft: mayra,
-    characterRight: guy,
+    characterLeft: 'mayra',
+    characterRight: 'boyStudent',
     nextId: 'walking_1',
   },
   {
     id: 'walking_1',
     text: 'Uhmm…. I just don\’t really know how to start…',
     speaker: 'Student',
-    characterLeft: mayra,
-    characterRight: guy,
+    characterLeft: 'mayra',
+    characterRight: 'boyStudent',
     nextId: 'walking_2',
   },
   {
     id: 'walking_2',
     text: 'Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…',
     speaker: 'Mayra',
-    characterLeft: mayra,
-    characterRight: guy,
+    characterLeft: 'mayra',
+    characterRight: 'boyStudent',
     nextId: 'walking_3',
   },
   {
     id: 'walking_3',
     text: 'Mayra starts explaining to the boy what to do. He still seems a bit confused at first, but after starting with the first step he slowly seems more engaged within the exercise. Mayra continues to walk around from table to table and answers a few other questions before returning to her desk in the front.',
     speaker: 'Narrator',
-    characterLeft: mayra,
-    characterRight: guy,
+    characterLeft: 'mayra',
+    characterRight: 'boyStudent',
     nextId: 'ending_0',
   },
   // Ending start
@@ -198,21 +1008,21 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
     id: 'ending_0',
     text: 'We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'ending_1',
   },
   {
     id: 'ending_1',
     text: 'The tutorial goes on for another 60 minutes quite uneventfully.',
     speaker: 'Narrator',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'ending_2',
   },
   {
     id: 'ending_2',
     text: 'I think that\’s it for today! Thank you all for coming and I will see you next week.',
     speaker: 'Mayra',
-    characterLeft: mayra,
+    characterLeft: 'mayra',
     nextId: 'ending_3',
   },
   {
@@ -227,7 +1037,7 @@ export const scenario5Dialogue: DialogueNode[] = [ // Dialogue data for scenario
 /**
  * Debugging dialogue data from TUM's Tutor Academy
  */
-export const tutorAcademyDialogues: DialogueNode[] = [
+export const tutorAcademyDialogues: SceneNode[] = [
   {
     id: 'start',
     text: 'Hello! This is a prototype for a self reflection system based on a scenario from the Tutor Academy by ProLehre. Enjoy your journey!',
@@ -283,3 +1093,4 @@ export const tutorAcademyDialogues: DialogueNode[] = [
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
   },
 ];
+

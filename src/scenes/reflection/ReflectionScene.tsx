@@ -4,9 +4,10 @@ import { UserResponse } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
+import { PipImage } from '../../components/PipImage';
 
 // Set scene relevant variables
-let session = 5; 
+//let session = 5; 
 
 /**
  * Reflection scene driven by reflectionData
@@ -15,8 +16,11 @@ export const ReflectionScene: React.FC = () => {
   const currentBackground = useGameStore((state) => state.currentBackground);
   const advanceReflection = useGameStore((state) => state.advanceReflection);
   const submitReflection = useGameStore((state) => state.submitReflection);
+  const evaluateReflectionInput = useGameStore((state) => state.evaluateReflectionInput);
 
   const currentDialogue = useCurrentReflection();
+  const session = useGameStore((state) => state.session);
+  const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
@@ -52,12 +56,28 @@ export const ReflectionScene: React.FC = () => {
     initializeReflection();
   }, []);
 
+  // Auto-advance branching nodes
+  useEffect(() => {
+    if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
+      const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
+      if (match) advanceReflection(match.nextId);
+    }
+  }, [currentDialogue]);
+
   // Update visibility when current dialogue changes
   useEffect(() => {
     setIsDialogueVisible(currentDialogue !== null);
     setShowThoughtBubbles(currentDialogue?.showBubbles === true);
     setIsAwaitingInput(false);
   }, [currentDialogue]);
+
+  const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>) => {
+    if (choice) {
+      const [key, value] = Object.entries(choice)[0];
+      useGameStore.getState().makeChoice(key, value);
+    }
+    advanceReflection(nextId);
+  };
 
   const handleAdvance = () => {
     if (!currentDialogue) return;
@@ -69,7 +89,6 @@ export const ReflectionScene: React.FC = () => {
         setIsAwaitingInput(true);
         return;
       }
-      setShowThoughtBubbles(false);
       advanceReflection();
       return;
     }
@@ -88,6 +107,9 @@ export const ReflectionScene: React.FC = () => {
 
     // Save to the store so everything stays centralized
     submitReflection(currentDialogue.id, input);
+
+    // Evaluate the input and score it
+    evaluateReflectionInput(input);
 
     // Save the user's response to local state
     const newResponse: UserResponse = {
@@ -137,6 +159,7 @@ export const ReflectionScene: React.FC = () => {
           dialogue={currentDialogue}
           onAdvance={handleAdvance}
           onSubmitInput={handleSubmitInput}
+          onSelectOption={handleSelectOption}
           isVisible={isDialogueVisible}
           isAwaitingInput={isAwaitingInput}
           canContinue={canContinue}
@@ -153,10 +176,8 @@ export const ReflectionScene: React.FC = () => {
       {/* Character image */}
       {currentDialogue?.showCharacter === true && (
         <div className="flex flex-row justify-center h-full items-end pb-8">
-          <img
+          <PipImage
             className="z-10 object-contain scale-[90%] max-w-full max-h-[50%]"
-            src="../../assets/Sphere.png"
-            alt="sphere"
           />
         </div>
       )}
