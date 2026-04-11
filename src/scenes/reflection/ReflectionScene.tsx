@@ -89,7 +89,6 @@ export const ReflectionScene: React.FC = () => {
         setIsAwaitingInput(true);
         return;
       }
-      setShowThoughtBubbles(false);
       advanceReflection();
       return;
     }

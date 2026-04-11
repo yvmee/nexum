@@ -56,7 +56,7 @@ export const reflectionDialogue1: ReflectionNode[] = [
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
-    nextId: 'reflect_1',
+    nextId: 'reflect_2',
   },
   {
     id: 'same_approach',
@@ -64,11 +64,11 @@ export const reflectionDialogue1: ReflectionNode[] = [
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
-    nextId: 'reflect_1',
+    nextId: 'reflect_2',
   },
   {
     id: 'reflect_1',
-    text: 'Can you finish this sentence: "The most important thing to consider when planning the start of a tutorial is..."',
+    text: 'Can you finish this sentence: "The most important part of the start of the first tutorial is..."',
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
@@ -77,6 +77,14 @@ export const reflectionDialogue1: ReflectionNode[] = [
   {
     id: 'reflect_2',
     text: 'Can you finish this sentence: "What was most surprising to me was..."',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'reflect_3',
+  },
+  {
+    id: 'reflect_3',
+    text: 'What do you remember from tutorials you attended before? What was something you personally liked about how the tutorial was started?',
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
