@@ -23,12 +23,12 @@ function scoreReflectionInput(input: string): number {
 
   let score = 1; // Base score for any non-empty input
 
-  // Length-based scoring (more thoughtful responses tend to be longer)
+  // Length-based scoring
   if (trimmed.length > 30) score += 1;
   if (trimmed.length > 80) score += 1;
   if (trimmed.length > 150) score += 1;
 
-  // Reflective language bonus
+  // Reflective language bonus (very basic heuristics)
   const reflectivePatterns = [
     /\b(because|since|therefore|realized|learned|understand|think|feel|notice|consider)\b/i,
     /\b(maybe|perhaps|could|would|should|might|wonder)\b/i,
@@ -285,7 +285,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       const totalScore = reflectionInputScores.reduce((sum, s) => sum + s, 0);
       const maxPossible = reflectionInputScores.length * 5;
       const scoreRatio = totalScore / maxPossible; // 0 to 1
-      const colorIncrease = Math.round(scoreRatio * 25); // Up to +25 per reflection
+      const colorIncrease = Math.round(scoreRatio * 20); // Up to +20 per reflection
       const newColorValue = Math.min(pipColorValue + colorIncrease, 100);
       console.log(`Reflection score: ${totalScore}/${maxPossible} (${Math.round(scoreRatio * 100)}%). Color: ${pipColorValue} -> ${newColorValue}`);
       set({ pipColorValue: newColorValue, reflectionInputScores: [] });

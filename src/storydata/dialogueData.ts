@@ -51,7 +51,6 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -793,6 +792,7 @@ export const scenario1outro: SceneNode[] = [
     id: 'pip_energy_cutscene',
     type: 'cutscene',
     animationId: 'energy_gain',
+    background: 'studyroom',
     nextId: 'pip_energy_1',
   },
   {
@@ -801,6 +801,79 @@ export const scenario1outro: SceneNode[] = [
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
+    nextId: 'pip_energy_2',
+  },
+  {
+    id: 'pip_energy_2',
+    text: 'Oh, that\'s great to hear! I am glad I could help you with that.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_3',
+  },
+  {
+    id: 'pip_energy_2',
+    text: '(Although I still don\'t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.)',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_3',
+  },
+  {
+    id: 'pip_energy_3',
+    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me there thoughts?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_4',
+  },
+  {
+    id: 'pip_energy_4',
+    text: 'Yes, that is correct! It is a part of my power to sense the thoughts and feelings of people that have been in your situtation before.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_5',
+  },
+  {
+    id: 'pip_energy_5',
+    text: 'See it as a sort of asynchronous discussion with those who were there before you. It might help you to get a better understanding of your thoughts and decisions.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_6',
+  },
+  {
+    id: 'pip_energy_6',
+    text: 'Wow, that is a really intruiging power...',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraThinking',
+    nextId: 'pip_energy_7',
+  },
+  {
+    id: 'pip_energy_7',
+    text: 'Hey, I think I will leave now and go home. What are you going to do now?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_8',
+  },
+  {
+    id: 'pip_energy_8',
+    text: 'Oh don\'t worry about me, I will be just fine. You will see me again when you need me.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+  },
+]
+
+export const scenario2intro: SceneNode[] = [
+  {
+    id: 'start',
+    text: '',
+    speaker: 'Narrator',
+    background: 'meetingroom',
   },
 ]
 
