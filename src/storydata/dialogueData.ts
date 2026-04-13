@@ -868,12 +868,251 @@ export const scenario1outro: SceneNode[] = [
   },
 ]
 
-export const scenario2intro: SceneNode[] = [
+export const splitintro: SceneNode[] = [
   {
     id: 'start',
-    text: '',
+    text: 'A week later, Mayra is back on campus.',
     speaker: 'Narrator',
-    background: 'meetingroom',
+    background: 'hallway',
+    nextId: 'friendintro_0',
+  },
+  {
+    id: 'friendintro_0',
+    text: 'She is making her way through the hallway, as she suddenly sees a familiar figure sitting on a bench.',
+    speaker: 'Narrator',
+    nextId: 'friendintro_1',
+  },
+  {
+    id: 'friendintro_1',
+    text: 'Oh hey Mayra! It\'s good to see you! I was looking for you actually.',
+    speaker: 'Student',
+    characterLeft: 'noah',
+    nextId: 'friendintro_2',
+  },
+  {
+    id: 'friendintro_2',
+    text: '(This is Noah, we met in the first semester and have been friends since then. I haven\'t seen him much this semester though, although I know that he is taking the lecture I am tutoring for.)',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'friendintro_3',
+  },
+  {
+    id: 'friendintro_3',
+    text: 'Hey Noah! Yeah, it\'s good to see you too! What\'s up?',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'friendintro_4',
+  },
+  {
+    id: 'friendintro_4',
+    text: 'I switched into your tutorial group! I hope that\'s okay? I thought it would be nice to have a familiar face there.',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'friendintro_5',
+  },
+  {
+    id: 'friendintro_5',
+    text: 'Oh, that\'s actually great! It will be fun to have you there. And I think it will calm my nerves a bit to have a friend in the group.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'friendintro_6',
+  },
+  {
+    id: 'friendintro_6',
+    text: 'What are you doing now until the tutorial starts? Do you want to grab a coffee or something?',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'friendintro_7',
+  },
+  {
+    id: 'friendintro_7',
+    text: '(I have already planned the content for the tutorial, so I do have some time to spare. My plan was to prepare a bit more in the study room, but I guess it would be nice to have a coffee with Noah.)',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'split_decision',
+  },
+  {
+    id: 'split_decision',
+    text: 'My plan was to prepare a bit more in the study room, but I guess it would be nice to have a coffee with Noah.',
+    options: [
+      { text: 'Go to the study room', nextId: 'choice_prep', choice: { splitChoice: 'preparation' } },
+      { text: 'Go for a coffee with Noah', nextId: 'choice_coffee', choice: { splitChoice: 'coffee' } },
+    ],
+  },
+  {
+    id: 'choice_coffee',
+    text: 'Sure coffee sounds great! Let\'s go.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+  },
+  {
+    id: 'choice_prep',
+    text: 'Sorry, I still have to prepare the tutorial a bit.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayraStressed',
+    nextId: 'choice_study_1',
+  },
+  {
+    id: 'choice_study_1',
+    text: 'But I will see you in the tutorial room later and maybe we can catch up afterwards?',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'choice_study_2',
+  },
+  {
+    id: 'choice_study_2',
+    text: 'Sure, that sounds good! I will see you later then.',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+  },
+]
+
+export const coffeeDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'You know, it is only like the second week of the semester, but I am already stressed. Is it possible to already be behind somehow?',
+    speaker: 'Noah',
+    background: 'cafe',
+    characterLeft: 'noahSurprised',
+    characterRight: 'mayra',
+    nextId: 'stressed_question',
+  },
+  {
+    id: 'stressed_question',
+    text: 'You know, it is only like the second week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    options: [
+      { text: 'Yes, I feel the same way', nextId: 'choice_stressed'},
+      { text: 'No, I can\'t relate at all', nextId: 'choice_not_stressed' },
+    ],
+  },
+  {
+    id: 'choice_stressed',
+    text: 'Yeah, I know what you mean. I also feel like I am already behind and that there is so much to do.',
+    speaker: 'Mayra',
+    characterLeft: 'noahSurprised',
+    characterRight: 'mayraStressed',
+    nextId: 'stressed_1',
+  },
+  {
+    id: 'stressed_1',
+    text: 'Well hey, at least we are in the same boat!',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'stressed_2',
+  },
+  {
+    id: 'stressed_2',
+    text: 'But I did end up signing up for a lot of courses this semester, so I guess it is not that surprising that I feel overwhelmed already... But there was no way around it, I need the credits.',
+    speaker: 'Noah',
+    characterLeft: 'noahThinking',
+    characterRight: 'mayra',
+    nextId: 'stressed_3',
+  },
+  {
+    id: 'stressed_3',
+    text: 'You are the architect of your own destiny after all, am I right? Haha.',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'talk_0',
+  },
+  {
+    id: 'choice_not_stressed',
+    text: 'Actually, I can\'t really relate to that. I think it is still a bit too early to be behind with a lecture. I don\'t know how you manage to do that.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'not_stressed_1',
+  },
+  {
+    id: 'not_stressed_1',
+    text: 'Wow Mayra, as organized and on top of things as always! I wish I could be like you.',
+    speaker: 'Noah',
+    characterLeft: 'noahSurprised',
+    characterRight: 'mayra',
+    nextId: 'talk_0',
+  },
+  {
+    id: 'talk_0',
+    text: 'But how about you? How are you doing with the tutorial and stuff?',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'talk_question',
+  },
+  {
+    id: 'talk_question',
+    text: 'But how about you? How are you doing with the tutorial and stuff?',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    options: [
+      { text: 'It\'s going great', nextId: 'tutorial_good'},
+      { text: 'It is stressing me out', nextId: 'tutorial_stressful' },
+    ],
+  },
+  {
+    id: 'tutorial_good',
+    text: 'It is actually going really well! I am really enjoying it and I think the students are great.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'end_0',
+  },
+  {
+    id: 'tutorial_stressful',
+    text: 'It is actually stressing me out a bit. I am not sure if I am doing everything right and I am a bit worried about how the students are doing and if they are happy with the tutorial.',
+    speaker: 'Mayra',
+    characterLeft: 'noahSurprised',
+    characterRight: 'mayraStressed',
+    nextId: 'tutorial_stressful_1',
+  },
+  {
+    id: 'tutorial_stressful',
+    text: 'Oh don\'t worry, I am sure you are doing great! I can understand that, it is a lot of responsibility, but from now on you will also have me in the tutorial as emotional support!',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayraStressed',
+    nextId: 'tutorial_stressful_1',
+  },
+  {
+    id: 'tutorial_stressful_1',
+    text: 'Haha that is true. Thank you for the encouragement.',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    nextId: 'end_0',
+  },
+  {
+    id: 'end_0',
+    text: 'Speaking of the tutorial, I should probably head there now. Do you want to go together?',
+    speaker: 'Mayra',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+  },
+
+]
+
+export const preparationDialogue: SceneNode[] = [
+
+]
+
+export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scenario 4 - Sandwich
+  {
+    id: 'start',
+    
   },
 ]
 

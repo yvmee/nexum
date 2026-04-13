@@ -8,7 +8,9 @@ import {
   secretEnd, 
   startDialogue, 
   scenario1outro,
-  scenario2intro,
+  splitintro,
+  coffeeDialogue,
+  preparationDialogue,
 } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
 import { reflectionDialogue1 } from './reflectionData';
@@ -89,13 +91,30 @@ export const storyFlow: StoryFlow = {
       id: 'scenario1outro',
       dialogueNodes: scenario1outro,
       transitions: [
-        { targetChunkId: 'scenario2intro' }, 
+        { targetChunkId: 'splitintro' }, 
       ],
     },
 
-    scenario2intro: {
-      id: 'scenario2intro',
-      dialogueNodes: scenario2intro,
+    splitintro: {
+      id: 'splitintro',
+      dialogueNodes: splitintro,
+      transitions: [
+        { targetChunkId: 'coffeeDialogue', condition: (choices) => choices['splitChoice'] === 'coffee' }, 
+        { targetChunkId: 'preparationDialogue', condition: (choices) => choices['splitChoice'] === 'preparation' },
+      ],
+    },
+
+    coffeeDialogue: {
+      id: 'coffeeDialogue',
+      dialogueNodes: coffeeDialogue,
+      transitions: [
+        { targetChunkId: 'work_organization' }, 
+      ],
+    },
+
+    preparationDialogue: {
+      id: 'preparationDialogue',
+      dialogueNodes: preparationDialogue,
       transitions: [
         { targetChunkId: 'work_organization' }, 
       ],

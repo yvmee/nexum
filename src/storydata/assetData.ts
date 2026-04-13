@@ -3,6 +3,7 @@ import lecturehall from "../../assets/backgrounds/BackgroundLecturehall.png";
 import hallway from "../../assets/backgrounds/BackgroundHallway.png";
 import office from "../../assets/backgrounds/BackgroundOffice.png";
 import studyroom from "../../assets/backgrounds/BackgroundStudyroom.png";
+import cafe from "../../assets/backgrounds/BackgroundCafe.png";
 
 // Character portraits
 import pip from "../../assets/characters/Sphere.png";
@@ -11,6 +12,10 @@ import mayraShocked from "../../assets/characters/StudentShocked.png";
 import mayraStressed from "../../assets/characters/StudentStressed.png";
 import mayraThinking from "../../assets/characters/StudentThinking.png";
 import mayraWorried from "../../assets/characters/StudentWorried.png";
+import noah from "../../assets/characters/MaleStudent.png";
+import noahThinking from "../../assets/characters/MaleStudentThinking.png";
+import noahSurprised from "../../assets/characters/MaleStudentSurprised.png";
+import noahWorried from "../../assets/characters/MaleStudentWorried.png";
 import boyStudent from "../../assets/characters/GuyPortrait.png";
 import professor from "../../assets/characters/ProfessorPortrait.png";
 
@@ -20,6 +25,7 @@ export const backgrounds = { // Add background assets here
   hallway,
   office,
   studyroom,
+  cafe,
 };
 
 export const characters = { // Add character assets here
@@ -29,6 +35,10 @@ export const characters = { // Add character assets here
   mayraStressed,
   mayraThinking,
   mayraWorried,
+  noah,
+  noahThinking,
+  noahSurprised,
+  noahWorried,
   boyStudent,
   professor,
 };
