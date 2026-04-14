@@ -5,15 +5,22 @@ import {
   pipIntroDialogue, 
   scenario1Dialogue, 
   scenario5Dialogue, 
+  scenario5outro,
   secretEnd, 
   startDialogue, 
   scenario1outro,
   splitintro,
   coffeeDialogue,
   preparationDialogue,
+  scenarioSandwichDialogue,
+  sandwichOutro,
 } from './dialogueData';
 import { reflectionDialogues } from './reflectionData';
-import { reflectionDialogue1 } from './reflectionData';
+import { 
+  reflectionDialogue1, 
+  reflectionDialogueSandwich,
+  reflectionDialogue5,
+} from './reflectionData';
 
 // Debugging story flow
 
@@ -108,7 +115,25 @@ export const storyFlow: StoryFlow = {
       id: 'coffeeDialogue',
       dialogueNodes: coffeeDialogue,
       transitions: [
-        { targetChunkId: 'work_organization' }, 
+        { targetChunkId: 'sandwichDialogue' }, 
+      ],
+    },
+
+    sandwichDialogue: {
+      id: 'sandwichDialogue',
+      dialogueNodes: scenarioSandwichDialogue,
+      reflectionSessionNumber: 2,
+      reflectionNodes: reflectionDialogueSandwich,
+      transitions: [
+        { targetChunkId: 'sandwichOutro' }, 
+      ],
+    },
+
+    sandwichOutro: {
+      id: 'sandwichOutro',
+      dialogueNodes: sandwichOutro,
+      transitions: [
+        { targetChunkId: '' }, 
       ],
     },
 
@@ -123,12 +148,30 @@ export const storyFlow: StoryFlow = {
     work_organization: {
       id: 'work_organization',
       dialogueNodes: scenario5Dialogue,
-      reflectionNodes: reflectionDialogues[0],
+      reflectionNodes: reflectionDialogue5,
+      reflectionSessionNumber: 5,
       transitions: [
-        { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
-        { targetChunkId: 'end' },
+        { targetChunkId: 'scenario5Outro' },
       ],
     },
+
+    scenario5Outro: {
+      id: 'scenario5Outro',
+      dialogueNodes: scenario5outro,
+      transitions: [
+        { targetChunkId: '' },
+      ],
+    },
+
+    // work_organization: {
+    //   id: 'work_organization',
+    //   dialogueNodes: scenario5Dialogue,
+    //   reflectionNodes: reflectionDialogue5,
+    //   transitions: [
+    //     { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
+    //     { targetChunkId: 'end' },
+    //   ],
+    // },
 
     end: {
       id: 'end',
