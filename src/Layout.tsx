@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GameContainer from './pages/GameContainer.tsx';
 import { EndPage } from './pages/EndPage.tsx';

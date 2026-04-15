@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';

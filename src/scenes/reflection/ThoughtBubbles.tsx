@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { ReflectionAnswerData, ReflectionData } from '../../db/database';
+import { ReflectionAnswerData } from '../../db/database';
 
 interface ThoughtBubblesProps {
   reflections: ReflectionAnswerData[];

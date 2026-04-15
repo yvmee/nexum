@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DialogueBox } from '../dialogue/DialogueBox.tsx';
 import { SceneNode } from '../../storydata/dialogueData.ts';
-import { introText } from './textData.ts';
+import { introText } from './TextData.ts';
 import SchoolBackground from '../../../assets/backgrounds/BackgroundLecturehall.png';
 import { useGameStore } from '../../store/useGameStore.ts';
 

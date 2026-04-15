@@ -7,7 +7,7 @@ import {
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { testFlow, gameFlow } from '../storydata/storyFlowData';
+import { gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene

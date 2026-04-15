@@ -24,7 +24,7 @@ export const ReflectionScene: React.FC = () => {
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
-  const [userResponses, setUserResponses] = useState<UserResponse[]>([]);
+  const [_,setUserResponses] = useState<UserResponse[]>([]);
   const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
   const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
   const [canContinue, setCanContinue] = useState<boolean>(true);
