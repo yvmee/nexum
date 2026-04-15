@@ -980,17 +980,9 @@ export const splitintro: SceneNode[] = [
 export const coffeeDialogue: SceneNode[] = [
   {
     id: 'start',
-    text: 'You know, it is only like the second week of the semester, but I am already stressed. Is it possible to already be behind somehow?',
-    speaker: 'Noah',
+    text: 'You know, it is only like the third week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
     background: 'cafe',
     characterLeft: 'noahSurprised',
-    characterRight: 'mayra',
-    nextId: 'stressed_question',
-  },
-  {
-    id: 'stressed_question',
-    text: 'You know, it is only like the second week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
-    characterLeft: 'noah',
     characterRight: 'mayra',
     options: [
       { text: 'Yes, I feel the same way', nextId: 'choice_stressed'},
@@ -1002,7 +994,7 @@ export const coffeeDialogue: SceneNode[] = [
     text: 'Yeah, I know what you mean. I also feel like I am already behind and that there is so much to do.',
     speaker: 'Mayra',
     characterLeft: 'noahSurprised',
-    characterRight: 'mayraStressed',
+    characterRight: 'mayraWorried',
     nextId: 'stressed_1',
   },
   {
@@ -1060,7 +1052,7 @@ export const coffeeDialogue: SceneNode[] = [
     characterRight: 'mayra',
     options: [
       { text: 'It\'s going great', nextId: 'tutorial_good'},
-      { text: 'It is stressing me out', nextId: 'tutorial_stressful' },
+      { text: 'It\'s stressing me out', nextId: 'tutorial_stressful' },
     ],
   },
   {
@@ -1076,19 +1068,19 @@ export const coffeeDialogue: SceneNode[] = [
     text: 'It is actually stressing me out a bit. I am not sure if I am doing everything right and I am a bit worried about how the students are doing and if they are happy with the tutorial.',
     speaker: 'Mayra',
     characterLeft: 'noahSurprised',
-    characterRight: 'mayraStressed',
-    nextId: 'tutorial_stressful_1',
-  },
-  {
-    id: 'tutorial_stressful',
-    text: 'Oh don\'t worry, I am sure you are doing great! I can understand that, it is a lot of responsibility, but from now on you will also have me in the tutorial as emotional support!',
-    speaker: 'Noah',
-    characterLeft: 'noah',
-    characterRight: 'mayraStressed',
+    characterRight: 'mayraWorried',
     nextId: 'tutorial_stressful_1',
   },
   {
     id: 'tutorial_stressful_1',
+    text: 'Oh don\'t worry, I am sure you are doing great! I can understand that, it is a lot of responsibility, but from now on you will also have me in the tutorial as emotional support!',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayraStressed',
+    nextId: 'tutorial_stressful_2',
+  },
+  {
+    id: 'tutorial_stressful_2',
     text: 'Haha that is true. Thank you for the encouragement.',
     speaker: 'Mayra',
     characterLeft: 'noah',
@@ -1097,12 +1089,11 @@ export const coffeeDialogue: SceneNode[] = [
   },
   {
     id: 'end_0',
-    text: 'Speaking of the tutorial, I should probably head there now. Do you want to go together?',
+    text: 'Speaking of the tutorial, I should probably head there now. Let\'s go together?',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
   },
-
 ]
 
 export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scenario 4 - Sandwich
@@ -1437,14 +1428,6 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'end_3',
-    text: '(I almost believed that I had just imagined him after all.)',
-    speaker: 'Mayra',
-    characterRight: 'mayra',
-    characterLeft: 'pip',
-    nextId: 'end_4',
-  },
-  {
-    id: 'end_4',
     text: 'Of course I am! After all, I am still counting on your reflections.',
     speaker: 'Pip',
     characterRight: 'mayra',
@@ -1478,19 +1461,11 @@ export const sandwichOutro: SceneNode[] = [
   },
   {
     id: 'pip_energy_3',
-    text: 'And your effort in reflecing and discussing it with the thought ghosts of the past helps me regain energy and fully come to life again. So truly, thank you Mayra!',
+    text: 'And your effort in reflecting and discussing it with the thought ghosts of the past helps me regain energy and fully come to life again. So truly, thank you Mayra!',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
-    nextId: 'pip_energy_4',
   },
-  {
-    id: 'pip_energy_4',
-    text: 'I am really looking forward to our next talk! I will see you again when you need me!',
-    speaker: 'Pip',
-    characterLeft: 'pip',
-    characterRight: 'mayra',
-  }
 ]
 
 export const preparationDialogue: SceneNode[] = [
@@ -1562,14 +1537,20 @@ export const preparationDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
-    options: [
-      { text: 'Look at the table', nextId: 'table_minigame'},
-    ]
+    nextId: 'feelings_unsure_3',
+  },
+  {
+    id: 'feelings_unsure_3',
+    text: 'Mayra moves over to the professor\'s desk and looks at the material lying there.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'table_minigame',
   },
   {
     id: 'table_minigame',
     type: 'minigame',
-    minigameId: 'paper_table_execc',
+    minigameId: 'variant_paper_table',
     nextId: 'after_table_0',
   },
   {
@@ -1617,7 +1598,7 @@ export const preparationDialogue: SceneNode[] = [
     id: 'table_choice',
     text: 'Do you want to take a look at the material on the table?',
     options: [
-      { text: 'Take a look at the desk', nextId: 'table_minigame'},
+      { text: 'Take a look at the desk', nextId: 'feelings_unsure_3'},
       { text: 'Leave it', nextId: 'no_table' },
     ],
   },
@@ -1692,7 +1673,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'intro_0',
     text: '(Alright, so far so good. The next step is exercise one. I should let them work on it in some way. Hmmm, should I maybe split them into groups? Or is it more effective if everyone is on their own?)',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'decision_0',
   },
   {
@@ -1709,7 +1690,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'choice_0_0',
     text: 'Okay everyone! Next, please work on exercise one by yourself. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
@@ -1717,7 +1698,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'choice_0_1',
     text: 'Okay everyone! Next, please work on exercise one together in groups. Try to group together with the people next to you so you build groups of four. Five or three people are also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'work_0',
   },
   // Option 1 of Choice 0 start
@@ -1725,7 +1706,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'choice_0_2',
     text: 'Okay everyone! Next, please pair up to work on exercise one. You can just turn to the person sitting next to you. If someone is left, one group of three is also fine. We will discuss your solutions afterwards.',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'work_0',
   },
   // Work Scenario start
@@ -1733,14 +1714,14 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'work_0',
     text: '(Okay, looks like everyone is starting to work. At least they are looking at the exercise sheet and some already starting writing.)',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'work_1',
   },
   {
     id: 'work_1',
     text: '(Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.)',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'decision_1',
   },
   {
@@ -1756,14 +1737,14 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'choice_1_0',
     text: 'Remember, if you have any questions, you can ask anytime. I am right here to answer them.',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'front_0',
   },
   {
     id: 'front_0',
     text: 'Mayra sits in a rather quiet room for a while. A slight murmur goes through the room, while most students keep their eyes averted to their paper. Then a girl raises her hand. Mayra helps her and a few more students with their questions until the first students seem to have finished the task.',
     speaker: 'Narrator',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'ending_0',
   },
   // Option 1 of Choice 1 start
@@ -1771,39 +1752,39 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'choice_1_1',
     text: 'Mayra starts walking around from table to table to see how the students are doing. She comes across a boy that does not seem to have written anything yet. He stares at the paper with a frown.',
     speaker: 'Narrator',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'walking_0',
   },
   {
     id: 'walking_0',
     text: 'Hey, are you managing okay? Do you need any help?',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
-    characterRight: 'boyStudent',
+    characterRight: 'mayra',
+    characterLeft: 'boyStudent',
     nextId: 'walking_1',
   },
   {
     id: 'walking_1',
     text: 'Uhmm…. I just don\’t really know how to start…',
     speaker: 'Student',
-    characterLeft: 'mayra',
-    characterRight: 'boyStudent',
+    characterRight: 'mayra',
+    characterLeft: 'boyStudent',
     nextId: 'walking_2',
   },
   {
     id: 'walking_2',
     text: 'Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
-    characterRight: 'boyStudent',
+    characterRight: 'mayra',
+    characterLeft: 'boyStudent',
     nextId: 'walking_3',
   },
   {
     id: 'walking_3',
     text: 'Mayra starts explaining to the boy what to do. He still seems a bit confused at first, but after starting with the first step he slowly seems more engaged within the exercise. Mayra continues to walk around from table to table and answers a few other questions before returning to her desk in the front.',
     speaker: 'Narrator',
-    characterLeft: 'mayra',
-    characterRight: 'boyStudent',
+    characterRight: 'mayra',
+    characterLeft: 'boyStudent',
     nextId: 'ending_0',
   },
   // Ending start
@@ -1811,21 +1792,21 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'ending_0',
     text: 'We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'ending_1',
   },
   {
     id: 'ending_1',
     text: 'The tutorial goes on for another 60 minutes quite uneventfully.',
     speaker: 'Narrator',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'ending_2',
   },
   {
     id: 'ending_2',
     text: 'I think that\’s it for today! Thank you all for coming and I will see you next week.',
     speaker: 'Mayra',
-    characterLeft: 'mayra',
+    characterRight: 'mayra',
     nextId: 'ending_3',
   },
   {
@@ -1856,6 +1837,183 @@ export const scenario5outro: SceneNode[] = [
     speaker: 'Mayra',
     characterLeft: 'pip',
     characterRight: 'mayra',
+  },
+]
+
+export const coffeeToPrepDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'A week later, Mayra arrives back at the university again. Since she has a bit of time until her tutorial starts, she decides to pass it by in the office room.',
+    speaker: 'Narrator',
+    background: 'hallway',
+  },
+]
+
+export const prepToCoffeeDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'The next week, Mayra is back at the university. Before her tutorial starts, she decides to grab something for lunch at the university cafe.',
+    speaker: 'Narrator',
+    background: 'hallway',
+    nextId: 'cafe',
+  },
+  {
+    id: 'cafe',
+    text: 'On her way back, she runs into Noah.',
+    speaker: 'Narrator',
+    background: 'cafe',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+    nextId: 'cafe_1',
+  },
+  {
+    id: 'cafe_1',
+    text: 'Oh hey Noah! How are you doing?',
+    speaker: 'Mayra',
+    background: 'cafe',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+  }
+]
+
+export const connectingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'After the tutorial session, Mayra goes back to the office room one more time.',
+    speaker: 'Narrator',
+    nextId: 'connect_1',
+  },
+  {
+    id: 'connect_1',
+    text: 'You really have recollected some color since I first met you, Pip.',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    background: 'office',
+    nextId: 'connect_2',
+  },
+  {
+    id: 'connect_2',
+    text: 'Yes, that is true! I am really grateful for your reflections and discussions.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'pip_decision',
+  },
+  {
+    id: 'pip_decision',
+    text: '',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    options: [
+      { text: 'Thank Pip for his help', nextId: 'thanks', choice: { thankPip: true } },
+      { text: 'Remind him, that you didn\'t really have a choice', nextId: 'nothanks', choice: { thankPip: false } },
+    ],
+  },
+  {
+    id: 'thanks',
+    text: 'I just want to say thank you for your help, Pip. I really appreciate it.',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'thanks_1',
+  },
+  {
+    id: 'thanks_1',
+    text: 'I am glad I could help you. It was really fun to talk to you and follow you around.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'continue_0',
+  },
+
+  {
+    id: 'nothanks',
+    text: 'I mean, it\'s not like I really had a choice, you just started to follow me around.',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'nothanks_1',
+  },
+  {
+    id: 'nothanks_1',
+    text: 'Well, that is kind of true. I still think it was a fun adventure for both of us.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'continue_0',
+  },
+  {
+    id: 'continue_0',
+    text: 'But it might be time for me to leave now. I feel like my time here is coming to an end.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+  },
+]
+
+export const endingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'Don\'t worry, if you truely need me, I will reapper. But until then, goodbye!',
+    speaker: 'Pip',
+    background: 'office',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+  },
+]
+
+export const trueEndingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'I think you really help me regain all my energy. I feel stronger than ever before!',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    background: 'office',
+    nextId: 'true_ending_1',
+  },
+  {
+    id: 'true_ending_1',
+    text: 'You are truely ready for your adventure in the world of tutoring. I am impressed. And now, I can ascend back home with my regained power and the knowledge that you will be just fine.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+  },
+]
+
+export const secretEndingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'You really helped me Mayra, I feel a lot stronger than before. But I think you are ready to go on without me now.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    background: 'office',
+    nextId: 'secret_ending_1',
+  },
+  {
+    id: 'secret_ending_1',
+    text: 'You know, I was created centuries ago in an accident by a group of scholars. In a way, I am the manifestation of their learning, teaching and reflecting.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'secret_ending_2',
+  },
+  {
+    id: 'secret_ending_2',
+    text: 'I can now ascend back to the world of thought ghosts with my power back. But I will always be there, if you should need me again.',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'secret_ending_3',
+  },
+  {
+    id: 'secret_ending_3',
+    text: 'I will miss you. Good luck with your tutoring adventure, Mayra!',
+    speaker: 'Pip',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
   },
 ]
 
@@ -1921,4 +2079,3 @@ export const tutorAcademyDialogues: SceneNode[] = [
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
   },
 ];
-

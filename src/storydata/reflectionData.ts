@@ -138,7 +138,7 @@ export const reflectionDialogueSandwich: ReflectionNode[] = [
   },
   {
     id: 'happy',
-    text: 'Why do you think your original approach was the best choice?',
+    text: 'Why do you think your approach was the best choice?',
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
