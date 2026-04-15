@@ -14,7 +14,7 @@ export const Layout: React.FC = () => {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <div className="relative w-screen h-screen overflow-hidden font-sans bg-background">
         <Routes>
           <Route path="/" element={<Menu />} />
