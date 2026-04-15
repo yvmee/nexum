@@ -3,11 +3,21 @@ import * as motion from "motion/react-client";
 import { AnimatePresence } from 'motion/react';
 import tableimage from '../../../assets/props/TableTop.png';
 
-interface PaperTableGameProps {
-  onComplete: () => void;
+export interface Paper {
+  id: number;
+  title: string;
+  text: string;
+  x: string;
+  y: string;
+  rotate: number;
 }
 
-const PAPERS = [ // Paper text data 
+interface PaperTableGameProps {
+  onComplete: () => void;
+  papers: Paper[];
+}
+
+export const PAPERS: Paper[] = [ // Paper text data 
   { id: 1, title: 'Motivate Your Students!', text: 'Bring along visual aids or establish a practical connection.\n\nUse your own enthusiasm for the topic to interest the students in the subject and the content being covered.', 
       x: '60%', y: '40%', rotate: 25 },
   { id: 2, title: 'A Positive Atmosphere ', text: 'Create a positive atmosphere by approaching students with openness. Create eye contact and use open facial expressions and gestures. Take their wishes and concerns seriously. This isn’t the place for fearmongering, irony or sarcasm.', 
@@ -16,18 +26,18 @@ const PAPERS = [ // Paper text data
       x: '10%', y: '30%', rotate: -15 },
 ];
 
-export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete }) => {
+export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, papers }) => {
   // Tracks which paper is currently shown in reading overlay, null if none
   const [activePaperId, setActivePaperId] = useState<number | null>(null);
 
-  const activePaper = PAPERS.find((p) => p.id === activePaperId);
+  const activePaper = papers.find((p) => p.id === activePaperId);
 
   return (
     // Table background 
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden" style={{ backgroundImage: `url(${tableimage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       {/* Top-Down Table View with Papers */}
       <div className="absolute inset-0">
-        {PAPERS.map((paper) => (
+        {papers.map((paper) => (
           <motion.div
             key={paper.id}
             className="absolute w-65 h-90 bg-[#f4e4bc] shadow-lg cursor-pointer hover:shadow-xl transition-shadow flex items-center justify-center p-2 text-xs text-center border border-[#d2b48c]"

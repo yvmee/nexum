@@ -93,7 +93,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
                 key={item.id}
                 draggable={!isPlaced}
                 onDragStart={!isPlaced ? (e) => handleDragStartItem(e, item.id) : undefined}
-                className="w-32 h-20 flex items-center justify-center text-xs text-center p-2 rounded border transition-all select-none"
+                className="w-40 h-25 flex items-center justify-center text-xs text-center p-2 rounded border transition-all select-none"
                 style={isPlaced
                   ? { opacity: 0.25, backgroundColor: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)', cursor: 'not-allowed' }
                   : { backgroundColor: 'var(--secondary)', borderColor: 'var(--ring)', color: 'var(--secondary-foreground)', cursor: 'grab' }
@@ -130,7 +130,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
                 onDragOver={(e) => handleDragOverSlot(e, slotIndex)}
                 onDragLeave={handleDragLeaveSlot}
                 onDrop={(e) => handleDropOnSlot(e, slotIndex)}
-                className="w-32 h-20 flex items-center justify-center text-xs text-center p-2 rounded border-2 border-dashed transition-all"
+                className="w-40 h-25 flex items-center justify-center text-xs text-center p-2 rounded border-2 border-dashed transition-all"
                 style={slotItem
                   ? { backgroundColor: 'var(--secondary)', borderColor: 'var(--ring)', color: 'var(--secondary-foreground)' }
                   : isHovered

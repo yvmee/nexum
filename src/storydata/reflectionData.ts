@@ -112,8 +112,71 @@ export const reflectionDialogue1: ReflectionNode[] = [
   },
 ];
 
+export const reflectionDialogueSandwich: ReflectionNode[] = [
+  {
+    id: 'start',
+    text: 'Let\'s take a moment to think about what happened.',
+    showCharacter: true,
+    nextId: 'reflect_0',
+  },
+  {
+    id: 'reflect_0',
+    text: 'Are you happy with your decision regarding Noah?',
+    showCharacter: true,
+    options: [
+      { text: 'Yes', nextId: 'happy', },
+      { text: 'No', nextId: 'change', },
+    ],
+  },
+  {
+    id: 'change',
+    text: 'What would you change about your approach?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'reflect_1',
+  },
+  {
+    id: 'happy',
+    text: 'Why do you think your approach was the best choice?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'reflect_1',
+  },
+  {
+    id: 'reflect_1',
+    text: 'What factor did you consider the most when making your decision on helping Noah?',
+    requiresInput: true,
+    showCharacter: true,
+    inputPrompt: 'Type your thoughts here...',
+    nextId: 'bubbles',
+  },
+
+  {
+    id: 'bubbles',
+    text: 'Here is what other students considered to be important factors to consider.',
+    showBubbles: true,
+    nextId: 'record',
+  },
+  {
+    id: 'record',
+    text: 'Now, what about you? What do you think is the best way to deal with a situation like this?',
+    showBubbles: true,
+    requiresInput: true,
+    inputPrompt: 'Type your thoughts here...',
+    saveResponse: true,
+    nextId: 'end',
+  },
+  {
+    id: 'end',
+    text: 'Thank you for your time.',
+    showCharacter: true,
+  },
+];
+
 // Dialogue for scenario 5 - work organization 
-const reflectionDialogue5: ReflectionNode[] = [
+export const reflectionDialogue5: ReflectionNode[] = [
   {
     id: 'start',
     text: 'Let\'s take a moment to think about what happened.',

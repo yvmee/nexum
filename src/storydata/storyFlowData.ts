@@ -5,16 +5,29 @@ import {
   pipIntroDialogue, 
   scenario1Dialogue, 
   scenario5Dialogue, 
+  scenario5outro,
   secretEnd, 
   startDialogue, 
   scenario1outro,
-  scenario2intro,
+  splitintro,
+  coffeeDialogue,
+  preparationDialogue,
+  scenarioSandwichDialogue,
+  sandwichOutro,
+  coffeeToPrepDialogue,
+  prepToCoffeeDialogue,
+  connectingDialogue,
+  endingDialogue,
+  trueEndingDialogue,
+  secretEndingDialogue,
 } from './dialogueData';
-import { reflectionDialogues } from './reflectionData';
-import { reflectionDialogue1 } from './reflectionData';
+import { 
+  reflectionDialogue1, 
+  reflectionDialogueSandwich,
+  reflectionDialogue5,
+} from './reflectionData';
 
 // Debugging story flow
-
 export const testFlow: StoryFlow = {
   id: 'test_flow',
   initialChunkId: 'intro',
@@ -23,29 +36,94 @@ export const testFlow: StoryFlow = {
       id: 'intro',
       dialogueNodes: startDialogue,
       transitions: [
-        { targetChunkId: 'scenario1' }, 
+        { targetChunkId: 'splitintro'}, 
       ],
     },
 
-    scenario1: {
-      id: 'scenario1',
-      dialogueNodes: scenario1Dialogue,
-      reflectionNodes: reflectionDialogue1,
-      reflectionSessionNumber: 1,
+    splitintro: {
+      id: 'splitintro',
+      dialogueNodes: splitintro,
       transitions: [
-        { targetChunkId: 'outro' }, 
+        { targetChunkId: 'coffeeDialogue', condition: (choices) => choices['splitChoice'] === 'coffee' }, 
+        { targetChunkId: 'preparationDialogue', condition: (choices) => choices['splitChoice'] === 'preparation' },
       ],
     },
 
-    outro: {
-      id: 'outro',
-      dialogueNodes: scenario1outro,
+    coffeeDialogue: {
+      id: 'coffeeDialogue',
+      dialogueNodes: coffeeDialogue,
+      transitions: [
+        { targetChunkId: 'sandwichDialogue' }, 
+      ],
     },
-  },
-};
+
+    sandwichDialogue: {
+      id: 'sandwichDialogue',
+      dialogueNodes: scenarioSandwichDialogue,
+      reflectionSessionNumber: 2,
+      reflectionNodes: reflectionDialogueSandwich,
+      transitions: [
+        { targetChunkId: 'sandwichOutro' }, 
+      ],
+    },
+
+    sandwichOutro: {
+      id: 'sandwichOutro',
+      dialogueNodes: sandwichOutro,
+      transitions: [
+        { targetChunkId: 'coffeeToPrep', condition: (choices) => choices['splitChoice'] === 'coffee'}, 
+        { targetChunkId: 'end'},
+      ],
+    },
+
+    coffeeToPrep: {
+      id: 'coffeeToPrep',
+      dialogueNodes: coffeeToPrepDialogue,
+      transitions: [
+        { targetChunkId: 'preparationDialogue' }, 
+      ],
+    },
+    
+
+    preparationDialogue: {
+      id: 'preparationDialogue',
+      dialogueNodes: preparationDialogue,
+      transitions: [
+        { targetChunkId: 'work_organization' }, 
+      ],
+    },
+
+    work_organization: {
+      id: 'work_organization',
+      dialogueNodes: scenario5Dialogue,
+      reflectionNodes: reflectionDialogue5,
+      reflectionSessionNumber: 5,
+      transitions: [
+        { targetChunkId: 'scenario5Outro' },
+      ],
+    },
+
+    scenario5Outro: {
+      id: 'scenario5Outro',
+      dialogueNodes: scenario5outro,
+      transitions: [
+        { targetChunkId: 'prepToCoffee', condition: (choices) => choices['splitChoice'] === 'preparation'},
+        { targetChunkId: 'end'},
+      ],
+    },
+
+    prepToCoffee: {
+      id: 'prepToCoffee',
+      dialogueNodes: prepToCoffeeDialogue,
+      transitions: [
+        { targetChunkId: 'coffeeDialogue' }, 
+      ],
+    },
+  }
+}
 
 // Simple story flow for now
-export const storyFlow: StoryFlow = {
+export const gameFlow: StoryFlow = {
   id: 'story_flow',
   initialChunkId: 'intro',
 
@@ -71,7 +149,7 @@ export const storyFlow: StoryFlow = {
       id: 'introPip',
       dialogueNodes: pipIntroDialogue,
       transitions: [
-        { targetChunkId: 'work_organization' }, 
+        { targetChunkId: 'scenario1' }, 
       ],
     },
 
@@ -89,13 +167,58 @@ export const storyFlow: StoryFlow = {
       id: 'scenario1outro',
       dialogueNodes: scenario1outro,
       transitions: [
-        { targetChunkId: 'scenario2intro' }, 
+        { targetChunkId: 'splitintro' }, 
       ],
     },
 
-    scenario2intro: {
-      id: 'scenario2intro',
-      dialogueNodes: scenario2intro,
+    splitintro: {
+      id: 'splitintro',
+      dialogueNodes: splitintro,
+      transitions: [
+        { targetChunkId: 'coffeeDialogue', condition: (choices) => choices['splitChoice'] === 'coffee' }, 
+        { targetChunkId: 'preparationDialogue', condition: (choices) => choices['splitChoice'] === 'preparation' },
+      ],
+    },
+
+    coffeeDialogue: {
+      id: 'coffeeDialogue',
+      dialogueNodes: coffeeDialogue,
+      transitions: [
+        { targetChunkId: 'sandwichDialogue' }, 
+      ],
+    },
+
+    sandwichDialogue: {
+      id: 'sandwichDialogue',
+      dialogueNodes: scenarioSandwichDialogue,
+      reflectionSessionNumber: 2,
+      reflectionNodes: reflectionDialogueSandwich,
+      transitions: [
+        { targetChunkId: 'sandwichOutro' }, 
+      ],
+    },
+
+    sandwichOutro: {
+      id: 'sandwichOutro',
+      dialogueNodes: sandwichOutro,
+      transitions: [
+        { targetChunkId: 'coffeeToPrep', condition: (choices) => choices['splitChoice'] === 'coffee'}, 
+        { targetChunkId: 'connectingDialogue'},
+      ],
+    },
+
+    coffeeToPrep: {
+      id: 'coffeeToPrep',
+      dialogueNodes: coffeeToPrepDialogue,
+      transitions: [
+        { targetChunkId: 'preparationDialogue' }, 
+      ],
+    },
+    
+
+    preparationDialogue: {
+      id: 'preparationDialogue',
+      dialogueNodes: preparationDialogue,
       transitions: [
         { targetChunkId: 'work_organization' }, 
       ],
@@ -104,9 +227,70 @@ export const storyFlow: StoryFlow = {
     work_organization: {
       id: 'work_organization',
       dialogueNodes: scenario5Dialogue,
-      reflectionNodes: reflectionDialogues[0],
+      reflectionNodes: reflectionDialogue5,
+      reflectionSessionNumber: 5,
       transitions: [
-        { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
+        { targetChunkId: 'scenario5Outro' },
+      ],
+    },
+
+    scenario5Outro: {
+      id: 'scenario5Outro',
+      dialogueNodes: scenario5outro,
+      transitions: [
+        { targetChunkId: 'prepToCoffee', condition: (choices) => choices['splitChoice'] === 'preparation'},
+        { targetChunkId: 'connectingDialogue'},
+      ],
+    },
+
+    prepToCoffee: {
+      id: 'prepToCoffee',
+      dialogueNodes: prepToCoffeeDialogue,
+      transitions: [
+        { targetChunkId: 'coffeeDialogue' }, 
+      ],
+    },
+
+    // work_organization: {
+    //   id: 'work_organization',
+    //   dialogueNodes: scenario5Dialogue,
+    //   reflectionNodes: reflectionDialogue5,
+    //   transitions: [
+    //     { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
+    //     { targetChunkId: 'end' },
+    //   ],
+    // },
+
+    connectingDialogue: {
+      id: 'connectingDialogue',
+      dialogueNodes: connectingDialogue,
+      transitions: [
+        { targetChunkId: 'secretEnding', condition: (choices) => choices['thankPip'] === true && choices['helpPip'] === true},
+        { targetChunkId: 'trueEnding', condition: (choices) => choices['splitChoice'] === 'preparation' && choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'},
+        { targetChunkId: 'Ending' }, 
+      ],
+    },
+
+    Ending: {
+      id: 'Ending',
+      dialogueNodes: endingDialogue,
+      transitions: [
+        { targetChunkId: 'end' },
+      ],
+    },
+
+    trueEnding: {
+      id: 'trueEnding',
+      dialogueNodes: trueEndingDialogue,
+      transitions: [
+        { targetChunkId: 'end' },
+      ],
+    },
+
+    secretEnding: {
+      id: 'secretEnding',
+      dialogueNodes: secretEndingDialogue,
+      transitions: [
         { targetChunkId: 'end' },
       ],
     },

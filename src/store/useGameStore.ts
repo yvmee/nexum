@@ -7,7 +7,7 @@ import {
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { storyFlow, testFlow } from '../storydata/storyFlowData';
+import { testFlow, gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
@@ -24,9 +24,9 @@ function scoreReflectionInput(input: string): number {
   let score = 1; // Base score for any non-empty input
 
   // Length-based scoring
-  if (trimmed.length > 30) score += 1;
+  if (trimmed.length > 20) score += 1;
+  if (trimmed.length > 50) score += 1;
   if (trimmed.length > 80) score += 1;
-  if (trimmed.length > 150) score += 1;
 
   // Reflective language bonus (very basic heuristics)
   const reflectivePatterns = [
@@ -131,7 +131,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   reflectionInputScores: [],
 
   // Story flow state
-  storyFlow: testFlow, // Load test flow by default for testing
+  storyFlow: gameFlow,
   currentChunkId: null,
   activeDialogues: [],
   activeReflectionNodes: [],
@@ -151,6 +151,11 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       set({
         currentScene: 'STORY',
         gameState: 'PLAYING',
+        pipColorValue: 0,
+        reflectionInputScores: [],
+        playerChoices: {},
+        reflectionAnswers: {},
+        sortingGameChoices: [],
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
@@ -285,7 +290,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       const totalScore = reflectionInputScores.reduce((sum, s) => sum + s, 0);
       const maxPossible = reflectionInputScores.length * 5;
       const scoreRatio = totalScore / maxPossible; // 0 to 1
-      const colorIncrease = Math.round(scoreRatio * 20); // Up to +20 per reflection
+      const colorIncrease = Math.round(scoreRatio * 33); // Up to +33 per reflection because there are currently only 3 reflections
       const newColorValue = Math.min(pipColorValue + colorIncrease, 100);
       console.log(`Reflection score: ${totalScore}/${maxPossible} (${Math.round(scoreRatio * 100)}%). Color: ${pipColorValue} -> ${newColorValue}`);
       set({ pipColorValue: newColorValue, reflectionInputScores: [] });
@@ -311,10 +316,21 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     currentReflectionNodeId: state.currentReflectionNodeId,
     gameState: state.gameState,
     currentChunkId: state.currentChunkId,
-    activeDialogues: state.activeDialogues,
-    activeReflectionNodes: state.activeReflectionNodes,
+    // activeDialogues excluded since it contains functions that can't be serialized
+    // activeReflectionNodes excluded for same reason
     playerChoices: state.playerChoices,
     reflectionAnswers: state.reflectionAnswers,
     pipColorValue: state.pipColorValue,
+    sortingGameChoices: state.sortingGameChoices,
   }),
+  onRehydrateStorage: () => (state) => {
+    if (!state?.currentChunkId) return;
+    const flow = state.storyFlow ?? gameFlow;
+    const chunk = flow?.chunks[state.currentChunkId];
+    if (chunk) {
+      state.activeDialogues = chunk.dialogueNodes;
+      state.activeReflectionNodes = chunk.reflectionNodes ?? [];
+      state.storyFlow = flow;
+    }
+  },
 }));
