@@ -64,6 +64,6 @@ export function evaluateNextChunk(
  */
 export function chunkHasReflection(storyFlow: StoryFlow, chunkId: string): boolean {
   const entry = storyFlow.chunks[chunkId];
-  /* @ts-ignore next-line */
-  return entry?.reflectionNodes?.length > 0 ?? false;
+
+  return entry?.reflectionNodes?.length ? entry.reflectionNodes.length > 0 : false;
 }
