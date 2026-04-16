@@ -23,14 +23,44 @@ export interface SceneNode {
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
   characterLeft?: string; // Optional character key (from assetData.characters) on the left
   characterRight?: string; // Optional character key (from assetData.characters) on the right
-  background?: string; // Optional background key (from assetData.backgrounds)
+  location?: string; // Optional location key (from dialogueData.locations) to set background and bgm
   sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
-  bgm?: string; // Optional BGM key to switch background music mid-dialogue
+}
+
+export interface location {
+  background: string;
+  bgm?: string;
 }
 
 export interface BranchCondition {
   nextId: string;
   condition: (choices: number[]) => boolean;
+}
+
+/**
+ * Locations for the dialogue scenes, defines background and (optionally) soundtrack
+ */
+export const locations: Record<string, location> = {
+  lectureHall: {
+    background: 'lecturehall',
+    bgm: 'lectureHallSound',
+  },
+  hallway: {
+    background: 'hallway',
+    bgm: 'cafeteriaSound',
+  },
+  office: {
+    background: 'office',
+    bgm: '',
+  },
+  studyRoom: {
+    background: 'studyroom',
+    bgm: '',
+  },
+  cafe: {
+    background: 'cafe',
+    bgm: 'cafeteriaSound',
+  },
 }
 
 // start and end dialogue for prototyping
@@ -40,7 +70,7 @@ export const startDialogue: SceneNode[] = [
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     speaker: 'Narrator',
-    background: 'hallway',
+    location: 'hallway',
     nextId: 'intro_0',
   },
   {
@@ -78,7 +108,7 @@ export const endDialogue: SceneNode[] = [
     id: 'end',
     text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
     speaker: 'Narrator',
-    background: 'hallway',
+    location: 'hallway',
   }
 ]
 
@@ -98,8 +128,7 @@ export const introDialogue: SceneNode[] = [
     id: 'start',  
     text: 'The lecture hall hums with quiet conversation.',
     speaker: 'Narrator',
-    background: 'lecturehall',
-    bgm: 'lectureHallSound',
+    location: 'lectureHall',
     nextId: 'intro_0',
   },
   {
@@ -179,10 +208,9 @@ export const introDialogue: SceneNode[] = [
     id: 'intro_8',
     text: 'Oh, hello! Please come on in.',
     speaker: 'Professor',
-    background: 'office',
+    location: 'office',
     characterLeft: 'professor',
     characterRight: 'mayra',
-    bgm: '',
     nextId: 'intro_9',
   },
   {
@@ -283,7 +311,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'start',
     text: 'As Mayra moves her hand to push down the door handle, another glimmer suddenly illuminates the room.',
     speaker: 'Narrator',
-    background: 'office',
+    location: 'office',
     nextId: 'glimmer_cutscene',
   },
   // cutscene glowing shimmer
@@ -556,7 +584,7 @@ export const scenario1Dialogue: SceneNode[] = [
     id: 'start',
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
     speaker: 'Narrator',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'node_0',
   },
   {
@@ -796,7 +824,7 @@ export const scenario1outro: SceneNode[] = [
     id: 'start',
     type: 'cutscene',
     animationId: 'energy_gain',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'pip_energy_1',
   },
   {
@@ -877,7 +905,7 @@ export const splitintro: SceneNode[] = [
     id: 'start',
     text: 'A week later, Mayra is back on campus.',
     speaker: 'Narrator',
-    background: 'hallway',
+    location: 'hallway',
     nextId: 'friendintro_0',
   },
   {
@@ -985,7 +1013,7 @@ export const coffeeDialogue: SceneNode[] = [
   {
     id: 'start',
     text: 'You know, it is only like the third week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
-    background: 'cafe',
+    location: 'cafe',
     characterLeft: 'noahSurprised',
     characterRight: 'mayra',
     options: [
@@ -1105,7 +1133,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
     id: 'start',
     text: 'Mayra enters the tutorial room, which is already filled with students.',
     speaker: 'Narrator',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'intro_0',
   },
   {
@@ -1444,7 +1472,7 @@ export const sandwichOutro: SceneNode[] = [
     id: 'start',
     type: 'cutscene',
     animationId: 'energy_gain',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'pip_energy_1',
   },
   {
@@ -1477,7 +1505,7 @@ export const preparationDialogue: SceneNode[] = [
     id: 'start',
     text: 'Mayra enters the office room.',
     speaker: 'Narrator',
-    background: 'office',
+    location: 'office',
     nextId: 'prep_0',
   },
   {
@@ -1670,7 +1698,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'start',
     text: 'Infront of Mayra lies a silent classroom filled with students. Most of them are looking down at their tablets or exercise sheets, some look directly at her with an expectant gaze.',
     speaker: 'Narrator',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'intro_0',
   },
   {
@@ -1824,7 +1852,7 @@ export const scenario5outro: SceneNode[] = [
     id: 'start',
     type: 'cutscene',
     animationId: 'energy_gain',
-    background: 'studyroom',
+    location: 'studyRoom',
     nextId: 'outro_0',
   },
   {
@@ -1849,7 +1877,7 @@ export const coffeeToPrepDialogue: SceneNode[] = [
     id: 'start',
     text: 'A week later, Mayra arrives back at the university again. Since she has a bit of time until her tutorial starts, she decides to pass it by in the office room.',
     speaker: 'Narrator',
-    background: 'hallway',
+    location: 'hallway',
   },
 ]
 
@@ -1858,14 +1886,14 @@ export const prepToCoffeeDialogue: SceneNode[] = [
     id: 'start',
     text: 'The next week, Mayra is back at the university. Before her tutorial starts, she decides to grab something for lunch at the university cafe.',
     speaker: 'Narrator',
-    background: 'hallway',
+    location: 'hallway',
     nextId: 'cafe',
   },
   {
     id: 'cafe',
     text: 'On her way back, she runs into Noah.',
     speaker: 'Narrator',
-    background: 'cafe',
+    location: 'cafe',
     characterRight: 'mayra',
     characterLeft: 'noah',
     nextId: 'cafe_1',
@@ -1874,7 +1902,7 @@ export const prepToCoffeeDialogue: SceneNode[] = [
     id: 'cafe_1',
     text: 'Oh hey Noah! How are you doing?',
     speaker: 'Mayra',
-    background: 'cafe',
+    location: 'cafe',
     characterRight: 'mayra',
     characterLeft: 'noah',
   }
@@ -1893,7 +1921,7 @@ export const connectingDialogue: SceneNode[] = [
     speaker: 'Mayra',
     characterRight: 'mayra',
     characterLeft: 'pip',
-    background: 'office',
+    location: 'office',
     nextId: 'connect_2',
   },
   {
@@ -1961,7 +1989,7 @@ export const endingDialogue: SceneNode[] = [
     id: 'start',
     text: 'Don\'t worry, if you truely need me, I will reapper. But until then, goodbye!',
     speaker: 'Pip',
-    background: 'office',
+    location: 'office',
     characterRight: 'mayra',
     characterLeft: 'pip',
   },
@@ -1974,7 +2002,7 @@ export const trueEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
-    background: 'office',
+    location: 'office',
     nextId: 'true_ending_1',
   },
   {
@@ -1993,7 +2021,7 @@ export const secretEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
-    background: 'office',
+    location: 'office',
     nextId: 'secret_ending_1',
   },
   {

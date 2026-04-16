@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { SceneNode } from '../storydata/dialogueData';
+import { locations } from '../storydata/dialogueData';
 import { ReflectionNode } from '../storydata/reflectionData';
 import {
   StoryFlow,
@@ -9,12 +10,37 @@ import {
 } from '../storydata/storyFlow';
 import { gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
+import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 
 // TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
 type Scene = 'INTRO' | 'STORY' | 'REFLECTION' | 'MINIGAME' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
 let backupBackground = backgrounds.hallway; // Fallback background 
+
+function applyDialogueAudio(dialogueNode: SceneNode | undefined): void {
+  if (!dialogueNode) return;
+
+  const { playSfx, playBgm, stopBgm } = useSoundStore.getState();
+
+  if (isSfxTrack(dialogueNode.sfx)) {
+    playSfx(dialogueNode.sfx);
+  }
+
+  if (!dialogueNode.location) return;
+
+  const locationData = locations[dialogueNode.location];
+  if (!locationData) return;
+
+  if (locationData.bgm === '') {
+    stopBgm();
+    return;
+  }
+
+  if (isBgmTrack(locationData.bgm)) {
+    playBgm(locationData.bgm);
+  }
+}
 
 // Score a single reflection input based on quality heuristics
 function scoreReflectionInput(input: string): number {
@@ -101,10 +127,14 @@ function activateChunk(
     return { currentScene: 'END' as Scene };
   }
   const firstDialogueId = chunk.dialogueNodes[0]?.id ?? 'start';
-  const firstBackground = chunk.dialogueNodes[0]?.background 
-    ? backgrounds[chunk.dialogueNodes[0].background as keyof typeof backgrounds]
+  const firstNode = chunk.dialogueNodes[0];
+  const firstLocationKey = firstNode?.location;
+  const firstLocationData = firstLocationKey ? locations[firstLocationKey] : undefined;
+  const firstBackground = firstLocationData
+    ? backgrounds[firstLocationData.background as keyof typeof backgrounds] ?? backupBackground
     : backupBackground;
   const firstReflectionNodeId = chunk.reflectionNodes?.[0]?.id ?? null;
+  applyDialogueAudio(firstNode);
   console.debug(`Activating chunk with node id:`, firstDialogueId);
   return {
     currentChunkId: chunkId,
@@ -179,12 +209,16 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     if (targetId) {
       const nextDialogue = activeDialogues.find((d) => d.id === targetId);
       if (nextDialogue) {
-        if (nextDialogue.background) {
-          const newBackground = backgrounds[nextDialogue.background as keyof typeof backgrounds];
-          if (newBackground) {
-            set({ currentBackground: newBackground });
+        if (nextDialogue.location) {
+          const locationData = locations[nextDialogue.location];
+          if (locationData) {
+            const newBackground = backgrounds[locationData.background as keyof typeof backgrounds];
+            if (newBackground) {
+              set({ currentBackground: newBackground });
+            }
           }
         }
+        applyDialogueAudio(nextDialogue);
         set({ currentDialogueId: targetId });
         return;
       }
@@ -331,6 +365,8 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       state.activeDialogues = chunk.dialogueNodes;
       state.activeReflectionNodes = chunk.reflectionNodes ?? [];
       state.storyFlow = flow;
+      const activeDialogue = chunk.dialogueNodes.find((d) => d.id === state.currentDialogueId);
+      applyDialogueAudio(activeDialogue);
     }
   },
 }));

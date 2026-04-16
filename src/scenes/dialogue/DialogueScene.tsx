@@ -5,7 +5,6 @@ import { MinigameManager } from '../../components/minigames/MinigameManager.tsx'
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
 import { PipImage } from '../../components/PipImage.tsx';
-import { useSoundStore } from '../../store/useSoundStore.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -18,24 +17,6 @@ export const DialogueScene: React.FC = () => {
   const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
 
   const currentDialogue = useCurrentDialogue();
-  const playBgm = useSoundStore((s) => s.playBgm);
-  const stopBgm = useSoundStore((s) => s.stopBgm);
-  const playSfx = useSoundStore((s) => s.playSfx);
-
-  // Play dialogue BGM on mount
-  useEffect(() => {
-    playBgm('dialogueMusic');
-  }, [playBgm]);
-
-  // Data-driven SFX and mid-dialogue BGM changes
-  useEffect(() => {
-    if (currentDialogue?.sfx) playSfx(currentDialogue.sfx);
-    if (currentDialogue?.bgm === '') {
-      stopBgm();
-    } else if (currentDialogue?.bgm) {
-      playBgm(currentDialogue.bgm);
-    }
-  }, [currentDialogue?.sfx, currentDialogue?.bgm, playSfx, playBgm, stopBgm]);
 
   const nodeType = currentDialogue?.type || 'dialogue'; 
   const isCutsceneActive = currentDialogue !== null && nodeType === 'cutscene';

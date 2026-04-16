@@ -5,7 +5,6 @@ import { Howl, Howler } from 'howler';
 const SFX: Record<string, Howl | null> = {
   click: new Howl({ src: ['../../assets/sounds/Click.mp3'], volume: 0.8 }),
   typing : new Howl({ src: ['../../assets/sounds/KeyboardTypingSound.mp3'], volume: 0.8 }),
-  // Placeholders until real audio files are added
   flash: new Howl({ src: ['../../assets/sounds/PortalSound.mp3'], volume: 0.8 }),
   glow: new Howl({ src: ['../../assets/sounds/SpellCast.mp3'], volume: 0.8 }),
   energy: null,
@@ -18,10 +17,15 @@ const BGM: Record<string, Howl | null> = {
   menuMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true, volume: 0.5 }),
   reflectionMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true, volume: 0.5 }),
   lectureHallSound: new Howl({ src: ['../../assets/sounds/LectureSoundEdited.mp3'], loop: true, volume: 0.8 }),
+  cafeteriaSound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true, volume: 0.8 }),
 };
 
 export type BGMTrack = keyof typeof BGM;
 export type SFXTrack = keyof typeof SFX;
+
+export function isBgmTrack(track: string | null | undefined): track is BGMTrack {
+  return !!track && track in BGM;
+}
 
 export function isSfxTrack(track: string | null | undefined): track is SFXTrack {
   return !!track && track in SFX;
@@ -61,12 +65,12 @@ export const useSoundStore = create<SoundState>((set, get) => ({
 
   toggleMute: () => {
     const { isMuted } = get();
-    Howler.mute(!isMuted); // Howler's global mute
+    Howler.mute(!isMuted);
     set({ isMuted: !isMuted });
   },
 
   setMasterVolume: (volume) => {
-    Howler.volume(volume); // Howler's global volume
+    Howler.volume(volume); 
     set({ masterVolume: volume });
   },
 
@@ -88,7 +92,7 @@ export const useSoundStore = create<SoundState>((set, get) => ({
     if (!howl) return; 
     const { sfxVolume } = get();
 
-    // Avoid stacking multiple loop instances of the same track.
+    // Avoid stacking multiple loop instances of the same track
     if (howl.loop() && howl.playing()) {
       return;
     }
@@ -132,7 +136,7 @@ export const useSoundStore = create<SoundState>((set, get) => ({
 
     // Play and fade in new track
     const newHowl = BGM[track];
-    if (!newHowl) { // No audio file for this track yet
+    if (!newHowl) { 
       set({ currentBgm: track });
       return;
     }
@@ -175,8 +179,7 @@ export const useSoundStore = create<SoundState>((set, get) => ({
   },
 }));
 
-// Click sound wrapper
-// Usage: onClick={withClickSound(handleAdvance)}
+// Click sound wrapper ( onClick={withClickSound(handleAdvance)} )
 export function withClickSound<Args extends unknown[]>(
   handler: (...args: Args) => void,
 ): (...args: Args) => void {

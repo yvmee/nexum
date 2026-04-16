@@ -7,10 +7,8 @@ interface LightFlashSceneProps {
 }
 
 export const LightFlashScene: React.FC<LightFlashSceneProps> = ({ onComplete }) => {
-	const playSfx = useSoundStore((s) => s.playSfx);
-
 	useEffect(() => {
-		//playSfx('flash');
+		useSoundStore.getState().playSfx('flash');
 		const timer = setTimeout(onComplete, 1700);
 		return () => clearTimeout(timer);
 	}, [onComplete]);
