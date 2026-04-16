@@ -21,6 +21,7 @@ export interface ReflectionNode {
   options?: ReflectionOption[]; // If present, show clickable choices
   nextId?: string; // Next dialogue ID (undefined = end)
   branchConditions?: BranchCondition[]; // Used if type is 'branching'
+  sfx?: string; // Optional SFX key to play when this node becomes active
 }
 
 export interface UserResponse {

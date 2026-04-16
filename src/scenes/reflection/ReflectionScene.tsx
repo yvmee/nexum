@@ -5,6 +5,7 @@ import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
 import { PipImage } from '../../components/PipImage';
+import { useSoundStore } from '../../store/useSoundStore';
 
 // Set scene relevant variables
 //let session = 5; 
@@ -20,6 +21,18 @@ export const ReflectionScene: React.FC = () => {
 
   const currentDialogue = useCurrentReflection();
   const session = useGameStore((state) => state.session);
+  const playBgm = useSoundStore((s) => s.playBgm);
+  const playSfx = useSoundStore((s) => s.playSfx);
+
+  // Play reflection BGM on mount
+  useEffect(() => {
+    playBgm('reflectionMusic');
+  }, [playBgm]);
+
+  // Data-driven SFX
+  useEffect(() => {
+    if (currentDialogue?.sfx) playSfx(currentDialogue.sfx);
+  }, [currentDialogue?.id]);
   const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
+import { useSoundStore, withClickSound } from '../store/useSoundStore';
 
 let currentBackground = SchoolBackground;
 
@@ -10,6 +11,11 @@ let currentBackground = SchoolBackground;
  */
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
+    const playBgm = useSoundStore((s) => s.playBgm);
+
+    useEffect(() => {
+      playBgm('menuMusic');
+    }, [playBgm]);
 
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
@@ -45,7 +51,7 @@ export const Menu: React.FC = () => {
                 text-[var(--menu-btn-text)]
                 py-[var(--menu-btn-py)]
                 px-[var(--menu-btn-px)]
-            " onClick={handleStartGame}>
+            " onClick={withClickSound(handleStartGame)}>
                 Start Game
             </button>
         </div>

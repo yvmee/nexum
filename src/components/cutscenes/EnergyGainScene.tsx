@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface EnergyGainSceneProps {
   onComplete: () => void;
 }
 
 export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) => {
+  const playSfx = useSoundStore((s) => s.playSfx);
 
   useEffect(() => {
+    //playSfx('energy');
     const timer = setTimeout(onComplete, 4000);
     return () => clearTimeout(timer);
   }, [onComplete]);

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
+import { useSoundStore, withClickSound } from '../store/useSoundStore';
 
 let currentBackground = SchoolBackground;
 
@@ -10,6 +11,11 @@ let currentBackground = SchoolBackground;
  */
 export const EndPage: React.FC = () => {
     const navigate = useNavigate();
+    const stopBgm = useSoundStore((s) => s.stopBgm);
+
+    useEffect(() => {
+      stopBgm();
+    }, [stopBgm]);
 
     // Navigate to GameContainer to restart the game
     const handleRestartGame = (): void => {
@@ -45,7 +51,7 @@ export const EndPage: React.FC = () => {
                 text-[var(--menu-btn-text)]
                 py-[var(--menu-btn-py)]
                 px-[var(--menu-btn-px)]
-            " onClick={handleRestartGame}>
+            " onClick={withClickSound(handleRestartGame)}>
                 Restart Game
             </button>
         </div>

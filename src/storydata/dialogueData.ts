@@ -24,6 +24,8 @@ export interface SceneNode {
   characterLeft?: string; // Optional character key (from assetData.characters) on the left
   characterRight?: string; // Optional character key (from assetData.characters) on the right
   background?: string; // Optional background key (from assetData.backgrounds)
+  sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
+  bgm?: string; // Optional BGM key to switch background music mid-dialogue
 }
 
 export interface BranchCondition {
@@ -97,6 +99,7 @@ export const introDialogue: SceneNode[] = [
     text: 'The lecture hall hums with quiet conversation.',
     speaker: 'Narrator',
     background: 'lecturehall',
+    bgm: 'lectureHallSound',
     nextId: 'intro_0',
   },
   {
@@ -168,7 +171,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_7',
-    text: 'Mayra looks at the last email and leaves the lecture hall.',
+    text: 'Mayra gathers her things and leaves the lecture hall.',
     speaker: 'Narrator',
     nextId: 'intro_8',
   },
@@ -179,6 +182,7 @@ export const introDialogue: SceneNode[] = [
     background: 'office',
     characterLeft: 'professor',
     characterRight: 'mayra',
+    bgm: '',
     nextId: 'intro_9',
   },
   {

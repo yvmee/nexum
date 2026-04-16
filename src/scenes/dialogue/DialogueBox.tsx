@@ -1,5 +1,6 @@
 import React from 'react';
 import { SceneNode } from '../../storydata/dialogueData.ts';
+import { withClickSound } from '../../store/useSoundStore.ts';
 
 type DialogueBoxProps = {
   dialogue: SceneNode | null;
@@ -28,7 +29,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
       className={`flex flex-col z-10 justify-between gap-[var(--box-gap)] w-[var(--box-width)] max-w-[90vw] min-h-[var(--box-min-height)] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-[var(--box-padding)] select-none transition-all duration-100 ${
         !hasOptions ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
       }`}
-      onClick={!hasOptions ? onAdvance : undefined}
+      onClick={!hasOptions ? withClickSound(onAdvance) : undefined}
     >
       {/* Speaker Name (hide for Narrator) */}
       {dialogue.speaker && dialogue.speaker !== 'Narrator' && (
@@ -48,7 +49,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
             <button
               key={index}
               className="w-full text-left px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground hover:bg-accent/20 hover:border-accent transition-all duration-150 cursor-pointer"
-              onClick={() => onSelectOption(option.nextId, option.choice)}
+              onClick={() => { withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
             >
               <span className="text-primary mr-2 font-bold">{index + 1}.</span>
               {option.text}

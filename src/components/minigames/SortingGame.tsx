@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface SortingGameProps {
   onComplete: (selectedItemIds: number[]) => void;
@@ -19,6 +20,7 @@ const ITEMS = [
 const SLOT_COUNT = 4;
 
 export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
+  const playSfx = useSoundStore((s) => s.playSfx);
   const [slots, setSlots] = useState<(number | null)[]>(Array(SLOT_COUNT).fill(null));
   const [dragOverSlot, setDragOverSlot] = useState<number | null>(null);
 
@@ -158,7 +160,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
       {/* Done button */}
       <div className="absolute bottom-10 flex justify-center w-full">
         <button
-          onClick={() => onComplete(slots.filter((s): s is number => s !== null))}
+          onClick={() => { playSfx('click'); onComplete(slots.filter((s): s is number => s !== null)); }}
           disabled={placedIds.length === 0}
           className="px-6 py-3 font-bold uppercase tracking-wider rounded shadow transition-colors disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => { if (placedIds.length > 0) e.currentTarget.style.opacity = '0.85'; }} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
         >
