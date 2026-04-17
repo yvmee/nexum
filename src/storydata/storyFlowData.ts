@@ -251,16 +251,6 @@ export const gameFlow: StoryFlow = {
       ],
     },
 
-    // work_organization: {
-    //   id: 'work_organization',
-    //   dialogueNodes: scenario5Dialogue,
-    //   reflectionNodes: reflectionDialogue5,
-    //   transitions: [
-    //     { targetChunkId: 'secretEnd', condition: (choices) => choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'}, 
-    //     { targetChunkId: 'end' },
-    //   ],
-    // },
-
     connectingDialogue: {
       id: 'connectingDialogue',
       dialogueNodes: connectingDialogue,
@@ -297,7 +287,7 @@ export const gameFlow: StoryFlow = {
 
     end: {
       id: 'end',
-      startingNodeId: 'endnote', // optional override (defaults to 'start')
+      startingNodeId: 'endnote', // 'start' override
       dialogueNodes: endDialogue, 
     },
 

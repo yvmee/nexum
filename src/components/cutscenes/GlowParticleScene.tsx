@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client"
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface GlowParticleSceneProps {
   onComplete: () => void;
 }
 
 export const GlowParticleScene: React.FC<GlowParticleSceneProps> = ({ onComplete }) => {
+  const playSfx = useSoundStore((s) => s.playSfx);
 
   useEffect(() => {
+    playSfx('glow');
     const timer = setTimeout(onComplete, 4000);
     return () => clearTimeout(timer);
   }, [onComplete]);

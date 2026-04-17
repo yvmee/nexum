@@ -10,6 +10,7 @@ import { PipImage } from '../../components/PipImage.tsx';
  * Dialogue scene that handles dialogue flow with branching support
  */
 export const DialogueScene: React.FC = () => {
+
   const currentBackground = useGameStore((state) => state.currentBackground);
   const advanceDialogue = useGameStore((state) => state.advanceDialogue);
   const makeChoice = useGameStore((state) => state.makeChoice);
@@ -46,7 +47,7 @@ export const DialogueScene: React.FC = () => {
       const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
       if (match) advanceDialogue(match.nextId);
     }
-  }, [currentDialogue]);
+  }, [currentDialogue, sortingGameChoices]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -58,6 +59,7 @@ export const DialogueScene: React.FC = () => {
     if (choice) { // Save the selected choice in game manager for chunk branching
       makeChoice(Object.keys(choice)[0], Object.values(choice)[0]);
     }
+
     advanceDialogue(nextId);
   };
 

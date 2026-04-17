@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface PipAppearanceSceneProps {
     onComplete: () => void;
 }
 
 export const PipAppearanceScene: React.FC<PipAppearanceSceneProps> = ({ onComplete }) => {
+    const playSfx = useSoundStore((s) => s.playSfx);
+
     useEffect(() => {
+        playSfx('flash');
         const timer = setTimeout(onComplete, 2800);
         return () => clearTimeout(timer);
     }, [onComplete]);

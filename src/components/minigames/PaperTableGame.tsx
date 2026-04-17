@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as motion from "motion/react-client";
 import { AnimatePresence } from 'motion/react';
 import tableimage from '../../../assets/props/TableTop.png';
+import { useSoundStore } from '../../store/useSoundStore';
 
 export interface Paper {
   id: number;
@@ -31,6 +32,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
   const [activePaperId, setActivePaperId] = useState<number | null>(null);
 
   const activePaper = papers.find((p) => p.id === activePaperId);
+  const playSfx = useSoundStore((s) => s.playSfx);
 
   return (
     // Table background 
@@ -43,7 +45,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
             className="absolute w-65 h-90 bg-[#f4e4bc] shadow-lg cursor-pointer hover:shadow-xl transition-shadow flex items-center justify-center p-2 text-xs text-center border border-[#d2b48c]"
             style={{ left: paper.x, top: paper.y, rotate: paper.rotate }}
             whileHover={{ scale: 1.05 }}
-            onClick={() => setActivePaperId(paper.id)}
+            onClick={() => { playSfx('click'); setActivePaperId(paper.id); }}
           >
             {paper.title}
           </motion.div>
@@ -85,7 +87,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
       {!activePaper && (
         <div className="absolute bottom-10 z-10 flex w-full justify-center">
           <button
-            onClick={onComplete}
+            onClick={() => { playSfx('click'); onComplete(); }}
             className="px-6 py-3 bg-white text-black font-bold uppercase tracking-wider rounded shadow hover:bg-gray-200 transition-colors"
           >
             Leave Table

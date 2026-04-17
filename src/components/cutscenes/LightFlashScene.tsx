@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client"
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface LightFlashSceneProps {
 	onComplete: () => void;
 }
 
 export const LightFlashScene: React.FC<LightFlashSceneProps> = ({ onComplete }) => {
-
 	useEffect(() => {
+		useSoundStore.getState().playSfx('flash');
 		const timer = setTimeout(onComplete, 1700);
 		return () => clearTimeout(timer);
 	}, [onComplete]);

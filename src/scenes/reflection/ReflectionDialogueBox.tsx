@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ReflectionNode, ReflectionOption } from '../../storydata/reflectionData';
+import { withClickSound } from '../../store/useSoundStore';
 
 /**
  * Dialogue box positioned at the top for ReflectionNodes
@@ -58,7 +59,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
       className={`flex flex-col z-10 justify-between gap-[var(--box-gap)] w-[var(--box-width)] max-w-[90vw] min-h-[var(--box-min-height)] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-[var(--box-padding)] select-none transition-all duration-100 ${
         canClick ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
       }`}
-      onClick={canClick ? onAdvance : undefined}
+      onClick={canClick ? withClickSound(onAdvance) : undefined}
     >
       {/* Dialogue Text */}
       <div className="flex text-[var(--text-body)] text-foreground leading-relaxed px-[var(--inner-px)] font-medium">
@@ -78,7 +79,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
             rows={3}
           />
           <button
-            onClick={handleSubmit}
+            onClick={withClickSound(handleSubmit)}
             disabled={!inputValue.trim()}
             className="self-end px-[var(--submit-px)] py-[var(--submit-py)] bg-primary text-[var(--text-label)] text-primary-foreground font-bold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer"
           >
@@ -93,7 +94,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
           {dialogue!.options!.map((option: ReflectionOption) => (
             <button
               key={option.nextId}
-              onClick={(e) => { e.stopPropagation(); onSelectOption(option.nextId, option.choice); }}
+              onClick={(e) => { e.stopPropagation(); withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
               className="w-full px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground font-medium hover:bg-primary/20 hover:border-primary transition-all duration-150 cursor-pointer text-left"
             >
               {option.text}

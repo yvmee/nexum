@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
+import { useSoundStore } from '../../store/useSoundStore';
 
 interface EnergyGainSceneProps {
   onComplete: () => void;
 }
 
 export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) => {
+  const playSfx = useSoundStore((s) => s.playSfx);
 
   useEffect(() => {
+    playSfx('energy');
     const timer = setTimeout(onComplete, 4000);
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -19,7 +22,7 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
       id: i,
       // Random angle to originate from around the full circle
       angle: Math.random() * Math.PI * 2,
-      // Random starting distance from center (particles spawn far out)
+      // Random starting distance from center 
       distance: Math.random() * 300 + 80,
       // Random size for the particle
       size: Math.random() * 8 + 4,
