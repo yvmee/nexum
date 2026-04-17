@@ -3,7 +3,6 @@ import { SceneNode } from '../../storydata/dialogueData';
 import { PaperTableGame, Paper } from './PaperTableGame';
 import { SortingGame } from './SortingGame';
 import { useGameStore } from '../../store/useGameStore';
-import { useSoundStore } from '../../store/useSoundStore';
 
 interface MinigameProps {
   node: SceneNode;
