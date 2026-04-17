@@ -11,11 +11,11 @@ let currentBackground = SchoolBackground;
  */
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
-    const playBgm = useSoundStore((s) => s.playBgm);
+    const stopBgm = useSoundStore((state) => state.stopBgm);
 
     useEffect(() => {
-      playBgm('menuMusic');
-    }, [playBgm]);
+        stopBgm();
+    }, [stopBgm]);
 
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
@@ -48,9 +48,9 @@ export const Menu: React.FC = () => {
         <div className="flex flex-col items-center justify-center mb-20 pointer-events-auto">
             <button className="
                 start-button bg-primary font-bold rounded mb-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20
-                text-[var(--menu-btn-text)]
-                py-[var(--menu-btn-py)]
-                px-[var(--menu-btn-px)]
+                text-(--menu-btn-text)
+                py-(--menu-btn-py)
+                px-(--menu-btn-px)
             " onClick={withClickSound(handleStartGame)}>
                 Start Game
             </button>

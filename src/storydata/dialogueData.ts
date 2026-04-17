@@ -55,7 +55,7 @@ export const locations: Record<string, location> = {
   },
   studyRoom: {
     background: 'studyroom',
-    bgm: '',
+    bgm: 'tutorialSound',
   },
   cafe: {
     background: 'cafe',
@@ -83,6 +83,7 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
+    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',

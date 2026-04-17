@@ -1,23 +1,40 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Howl, Howler } from 'howler';
+
+// Individual base volumes for SFX and BGM
+const SFX_BASE_VOLUMES: Record<string, number> = {
+  click: 1.0,
+  typing: 0.8,
+  flash: 0.5,
+  glow: 0.5,
+  energy: 0.7,
+};
+
+const BGM_BASE_VOLUMES: Record<string, number> = {
+  reflectionMusic: 0.5,
+  lectureHallSound: 0.4,
+  cafeteriaSound: 0.4,
+  hallwaySound: 0.2,
+  tutorialSound: 0.25,
+};
 
 // Sound effects dictionary
 const SFX: Record<string, Howl | null> = {
-  click: new Howl({ src: ['../../assets/sounds/Click.mp3'], volume: 0.8 }),
-  typing : new Howl({ src: ['../../assets/sounds/KeyboardTypingSound.mp3'], volume: 0.8 }),
-  flash: new Howl({ src: ['../../assets/sounds/PortalSound.mp3'], volume: 0.8 }),
-  glow: new Howl({ src: ['../../assets/sounds/SpellCast.mp3'], volume: 0.8 }),
-  energy: null,
-  reveal: null,
-  transition: null,
+  click: new Howl({ src: ['../../assets/sounds/ClickEdited.mp3']}),
+  typing : new Howl({ src: ['../../assets/sounds/KeyboardTypingSound.mp3']}),
+  flash: new Howl({ src: ['../../assets/sounds/PortalSound.mp3']}),
+  energy: new Howl({ src: ['../../assets/sounds/SpellCast.mp3']}),
+  glow: new Howl({ src: ['../../assets/sounds/HealingMagic.mp3']}),
 };
 
 // Background music dictionary
 const BGM: Record<string, Howl | null> = {
-  menuMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true, volume: 0.5 }),
-  reflectionMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true, volume: 0.5 }),
-  lectureHallSound: new Howl({ src: ['../../assets/sounds/LectureSoundEdited.mp3'], loop: true, volume: 0.8 }),
-  cafeteriaSound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true, volume: 0.8 }),
+  reflectionMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true }),
+  lectureHallSound: new Howl({ src: ['../../assets/sounds/LectureSoundEdited.mp3'], loop: true }),
+  cafeteriaSound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true }),
+  hallwaySound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true }),
+  tutorialSound: new Howl({ src: ['../../assets/sounds/TutorialSound.mp3'], loop: true }),
 };
 
 export type BGMTrack = keyof typeof BGM;
@@ -32,6 +49,7 @@ export function isSfxTrack(track: string | null | undefined): track is SFXTrack 
 }
 
 const DEFAULT_BGM_VOLUME = 0.5;
+const DEFAULT_SFX_VOLUME = 0.7;
 const DUCK_RATIO = 0.2; // Duck to 20% of current BGM volume
 
 interface SoundState {
@@ -55,11 +73,13 @@ interface SoundState {
   unduckBgm: () => void;
 }
 
-export const useSoundStore = create<SoundState>((set, get) => ({
+export const useSoundStore = create<SoundState>()(
+  persist(
+    (set, get) => ({
   isMuted: false,
   masterVolume: 1.0,
   bgmVolume: DEFAULT_BGM_VOLUME,
-  sfxVolume: 0.8,
+  sfxVolume: DEFAULT_SFX_VOLUME,
   currentBgm: null,
   isDucked: false,
 
@@ -79,7 +99,7 @@ export const useSoundStore = create<SoundState>((set, get) => ({
     set({ bgmVolume: volume });
     if (currentBgm) {
       const track = BGM[currentBgm];
-      track?.volume(volume);
+      track?.volume((BGM_BASE_VOLUMES[currentBgm] ?? 1.0) * volume);
     }
   },
 
@@ -97,7 +117,7 @@ export const useSoundStore = create<SoundState>((set, get) => ({
       return;
     }
 
-    howl.volume(sfxVolume);
+    howl.volume((SFX_BASE_VOLUMES[track] ?? 1.0) * sfxVolume);
     howl.play();
   },
 
@@ -110,27 +130,30 @@ export const useSoundStore = create<SoundState>((set, get) => ({
       howl.fade(fromVolume, 0, fadeMs);
       setTimeout(() => {
         howl.stop();
-        howl.volume(get().sfxVolume);
+        howl.volume((SFX_BASE_VOLUMES[track] ?? 1.0) * get().sfxVolume);
       }, fadeMs);
       return;
     }
 
     howl.stop();
-    howl.volume(get().sfxVolume);
+    howl.volume((SFX_BASE_VOLUMES[track] ?? 1.0) * get().sfxVolume);
   },
 
   playBgm: (track) => { // Smooth fade in/out when switching tracks
     const { currentBgm, bgmVolume } = get();
 
-    // Just return if it's already playing
+    console.log(`Playing BGM: ${track}, Current BGM: ${currentBgm}, BGM Volume: ${bgmVolume}`);
+
+    // Return if it's already playing
     if (currentBgm === track) return;
 
     // Fade out old track if one is playing
     if (currentBgm) {
       const oldHowl = BGM[currentBgm];
       if (oldHowl) {
+        oldHowl.off('fade');
+        oldHowl.once('fade', () => oldHowl.stop());
         oldHowl.fade(oldHowl.volume(), 0, 1000);
-        setTimeout(() => oldHowl.stop(), 1000);
       }
     }
 
@@ -140,8 +163,11 @@ export const useSoundStore = create<SoundState>((set, get) => ({
       set({ currentBgm: track });
       return;
     }
+    // Cancel any pending fade-stop from a previous transition and reset
+    newHowl.off('fade');
+    newHowl.stop();
     newHowl.play();
-    newHowl.fade(0, bgmVolume, 1000);
+    newHowl.fade(0, (BGM_BASE_VOLUMES[track] ?? 1.0) * bgmVolume, 1000);
 
     set({ currentBgm: track, isDucked: false });
   },
@@ -151,8 +177,9 @@ export const useSoundStore = create<SoundState>((set, get) => ({
     if (currentBgm) {
       const howl = BGM[currentBgm];
       if (howl) {
+        howl.off('fade');
+        howl.once('fade', () => howl.stop());
         howl.fade(howl.volume(), 0, 500);
-        setTimeout(() => howl.stop(), 500);
       }
       set({ currentBgm: null, isDucked: false });
     }
@@ -163,7 +190,8 @@ export const useSoundStore = create<SoundState>((set, get) => ({
     if (isDucked || !currentBgm) return;
     const howl = BGM[currentBgm];
     if (howl) {
-      howl.fade(howl.volume(), bgmVolume * DUCK_RATIO, 400);
+      const effectiveVolume = (BGM_BASE_VOLUMES[currentBgm] ?? 1.0) * bgmVolume;
+      howl.fade(howl.volume(), effectiveVolume * DUCK_RATIO, 400);
     }
     set({ isDucked: true });
   },
@@ -173,11 +201,37 @@ export const useSoundStore = create<SoundState>((set, get) => ({
     if (!isDucked || !currentBgm) return;
     const howl = BGM[currentBgm];
     if (howl) {
-      howl.fade(howl.volume(), bgmVolume, 400);
+      howl.fade(howl.volume(), (BGM_BASE_VOLUMES[currentBgm] ?? 1.0) * bgmVolume, 400);
     }
     set({ isDucked: false });
   },
-}));
+    }),
+    {
+      name: 'nexum-sound-store',
+      partialize: (state) => ({ // Persist parts of the state
+        isMuted: state.isMuted,
+        masterVolume: state.masterVolume,
+        bgmVolume: state.bgmVolume,
+        sfxVolume: state.sfxVolume,
+        currentBgm: state.currentBgm,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        // Restore Howler state
+        Howler.mute(state.isMuted);
+        Howler.volume(state.masterVolume);
+        if (state.currentBgm && isBgmTrack(state.currentBgm)) { 
+          const howl = BGM[state.currentBgm];
+          if (howl) {
+            howl.volume((BGM_BASE_VOLUMES[state.currentBgm] ?? 1.0) * state.bgmVolume);
+            howl.play();
+          }
+        }
+        state.isDucked = false;
+      },
+    }
+  )
+);
 
 // Click sound wrapper ( onClick={withClickSound(handleAdvance)} )
 export function withClickSound<Args extends unknown[]>(
