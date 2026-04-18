@@ -23,6 +23,7 @@ export interface SceneNode {
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
   characterLeft?: string; // Optional character key (from assetData.characters) on the left
   characterRight?: string; // Optional character key (from assetData.characters) on the right
+  activeSide?: 'left' | 'right' | 'both' | 'none'; // Optional override
   location?: string; // Optional location key (from dialogueData.locations) to set background and bgm
   sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
 }
@@ -83,7 +84,6 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
