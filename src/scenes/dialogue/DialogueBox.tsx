@@ -23,32 +23,35 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   }
 
   const hasOptions = dialogue.options && dialogue.options.length > 0;
+  const isInnerMonologue = dialogue.speaker === 'Mayra (in)'
+    && typeof dialogue.text === 'string';
+  const speakerLabel = isInnerMonologue ? 'Mayra' : dialogue.speaker;
 
   return (
     <div
-      className={`flex flex-col z-10 justify-between gap-[var(--box-gap)] w-[var(--box-width)] max-w-[90vw] min-h-[var(--box-min-height)] bg-gradient-to-br from-[var(--chart-3)]/95 via-[var(--chart-4)]/95 to-[var(--chart-5)]/95 border-2 border-border rounded-xl p-[var(--box-padding)] select-none transition-all duration-100 ${
+      className={`flex flex-col z-10 justify-between gap-(--box-gap) w-(--box-width) max-w-[90vw] min-h-(--box-min-height) bg-linear-to-br from-(--chart-3)/95 via-(--chart-4)/95 to-(--chart-5)/95 border-2 border-border rounded-xl p-(--box-padding) select-none transition-all duration-100 ${
         !hasOptions ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20' : ''
       }`}
       onClick={!hasOptions ? withClickSound(onAdvance) : undefined}
     >
-      {/* Speaker Name (hide for Narrator) */}
+      {/* Speaker Name (hide for Narrator and change for Mayra (in)) */}
       {dialogue.speaker && dialogue.speaker !== 'Narrator' && (
-        <div className="flex text-[var(--text-label)] text-primary font-semibold">
-          {dialogue.speaker}
+        <div className="flex text-primary font-semibold">
+          {speakerLabel}
         </div>
       )}
-      {/* Dialogue Text (italic for Narrator) */}
-      <div className={`flex text-[var(--text-body)] leading-relaxed px-[var(--inner-px)] font-medium ${dialogue.speaker === 'Narrator' ? 'italic' : ''}`}>
+      {/* Dialogue Text (italic for Narrator / inner monologue) */}
+      <div className={`flex text-(--text-body) leading-relaxed px-(--inner-px) font-medium ${dialogue.speaker === 'Narrator' || isInnerMonologue ? 'italic' : ''} ${isInnerMonologue ? 'text-foreground/90' : ''}`}>
         {dialogue.text}
       </div>
 
       {/* Options (if branching) */}
       {hasOptions && (
-        <div className="flex flex-col gap-[var(--inner-gap)] mt-[var(--inner-mt)]">
+        <div className="flex flex-col gap-(--inner-gap) mt-(--inner-mt)">
           {dialogue.options!.map((option, index) => (
             <button
               key={index}
-              className="w-full text-left px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground hover:bg-accent/20 hover:border-accent transition-all duration-150 cursor-pointer"
+              className="w-full text-left px-(--btn-px) py-(--btn-py) bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground hover:bg-accent/20 hover:border-accent transition-all duration-150 cursor-pointer"
               onClick={() => { withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
             >
               <span className="text-primary mr-2 font-bold">{index + 1}.</span>
@@ -60,7 +63,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
 
       {/* Footer (only for non-branching dialogue) */}
       {!hasOptions && (
-        <div className="flex text-[var(--text-hint)] text-primary text-right blink-animation self-end font-semibold">
+        <div className="flex text-primary text-right blink-animation self-end font-semibold">
           Click to continue...
         </div>
       )}
