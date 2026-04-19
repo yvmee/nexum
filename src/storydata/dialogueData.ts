@@ -23,6 +23,7 @@ export interface SceneNode {
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
   characterLeft?: string; // Optional character key (from assetData.characters) on the left
   characterRight?: string; // Optional character key (from assetData.characters) on the right
+  activeSide?: 'left' | 'right' | 'both' | 'none'; // Optional override
   location?: string; // Optional location key (from dialogueData.locations) to set background and bgm
   sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
 }
@@ -83,7 +84,6 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -152,22 +152,22 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_3',  
-    text: '(Right, almost all tutorials start this week… Including mine.)',
-    speaker: 'Mayra',
+    text: 'Right, almost all tutorials start this week… Including mine.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'intro_4',
   },
   {
     id: 'intro_4',  
-    text: '(*Sigh*… I don’t really feel ready for this… )',
-    speaker: 'Mayra',
+    text: '*Sigh*… I don’t really feel ready for this… ',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraWorried',
     nextId: 'intro_5',
   },
   {
     id: 'intro_5',  
-    text: '(But the professor leading the lecture and tutorials has asked me to come by for some last words of advice. Maybe that’s all I need.)',
-    speaker: 'Mayra',
+    text: 'But the professor leading the lecture and tutorials has asked me to come by for some last words of advice. Maybe that’s all I need.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'glimmer_cutscene',
   },
@@ -180,22 +180,22 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'glimmer_1',  
-    text: '(Huh? What was that glowing shimmer?)',
-    speaker: 'Mayra',
+    text: 'Huh? What was that glowing shimmer?',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'glimmer_2',
   },
   {
     id: 'glimmer_2',  
-    text: '(Hmmm, no one else seems to notice it. Maybe I imagined it?)',
+    text: 'Hmmm, no one else seems to notice it. Maybe I imagined it?',
     speaker: 'Mayra',
-    characterRight: 'mayraThinking',
+    characterRight: 'mayraThinking (in)',
     nextId: 'intro_6',
   },
   {
     id: 'intro_6',
-    text: '(The lecture is over. I should get going to the meeting room the professor told me. Let’s see…)',
-    speaker: 'Mayra',
+    text: 'The lecture is over. I should get going to the meeting room the professor told me. Let’s see…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'intro_7',
   },
@@ -262,8 +262,8 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_15',
-    text: '(I don’t think the professor heard that anymore… He seemed to be in a rush. But maybe I can find some useful stuff on the desk?)',
-    speaker: 'Mayra',
+    text: 'I don’t think the professor heard that anymore… He seemed to be in a rush. But maybe I can find some useful stuff on the desk?',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'decision_0',
   },
@@ -324,8 +324,8 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'glimmer_text',
-    text: '(Huh? It\'s that glowing shimmer again...)',
-    speaker: 'Mayra',
+    text: 'Huh? It\'s that glowing shimmer again...',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'flash_cutscene',
   },
@@ -574,8 +574,8 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'toclassroom_2',
-    text: '(Okay... If he says so...)',
-    speaker: 'Mayra',
+    text: 'Okay... If he says so...',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
   },
 ]
@@ -604,15 +604,15 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'node_2',
-    text: '(Alrigth, the tutorial starts in a few minutes. I can do this.)',
-    speaker: 'Mayra',
+    text: 'Alrigth, the tutorial starts in a few minutes. I can do this.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'node_3',
   },
   {
     id: 'node_3',
-    text: '(I remember that the start of the tutorial is the most important part. But first, I should probably introduce myself.)',
-    speaker: 'Mayra',
+    text: 'I remember that the start of the tutorial is the most important part. But first, I should probably introduce myself.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'choice_introduction',
   },
@@ -640,8 +640,8 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'node_4',
-    text: '(Alright, now how to start…)',
-    speaker: 'Mayra',
+    text: 'Alright, now how to start…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'minigame_sorting',
   },
@@ -653,8 +653,8 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'after_minigame',
-    text: '(I know how to start now. I feel ready.)',
-    speaker: 'Mayra',
+    text: 'I know how to start now. I feel ready.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'starting',
   },
@@ -687,8 +687,8 @@ export const scenario1Dialogue: SceneNode[] = [
   {
     id: 'overview',
     type: 'branching',
-    text: '(The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.)',
-    speaker: 'Mayra',
+    text: 'The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     branchConditions: [
       { 
@@ -709,8 +709,8 @@ export const scenario1Dialogue: SceneNode[] = [
   {
     id: 'doubleintro',
     type: 'branching',
-    text: '(Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…)',
-    speaker: 'Mayra',
+    text: 'Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
@@ -726,16 +726,16 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'doomed',
-    text: '(They don’t look amused at all about my sarcastic joke…)',
-    speaker: 'Mayra',
+    text: 'They don’t look amused at all about my sarcastic joke…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
     nextId: 'path_default',
   },
   {
     id: 'fail',
     type: 'branching',
-    text: '(The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.)',
-    speaker: 'Mayra',
+    text: 'The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
@@ -747,15 +747,15 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'faildoomed',
-    text: '(And they don’t look amused at all about my sarcastic joke…)',
-    speaker: 'Mayra',
+    text: 'And they don’t look amused at all about my sarcastic joke…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
     nextId: 'faildoomed2',
   },
   {
     id: 'faildoomed2',
-    text: '(The student in the back looks genuinely panicked. I think this was a bad start….)',
-    speaker: 'Mayra',
+    text: 'The student in the back looks genuinely panicked. I think this was a bad start….',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraWorried',
     nextId: 'path_default',
   },
@@ -846,8 +846,8 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_2',
-    text: '(Although I still don\'t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.)',
-    speaker: 'Mayra',
+    text: 'Although I still don\'t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.',
+    speaker: 'Mayra (in)',
     characterLeft: 'pip',
     characterRight: 'mayra',
     nextId: 'pip_energy_3',
@@ -924,8 +924,8 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_2',
-    text: '(This is Noah, we met in the first semester and have been friends since then. I haven\'t seen him much this semester though, although I know that he is taking the lecture I am tutoring for.)',
-    speaker: 'Mayra',
+    text: 'This is Noah, we met in the first semester and have been friends since then. I haven\'t seen him much this semester though, although I know that he is taking the lecture I am tutoring for.',
+    speaker: 'Mayra (in)',
     characterLeft: 'noah',
     characterRight: 'mayra',
     nextId: 'friendintro_3',
@@ -964,8 +964,8 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_7',
-    text: '(I have already planned the content for the tutorial, so I do have some time to spare. My plan was to prepare a bit more in the study room, but I guess it would be nice to have a coffee with Noah.)',
-    speaker: 'Mayra',
+    text: 'I have already planned the content for the tutorial, so I do have some time to spare. My plan was to prepare a bit more in the study room, but I guess it would be nice to have a coffee with Noah.',
+    speaker: 'Mayra (in)',
     characterLeft: 'noah',
     characterRight: 'mayra',
     nextId: 'split_decision',
@@ -1431,8 +1431,8 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'solution_7',
-    text: '(I hope he won’t ask me for every homework now…)',
-    speaker: 'Mayra',
+    text: 'I hope he won’t ask me for every homework now…',
+    speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
     characterLeft: 'noah',
     nextId: 'end_0',
@@ -1511,8 +1511,8 @@ export const preparationDialogue: SceneNode[] = [
   },
   {
     id: 'prep_0',
-    text: '(Okay, the professor told me that I could come here to prepare my tutorial. I just want to go over the exercises once again and plan the time of the tutorial in more detail.)',
-    speaker: 'Narrator',
+    text: 'Okay, the professor told me that I could come here to prepare my tutorial. I just want to go over the exercises once again and plan the time of the tutorial in more detail.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'prep_1',
   },
@@ -1704,8 +1704,8 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
   },
   {
     id: 'intro_0',
-    text: '(Alright, so far so good. The next step is exercise one. I should let them work on it in some way. Hmmm, should I maybe split them into groups? Or is it more effective if everyone is on their own?)',
-    speaker: 'Mayra',
+    text: 'Alright, so far so good. The next step is exercise one. I should let them work on it in some way. Hmmm, should I maybe split them into groups? Or is it more effective if everyone is on their own?',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'decision_0',
   },
@@ -1745,15 +1745,15 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
   // Work Scenario start
   {
     id: 'work_0',
-    text: '(Okay, looks like everyone is starting to work. At least they are looking at the exercise sheet and some already starting writing.)',
-    speaker: 'Mayra',
+    text: 'Okay, looks like everyone is starting to work. At least they are looking at the exercise sheet and some already starting writing.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'work_1',
   },
   {
     id: 'work_1',
-    text: '(Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.)',
-    speaker: 'Mayra',
+    text: 'Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.',
+    speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'decision_1',
   },

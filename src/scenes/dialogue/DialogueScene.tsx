@@ -33,14 +33,29 @@ export const DialogueScene: React.FC = () => {
   // Common styles for portraits with drop shadow, mirrored for right portrait
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
   const dropShadowFilter = 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))';
-  const portraitImageStyle: React.CSSProperties = {filter: dropShadowFilter};
-  const mirroredPortraitStyle: React.CSSProperties = {...portraitImageStyle, transform: 'scaleX(-1)'};
-
   const isPipLeft = currentDialogue?.characterLeft === 'pip';
   const isPipRight = currentDialogue?.characterRight === 'pip';
 
-  const leftPortraitClass = `${portraitImageClass} ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
-  const rightPortraitClass = `${portraitImageClass} ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
+  // Determine which side is the active speaker for portrait dimming
+  const activeSide = (() => {
+    if (!currentDialogue) return 'both'; // no dialogue
+    if (currentDialogue.activeSide) return currentDialogue.activeSide; // explicit override
+    if (!currentDialogue.speaker || currentDialogue.speaker === 'Narrator') return 'none'; 
+    // Infer active side based on speaker 
+    const speakerKey = currentDialogue.speaker.toLowerCase();
+    const leftActive = currentDialogue.characterLeft?.toLowerCase().startsWith(speakerKey);
+    const rightActive = currentDialogue.characterRight?.toLowerCase().startsWith(speakerKey);
+    if (leftActive) return 'left';
+    if (rightActive) return 'right';
+    return 'both';
+  })();
+
+  // Apply dimming filter
+  const inactiveFilter = 'grayscale(35%) brightness(0.7)';
+  const leftPortraitFilter = (activeSide === 'right' || activeSide === 'none') ? `${inactiveFilter} ${dropShadowFilter}` : dropShadowFilter;
+  const rightPortraitFilter = (activeSide === 'left' || activeSide === 'none') ? `${inactiveFilter} ${dropShadowFilter}` : dropShadowFilter;
+  const leftPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
+  const rightPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
 
   useEffect(() => {
     if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
@@ -110,14 +125,14 @@ export const DialogueScene: React.FC = () => {
                     <PipImage
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
-                      extraFilter={dropShadowFilter}
+                      extraFilter={leftPortraitFilter}
                     />
                   ) : (
                     <img
                       src={leftPortrait}
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
-                      style={portraitImageStyle}
+                      style={{ filter: leftPortraitFilter }}
                     />
                   )
                 )}
@@ -128,7 +143,7 @@ export const DialogueScene: React.FC = () => {
                     <PipImage
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
-                      extraFilter={dropShadowFilter}
+                      extraFilter={rightPortraitFilter}
                       style={{ transform: 'scaleX(-1)' }}
                     />
                   ) : (
@@ -136,7 +151,7 @@ export const DialogueScene: React.FC = () => {
                       src={rightPortrait}
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
-                      style={mirroredPortraitStyle}
+                      style={{ filter: rightPortraitFilter, transform: 'scaleX(-1)' }}
                     />
                   )
                 )}
