@@ -6,6 +6,8 @@ type DialogueBoxProps = {
   dialogue: SceneNode | null;
   onAdvance: () => void;
   onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
+  onGoBack?: () => void;
+  canGoBack?: boolean;
   isVisible: boolean;
 };
 
@@ -16,6 +18,8 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   dialogue,
   onAdvance,
   onSelectOption,
+  onGoBack,
+  canGoBack = true,
   isVisible,
 }) => {
   if (!isVisible || !dialogue) {
@@ -61,12 +65,27 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
         </div>
       )}
 
-      {/* Footer (only for non-branching dialogue) */}
-      {!hasOptions && (
-        <div className="flex text-primary text-right blink-animation self-end font-semibold">
-          Click to continue...
-        </div>
-      )}
+      {/* Footer */}
+      <div className="flex items-center justify-between">
+        {/* Back Button */}
+        <button
+          className={`text-xs font-semibold px-2 py-1 rounded transition-all duration-150 ${
+            canGoBack
+              ? 'text-primary/70 hover:text-primary hover:bg-primary/10 cursor-pointer'
+              : 'text-foreground/20 cursor-not-allowed'
+          }`}
+          onClick={canGoBack && onGoBack ? (e) => { e.stopPropagation(); withClickSound(onGoBack)(); } : (e) => e.stopPropagation()}
+          disabled={!canGoBack}
+          aria-label="Go back"
+        >
+          ← Back
+        </button>
+        {!hasOptions && (
+          <div className="flex text-primary text-right blink-animation self-end font-semibold">
+            Click to continue...
+          </div>
+        )}
+      </div>
     </div>
   );
 };
