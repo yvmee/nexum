@@ -188,8 +188,8 @@ export const introDialogue: SceneNode[] = [
   {
     id: 'glimmer_2',  
     text: 'Hmmm, no one else seems to notice it. Maybe I imagined it?',
-    speaker: 'Mayra',
-    characterRight: 'mayraThinking (in)',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayraThinking',
     nextId: 'intro_6',
   },
   {

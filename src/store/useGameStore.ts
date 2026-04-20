@@ -12,8 +12,7 @@ import { gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 
-// TODO: delete INTRO scene? just load intro dialogue as first chunk in STORY scene
-type Scene = 'INTRO' | 'STORY' | 'REFLECTION' | 'MINIGAME' | 'END'; // All scenes with different layouts
+type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
 let backupBackground = backgrounds.hallway; // Fallback background 
@@ -95,10 +94,15 @@ interface GameManagerState {
   // for sorting minigame, seperated from playerChoices for easier handling
   sortingGameChoices: number[];
 
+  // Dialogue IDs history for going back 
+  dialogueHistory: string[];
+  historyLength: number;
+
   // Actions to manage game flow
   startGame: () => void;
   setScene: (scene: Scene) => void;
   advanceDialogue: (nextDialogueId?: string) => void;
+  goBackDialogue: () => void;
   advanceReflection: (nextReflectionNodeId?: string) => void;
   completeChunk: () => void;
   completeReflection: () => void;
@@ -145,6 +149,7 @@ function activateChunk(
     currentReflectionNodeId: firstReflectionNodeId,
     currentBackground: firstBackground,
     currentScene: 'STORY' as Scene,
+    dialogueHistory: [],
   };
 }
 
@@ -167,6 +172,10 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   activeReflectionNodes: [],
   session: 0,
 
+  // Dialogue history
+  dialogueHistory: [],
+  historyLength: 5, 
+
   // Player data
   playerChoices: {},
   reflectionAnswers: {},
@@ -186,6 +195,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         playerChoices: {},
         reflectionAnswers: {},
         sortingGameChoices: [],
+        dialogueHistory: [],
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
@@ -198,7 +208,9 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
   // Advance to the next dialogue node
   advanceDialogue: (nextDialogueId?: string) => {
-    const { activeDialogues, currentDialogueId, completeChunk } = get();
+    const { activeDialogues, currentDialogueId, completeChunk, dialogueHistory, historyLength } = get();
+
+    console.log('Advancing dialogue. Current ID:', currentDialogueId, 'Next ID:', nextDialogueId);
     
     let targetId = nextDialogueId;
     if (!targetId && currentDialogueId) {
@@ -219,7 +231,11 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
           }
         }
         applyDialogueAudio(nextDialogue);
-        set({ currentDialogueId: targetId });
+        // Push current ID to history 
+        const newHistory = currentDialogueId
+          ? [...dialogueHistory, currentDialogueId].slice(-historyLength)
+          : dialogueHistory;
+        set({ currentDialogueId: targetId, dialogueHistory: newHistory });
         return;
       }
     }
@@ -227,6 +243,32 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     // No next node or target found, complete the chunk
     console.log('Dialogue sequence completed!');
     completeChunk();
+  },
+
+  // Go back to the previous dialogue node
+  goBackDialogue: () => {
+    const { dialogueHistory, activeDialogues } = get();
+    if (dialogueHistory.length === 0) return;
+
+    console.log('Going back in dialogue. History:', dialogueHistory);
+
+    const previousId = dialogueHistory[dialogueHistory.length - 1];
+    const previousDialogue = activeDialogues.find((d) => d.id === previousId);
+    if (!previousDialogue) return;
+
+    const newHistory = dialogueHistory.slice(0, -1);
+    if (previousDialogue.location) {
+      const locationData = locations[previousDialogue.location];
+      if (locationData) {
+        const newBackground = backgrounds[locationData.background as keyof typeof backgrounds];
+        if (newBackground) {
+          set({ currentBackground: newBackground });
+        }
+      }
+    }
+    applyDialogueAudio(previousDialogue);
+    console.debug(`Going back to dialogue with id:`, previousId);
+    set({ currentDialogueId: previousId, dialogueHistory: newHistory });
   },
 
   // Advance to the next reflection node
@@ -356,6 +398,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     reflectionAnswers: state.reflectionAnswers,
     pipColorValue: state.pipColorValue,
     sortingGameChoices: state.sortingGameChoices,
+    dialogueHistory: state.dialogueHistory,
   }),
   onRehydrateStorage: () => (state) => {
     if (!state?.currentChunkId) return;

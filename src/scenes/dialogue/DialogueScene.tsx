@@ -13,6 +13,8 @@ export const DialogueScene: React.FC = () => {
 
   const currentBackground = useGameStore((state) => state.currentBackground);
   const advanceDialogue = useGameStore((state) => state.advanceDialogue);
+  const goBackDialogue = useGameStore((state) => state.goBackDialogue);
+  const dialogueHistory = useGameStore((state) => state.dialogueHistory);
   const makeChoice = useGameStore((state) => state.makeChoice);
   const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
 
@@ -162,6 +164,8 @@ export const DialogueScene: React.FC = () => {
             dialogue={currentDialogue}
             onAdvance={handleAdvance}
             onSelectOption={handleSelectOption}
+            onGoBack={goBackDialogue}
+            canGoBack={dialogueHistory.length > 0 && !currentDialogue?.location}
             isVisible={isDialogueActive}
           />
         </div>
