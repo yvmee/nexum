@@ -208,7 +208,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
   // Advance to the next dialogue node
   advanceDialogue: (nextDialogueId?: string) => {
-    const { activeDialogues, currentDialogueId, currentBackground, completeChunk, dialogueHistory, historyLength } = get();
+    const { activeDialogues, currentDialogueId, completeChunk, dialogueHistory, historyLength } = get();
     
     let targetId = nextDialogueId;
     if (!targetId && currentDialogueId) {

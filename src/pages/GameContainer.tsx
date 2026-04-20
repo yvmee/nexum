@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
-import { IntroScene } from '../scenes/intro/IntroScene';
 import { DialogueScene } from '../scenes/dialogue/DialogueScene';
 import { ReflectionScene } from '../scenes/reflection/ReflectionScene';
 

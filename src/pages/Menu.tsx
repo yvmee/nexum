@@ -3,6 +3,8 @@ import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
+import { backgrounds, characters } from '../storydata/assetData';
+import { preloadImage } from '../lib/preloadImage';
 
 let currentBackground = SchoolBackground;
 
@@ -16,6 +18,11 @@ export const Menu: React.FC = () => {
     useEffect(() => {
         stopBgm();
     }, [stopBgm]);
+
+    useEffect(() => {
+        // Preload all game background images imediately
+        [...Object.values(backgrounds), ...Object.values(characters)].forEach(preloadImage);
+    }, []);
 
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
