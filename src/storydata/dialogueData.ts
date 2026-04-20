@@ -42,6 +42,10 @@ export interface BranchCondition {
  * Locations for the dialogue scenes, defines background and (optionally) soundtrack
  */
 export const locations: Record<string, location> = {
+  introLocation: {
+    background: 'hallway',
+    bgm: '',
+  },
   lectureHall: {
     background: 'lecturehall',
     bgm: 'lectureHallSound',
@@ -71,7 +75,7 @@ export const startDialogue: SceneNode[] = [
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     speaker: 'Narrator',
-    location: 'hallway',
+    location: 'introLocation',
     nextId: 'intro_0',
   },
   {
