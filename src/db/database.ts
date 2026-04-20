@@ -1,5 +1,4 @@
 import { supabase } from './dbClient'
-// @ts-ignore-next-line
 import profanityList from '@dsojevic/profanity-list';
 
 /**
@@ -24,7 +23,6 @@ export interface ReflectionAnswerData {
   answer: string | null;
 }
 
-
 /**
  * Data structure to store loaded reflection answers
  */
@@ -36,15 +34,14 @@ const getProfanityRegex = () => {
   if (profanityRegex) return profanityRegex;
 
   try {
-    // Handle various import scenarios
-    const list = profanityList?.en || profanityList?.default?.en;
+    const list = profanityList?.en;
     
     if (!Array.isArray(list)) {
         console.warn('Could not load profanity list');
         return null;
     }
 
-    const patterns = list.flatMap((item: any) => item.match ? item.match.split('|') : []);
+    const patterns = list.flatMap((item) => item.match ? item.match.split('|') : []);
     
     if (patterns.length === 0) return null;
 

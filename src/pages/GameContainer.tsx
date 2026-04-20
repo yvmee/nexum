@@ -15,7 +15,7 @@ export default function GameContainer() {
 
   useEffect(() => {
     if (gameState === 'END') {
-      navigate('/endpage');
+      void navigate('/endpage');
     }
   }, [gameState, navigate]);
 

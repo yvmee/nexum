@@ -13,12 +13,12 @@ export const SettingsMenu: React.FC = () => {
 
   const handleMainMenu = () => {
     setIsOpen(false);
-    navigate('/');
+    void navigate('/');
   };
 
   const handleEndPage = () => {
     setIsOpen(false);
-    navigate('/endpage');
+    void navigate('/endpage');
   };
 
   return (
@@ -27,7 +27,7 @@ export const SettingsMenu: React.FC = () => {
       {!isOpen && (
         <button
           onClick={withClickSound(handleOpen)}
-          className="absolute top-4 left-4 z-[60] p-2 rounded-full bg-black/40 hover:bg-black/60 text-white/80 hover:text-white transition-colors cursor-pointer"
+          className="absolute top-4 left-4 z-60 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white/80 hover:text-white transition-colors cursor-pointer"
           aria-label="Open settings"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -39,7 +39,7 @@ export const SettingsMenu: React.FC = () => {
 
       {/* Settings Overlay */}
       {isOpen && (
-        <div className="absolute inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center">
+        <div className="absolute inset-0 z-60 bg-black/60 backdrop-blur-sm flex items-center justify-center">
           <div className="relative bg-background/95 rounded-xl p-8 w-[min(400px,85vw)] shadow-2xl">
             {/* Close button */}
             <button

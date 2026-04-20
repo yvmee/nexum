@@ -15,7 +15,7 @@ import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
 
-let backupBackground = backgrounds.hallway; // Fallback background 
+const backupBackground = backgrounds.hallway; // Fallback background 
 
 function applyDialogueAudio(dialogueNode: SceneNode | undefined): void {
   if (!dialogueNode) return;

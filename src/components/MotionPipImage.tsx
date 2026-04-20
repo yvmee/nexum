@@ -31,3 +31,5 @@ export const MotionPipImage = forwardRef<HTMLImageElement, MotionPipImageProps>(
     );
   }
 );
+
+MotionPipImage.displayName = 'MotionPipImage';

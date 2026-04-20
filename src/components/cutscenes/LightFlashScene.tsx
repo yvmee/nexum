@@ -1,9 +1,34 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as motion from "motion/react-client"
 import { useSoundStore } from '../../store/useSoundStore';
 
 interface LightFlashSceneProps {
 	onComplete: () => void;
+}
+
+export interface Streak {
+    id: number;
+    fromLeft: boolean;
+    top: number;
+    width: number;
+    height: number;
+    delay: number;
+    duration: number;
+}
+
+const createShockStreaks = (): Streak[] => {
+    return Array.from({ length: 14 }).map((_, i) => {
+        const fromLeft = i % 2 === 0;
+        return {
+				id: i,
+				fromLeft,
+				top: Math.random() * 100,
+				width: Math.random() * 45 + 55,
+				height: Math.random() * 5 + 2,
+				delay: Math.random() * 0.32,
+				duration: Math.random() * 0.2 + 0.25,
+			};
+    });
 }
 
 export const LightFlashScene: React.FC<LightFlashSceneProps> = ({ onComplete }) => {
@@ -13,21 +38,7 @@ export const LightFlashScene: React.FC<LightFlashSceneProps> = ({ onComplete }) 
 		return () => clearTimeout(timer);
 	}, [onComplete]);
 
-	const shockStreaks = useMemo(() => {
-		return Array.from({ length: 14 }).map((_, i) => {
-			const fromLeft = i % 2 === 0;
-
-			return {
-				id: i,
-				fromLeft,
-				top: Math.random() * 100,
-				width: Math.random() * 45 + 55,
-				height: Math.random() * 5 + 2,
-				delay: Math.random() * 0.32,
-				duration: Math.random() * 0.2 + 0.25,
-			};
-		});
-	}, []);
+	const [shockStreaks] = useState<Streak[]>(createShockStreaks);
 
 	return (
 		<div className="absolute inset-0 overflow-hidden pointer-events-none">

@@ -1,7 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-/* @ts-ignore-next-line */
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMMA_API_KEY });
+const ai = new GoogleGenAI({ apiKey: '' });
 
 const systemPrompt = `You are here to help a student teaching for the first time reflect on their choices in a teaching scenario.
 Given the scenario and the students answer, guide the reflection of the student by providing thoughtful indirect feedback 
@@ -56,7 +55,7 @@ function sanitizeInput(input: string): string {
     }
     
     // Remove control characters and unusual whitespace
-    sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+    //sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
     
     // Collapse multiple spaces/newlines
     sanitized = sanitized.replace(/\s{3,}/g, '  ');
