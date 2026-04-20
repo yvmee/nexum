@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
 import { useSoundStore } from '../../store/useSoundStore';
@@ -6,6 +6,25 @@ import { useSoundStore } from '../../store/useSoundStore';
 interface EnergyGainSceneProps {
   onComplete: () => void;
 }
+
+export interface EnergyParticle {
+  id: number;
+  angle: number;
+  distance: number;
+  size: number;
+  delay: number;
+  duration: number;
+}
+
+const createEnergyParticles = (): EnergyParticle[] =>
+  Array.from({ length: 25 }, (_, i) => ({
+    id: i,
+    angle: Math.random() * Math.PI * 2,
+    distance: Math.random() * 300 + 80,
+    size: Math.random() * 8 + 4,
+    delay: Math.random() * 1.5,
+    duration: Math.random() * 1.0 + 1.2,
+  }));
 
 export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) => {
   const playSfx = useSoundStore((s) => s.playSfx);
@@ -16,22 +35,7 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  // Memoize random particle data so they don't recalculate on every render tick
-  const particles = useMemo(() => {
-    return Array.from({ length: 25 }).map((_, i) => ({
-      id: i,
-      // Random angle to originate from around the full circle
-      angle: Math.random() * Math.PI * 2,
-      // Random starting distance from center 
-      distance: Math.random() * 300 + 80,
-      // Random size for the particle
-      size: Math.random() * 8 + 4,
-      // Staggered spawning so particles stream in over time
-      delay: Math.random() * 1.5,
-      // Slightly varied travel duration
-      duration: Math.random() * 1.0 + 1.2,
-    }));
-  }, []);
+  const [particles] = useState<EnergyParticle[]>(createEnergyParticles);
 
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
 
-let currentBackground = SchoolBackground;
+const background = SchoolBackground;
 
 /**
  * End page component stand-in
@@ -19,9 +19,9 @@ export const EndPage: React.FC = () => {
 
     // Navigate to GameContainer to restart the game
     const handleRestartGame = (): void => {
-        console.log('Restart button clicked, restarting game...');
-        useGameStore.getState().startGame(); 
-        navigate('/game');
+      console.log('Restart button clicked, restarting game...');
+      useGameStore.getState().startGame(); 
+      void navigate('/game');
     }
 
   return (
@@ -29,7 +29,7 @@ export const EndPage: React.FC = () => {
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={currentBackground} 
+          src={background} 
           alt="Background" 
           className="w-full h-full object-cover"
         />

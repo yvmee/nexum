@@ -42,6 +42,10 @@ export interface BranchCondition {
  * Locations for the dialogue scenes, defines background and (optionally) soundtrack
  */
 export const locations: Record<string, location> = {
+  introLocation: {
+    background: 'hallway',
+    bgm: '',
+  },
   lectureHall: {
     background: 'lecturehall',
     bgm: 'lectureHallSound',
@@ -71,7 +75,7 @@ export const startDialogue: SceneNode[] = [
     id: 'start',
     text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
     speaker: 'Narrator',
-    location: 'hallway',
+    location: 'introLocation',
     nextId: 'intro_0',
   },
   {
@@ -84,6 +88,7 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
+    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -94,7 +99,7 @@ export const startDialogue: SceneNode[] = [
   {
     id: 'cutscene_2',
     type: 'cutscene',
-    animationId: 'energy_gain',
+    animationId: 'light_flash',
     nextId: 'cutscene_3',
   },
   {
@@ -1798,7 +1803,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
   },
   {
     id: 'walking_1',
-    text: 'Uhmm…. I just don\’t really know how to start…',
+    text: 'Uhmm…. I just don’t really know how to start…',
     speaker: 'Student',
     characterRight: 'mayra',
     characterLeft: 'boyStudent',
@@ -1823,7 +1828,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
   // Ending start
   {
     id: 'ending_0',
-    text: 'We do not have much time left, so let\’s start discussing your solutions! Is there anyone that wants to present what they have done?',
+    text: 'We do not have much time left, so let’s start discussing your solutions! Is there anyone that wants to present what they have done?',
     speaker: 'Mayra',
     characterRight: 'mayra',
     nextId: 'ending_1',
@@ -1837,7 +1842,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
   },
   {
     id: 'ending_2',
-    text: 'I think that\’s it for today! Thank you all for coming and I will see you next week.',
+    text: 'I think that’s it for today! Thank you all for coming and I will see you next week.',
     speaker: 'Mayra',
     characterRight: 'mayra',
     nextId: 'ending_3',

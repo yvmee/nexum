@@ -1,10 +1,27 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as motion from "motion/react-client"
 import { useSoundStore } from '../../store/useSoundStore';
+import { EnergyParticle } from './EnergyGainScene';
 
 interface GlowParticleSceneProps {
   onComplete: () => void;
 }
+
+const createParticles = (): EnergyParticle[] =>
+  Array.from({ length: 25 }).map((_, i) => ({
+    id: i,
+    // Random angle in radians to shoot out in a full circle
+    angle: Math.random() * Math.PI * 2,
+    // Random distance to travel 
+    distance: Math.random() * 300 + 50,
+    // Random size for the particle
+    size: Math.random() * 8 + 4,
+    // Random delay so they don't all spawn at the exact same millisecond
+    delay: Math.random() * 0.4,
+    // Varied animation duration
+    duration: Math.random() * 1.5 + 2, 
+  }));
+
 
 export const GlowParticleScene: React.FC<GlowParticleSceneProps> = ({ onComplete }) => {
   const playSfx = useSoundStore((s) => s.playSfx);
@@ -14,24 +31,9 @@ export const GlowParticleScene: React.FC<GlowParticleSceneProps> = ({ onComplete
     const timer = setTimeout(onComplete, 4000);
     return () => clearTimeout(timer);
   }, [onComplete]);
-
-  // Memoize random particle data 
-  const particles = useMemo(() => {
-    return Array.from({ length: 25 }).map((_, i) => ({
-      id: i,
-      // Random angle in radians to shoot out in a full circle
-      angle: Math.random() * Math.PI * 2,
-      // Random distance to travel 
-      distance: Math.random() * 300 + 50,
-      // Random size for the particle
-      size: Math.random() * 8 + 4,
-      // Random delay so they don't all spawn at the exact same millisecond
-      delay: Math.random() * 0.4,
-      // Varied animation duration
-      duration: Math.random() * 1.5 + 2, 
-    }));
-  }, []);
-
+ 
+  const [particles] = useState<EnergyParticle[]>(createParticles);
+  
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
       

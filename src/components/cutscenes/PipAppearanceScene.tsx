@@ -1,10 +1,26 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
 import { useSoundStore } from '../../store/useSoundStore';
+import { Streak } from './LightFlashScene';
 
 interface PipAppearanceSceneProps {
     onComplete: () => void;
+}
+
+const createStreaks = (): Streak[] => {
+    return Array.from({ length: 10 }).map((_, i) => {
+        const fromLeft = i % 2 === 0;
+        return {
+                id: i,
+                fromLeft,
+                top: Math.random() * 100,
+                width: Math.random() * 35 + 45,
+                height: Math.random() * 3 + 1.5,
+                delay: Math.random() * 0.25,
+                duration: Math.random() * 0.18 + 0.2,
+            };
+    });
 }
 
 export const PipAppearanceScene: React.FC<PipAppearanceSceneProps> = ({ onComplete }) => {
@@ -16,25 +32,11 @@ export const PipAppearanceScene: React.FC<PipAppearanceSceneProps> = ({ onComple
         return () => clearTimeout(timer);
     }, [onComplete]);
 
-    const streaks = useMemo(() => {
-        return Array.from({ length: 10 }).map((_, i) => {
-            const fromLeft = i % 2 === 0;
-
-            return {
-                id: i,
-                fromLeft,
-                top: Math.random() * 100,
-                width: Math.random() * 35 + 45,
-                height: Math.random() * 3 + 1.5,
-                delay: Math.random() * 0.25,
-                duration: Math.random() * 0.18 + 0.2,
-            };
-        });
-    }, []);
+    const [streaks] = useState<Streak[]>(createStreaks);
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none flex items-center justify-center">
-            {/* Keep a strong, warm flash behind Pip and let it fade while Pip settles in */}
+            {/* Keep a strongflash behind Pip and let it fade */}
             <motion.div
                 className="absolute inset-0"
                 style={{

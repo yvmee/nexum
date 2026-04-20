@@ -6,7 +6,7 @@ import { useSoundStore, withClickSound } from '../store/useSoundStore';
 import { backgrounds, characters } from '../storydata/assetData';
 import { preloadImage } from '../lib/preloadImage';
 
-let currentBackground = SchoolBackground;
+const background = SchoolBackground;
 
 /**
  * Menu page component that serves as the entry point to the game
@@ -28,7 +28,7 @@ export const Menu: React.FC = () => {
     const handleStartGame = (): void => {
         console.log('Start Game button clicked!');
         useGameStore.getState().startGame(); 
-        navigate('/game');
+        void navigate('/game');
     }
 
   return (
@@ -36,7 +36,7 @@ export const Menu: React.FC = () => {
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <img 
-          src={currentBackground} 
+          src={background} 
           alt="Background" 
           className="w-full h-full object-cover"
         />
