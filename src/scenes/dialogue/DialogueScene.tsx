@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import * as motion from "motion/react-client";
 import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
 import { MinigameManager } from '../../components/minigames/MinigameManager.tsx';
@@ -59,6 +60,18 @@ export const DialogueScene: React.FC = () => {
   const leftPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
   const rightPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
 
+  // Background animation state
+  const [displayedBackground, setDisplayedBackground] = useState(currentBackground);
+  const [transitionPhase, setTransitionPhase] = useState<'idle' | 'cover' | 'reveal'>('idle');
+  const pendingBg = useRef<string>('');
+
+  useEffect(() => {
+    if (currentBackground !== displayedBackground && transitionPhase === 'idle') {
+      pendingBg.current = currentBackground;
+      setTransitionPhase('cover');
+    }
+  }, [currentBackground, displayedBackground, transitionPhase]);
+
   useEffect(() => {
     if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
       const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
@@ -76,20 +89,34 @@ export const DialogueScene: React.FC = () => {
     if (choice) { // Save the selected choice in game manager for chunk branching
       makeChoice(Object.keys(choice)[0], Object.values(choice)[0]);
     }
-
     advanceDialogue(nextId);
   };
 
   return (
     <div className="w-full h-full">
       {/* Background Layer */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={currentBackground} 
-          alt="Background" 
-          className="w-full h-full object-cover"
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${displayedBackground})` }}
+      />
+
+      {/* Background Transition Overlay */}
+      {transitionPhase !== 'idle' && (
+        <motion.div
+          className="absolute inset-0 z-50 bg-black"
+          initial={{ x: transitionPhase === 'cover' ? '-100%' : '0%' }}
+          animate={{ x: transitionPhase === 'cover' ? '0%' : '100%' }}
+          transition={{ duration: 0.45, ease: 'easeInOut' }}
+          onAnimationComplete={() => {
+            if (transitionPhase === 'cover') {
+              setDisplayedBackground(pendingBg.current);
+              setTransitionPhase('reveal');
+            } else {
+              setTransitionPhase('idle');
+            }
+          }}
         />
-      </div>
+      )}
 
       {/* Cutscene Layer */}
       {isCutsceneActive && (
@@ -119,7 +146,7 @@ export const DialogueScene: React.FC = () => {
         {/* Dialogue Box Area */}
         <div className="pointer-events-auto mb-10 flex flex-col items-center w-full">
           {/* Optional Speaker Portraits */}
-          {isDialogueActive && (leftPortrait || rightPortrait) && (
+          {isDialogueActive && transitionPhase === 'idle' && (leftPortrait || rightPortrait) && (
             <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
               <div className="min-h-(--portrait-size) flex items-end">
                 {leftPortrait && (
@@ -166,7 +193,7 @@ export const DialogueScene: React.FC = () => {
             onSelectOption={handleSelectOption}
             onGoBack={goBackDialogue}
             canGoBack={dialogueHistory.length > 0 && !currentDialogue?.location}
-            isVisible={isDialogueActive}
+            isVisible={isDialogueActive && transitionPhase === 'idle'}
           />
         </div>
       </div>

@@ -185,7 +185,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   startGame: () => {
     const { storyFlow } = get();
     if (storyFlow) {
-      // DEBUG
+
       console.log('Starting game with story flow:', storyFlow.id);
       set({
         currentScene: 'STORY',
@@ -209,8 +209,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   // Advance to the next dialogue node
   advanceDialogue: (nextDialogueId?: string) => {
     const { activeDialogues, currentDialogueId, completeChunk, dialogueHistory, historyLength } = get();
-
-    console.log('Advancing dialogue. Current ID:', currentDialogueId, 'Next ID:', nextDialogueId);
     
     let targetId = nextDialogueId;
     if (!targetId && currentDialogueId) {
