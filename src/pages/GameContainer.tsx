@@ -21,7 +21,6 @@ export default function GameContainer() {
 
   return (
     <div className="w-full h-screen bg-gray-900">
-      {currentScene === 'INTRO' && <IntroScene />}
       {currentScene === 'STORY' && <DialogueScene />}
       {currentScene === 'REFLECTION' && <ReflectionScene />}
     </div>

@@ -15,13 +15,13 @@ export const GlowParticleScene: React.FC<GlowParticleSceneProps> = ({ onComplete
     return () => clearTimeout(timer);
   }, [onComplete]);
 
-  // Memoize random particle data so they don't recalculate on every render tick
+  // Memoize random particle data 
   const particles = useMemo(() => {
     return Array.from({ length: 25 }).map((_, i) => ({
       id: i,
       // Random angle in radians to shoot out in a full circle
       angle: Math.random() * Math.PI * 2,
-      // Random distance to travel (between 50px and 350px)
+      // Random distance to travel 
       distance: Math.random() * 300 + 50,
       // Random size for the particle
       size: Math.random() * 8 + 4,
