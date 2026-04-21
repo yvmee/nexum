@@ -92,9 +92,15 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'cutscene_1',
-    text: 'Now, a cutscene test',
+    text: 'Now, a pip test',
     speaker: 'Narrator',
-    nextId: 'cutscene_2',
+    nextId: 'pip_test',
+  },
+  {
+    id: 'pip_test',
+    text: 'Hello, I am Pip.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
   },
   {
     id: 'cutscene_2',

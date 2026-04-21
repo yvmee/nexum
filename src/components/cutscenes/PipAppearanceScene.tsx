@@ -83,7 +83,7 @@ export const PipAppearanceScene: React.FC<PipAppearanceSceneProps> = ({ onComple
                 transition={{ duration: 0.65, delay: 0.16, ease: 'easeOut' }}
             >
                 <MotionPipImage
-                    className="w-45 h-auto drop-shadow-[0_0_24px_rgba(255,248,212,0.95)]"
+                    className="w-(--pip-cutscene-size) h-auto drop-shadow-[0_0_24px_rgba(255,248,212,0.95)]"
                     animate={{ y: [0, -8, 0, -6, 0] }}
                     transition={{
                         delay: 0.8,

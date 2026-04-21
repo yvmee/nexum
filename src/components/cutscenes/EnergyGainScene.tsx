@@ -107,7 +107,7 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
         transition={{ duration: 3.5, times: [0, 0.35, 1], ease: 'easeIn' }}
       >
         <MotionPipImage
-          className="w-45 h-auto"
+          className="w-(--pip-cutscene-size) h-auto"
           animate={{ y: [0, -8, 0, -6, 0] }}
           transition={{
             delay: 0.2,
