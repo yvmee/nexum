@@ -40,12 +40,12 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
     >
       {/* Speaker Name (hide for Narrator and change for Mayra (in)) */}
       {dialogue.speaker && dialogue.speaker !== 'Narrator' && (
-        <div className="flex text-primary font-semibold">
+        <div className="flex text-primary [font-size:var(--text-speaker)] font-semibold">
           {speakerLabel}
         </div>
       )}
       {/* Dialogue Text (italic for Narrator / inner monologue) */}
-      <div className={`flex text-(--text-body) leading-relaxed px-(--inner-px) font-medium ${dialogue.speaker === 'Narrator' || isInnerMonologue ? 'italic' : ''} ${isInnerMonologue ? 'text-foreground/90' : ''}`}>
+      <div className={`flex [font-size:var(--text-body)] leading-relaxed px-(--inner-px) font-medium ${dialogue.speaker === 'Narrator' || isInnerMonologue ? 'italic' : ''} ${isInnerMonologue ? 'text-foreground/90' : ''}`}>
         {dialogue.text}
       </div>
 
@@ -55,7 +55,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           {dialogue.options!.map((option, index) => (
             <button
               key={index}
-              className="w-full text-left px-(--btn-px) py-(--btn-py) bg-secondary/85 border border-border/50 rounded-lg text-foreground 
+              className="w-full text-left [font-size:var(--text-body)] px-(--btn-px) py-(--btn-py) bg-secondary/85 border border-border/50 rounded-lg text-foreground 
               hover:bg-secondary hover:border-primary/40 hover:brightness-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               onClick={() => { withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
             >
@@ -70,7 +70,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
       <div className="flex items-center justify-between">
         {/* Back Button */}
         <button
-          className={`text-xs font-semibold px-2 py-1 rounded transition-all duration-150 ${
+          className={`[font-size:var(--text-hint)] font-semibold px-2 py-1 rounded transition-all duration-150 ${
             canGoBack
               ? 'text-primary/70 hover:text-primary hover:bg-primary/10 cursor-pointer'
               : 'text-foreground/20 cursor-not-allowed'
@@ -82,7 +82,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           ← Back
         </button>
         {!hasOptions && (
-          <div className="flex text-primary text-right blink-animation self-end font-semibold">
+          <div className="flex text-primary [font-size:var(--text-hint)] text-right blink-animation self-end font-semibold">
             Click to continue...
           </div>
         )}

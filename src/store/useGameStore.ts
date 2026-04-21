@@ -190,7 +190,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       set({
         currentScene: 'STORY',
         gameState: 'PLAYING',
-        pipColorValue: 0,
+        pipColorValue: 20,
         reflectionInputScores: [],
         playerChoices: {},
         reflectionAnswers: {},
@@ -199,8 +199,11 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
+      console.error('No story flow found to start the game!');
       set({ currentScene: 'STORY', startNodeId: 'start', gameState: 'PLAYING' });
     }
+
+    console.log('Game started. Current pip color value:', get().pipColorValue);
   },
 
   // Simple scene switcher for manual overrides
@@ -248,8 +251,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     const { dialogueHistory, activeDialogues } = get();
     if (dialogueHistory.length === 0) return;
 
-    console.log('Going back in dialogue. History:', dialogueHistory);
-
     const previousId = dialogueHistory[dialogueHistory.length - 1];
     const previousDialogue = activeDialogues.find((d) => d.id === previousId);
     if (!previousDialogue) return;
@@ -265,7 +266,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       }
     }
     applyDialogueAudio(previousDialogue);
-    console.debug(`Going back to dialogue with id:`, previousId);
     set({ currentDialogueId: previousId, dialogueHistory: newHistory });
   },
 

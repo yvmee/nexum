@@ -93,7 +93,7 @@ export const DialogueScene: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full bg-black">
       {/* Background Layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"

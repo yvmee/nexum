@@ -168,18 +168,20 @@
 
 
   /* Dialogue box container */
-  --box-width:        clamp(300px, 75vw, 900px);
-  --box-min-height:   clamp(100px, 15vh, 180px);
+  --box-width:        clamp(300px, 60vw, 1500px);
+  --box-min-height:   clamp(180px, 25vh, 460px);
   --box-padding:      clamp(1rem, 3vw, 2.5rem);
   --box-gap:          clamp(0.75rem, 2vw, 1.5rem);
 
   /* Character portraits */
-  --portrait-size:    clamp(300px,32vh,600px);
+  --portrait-size:    clamp(220px, min(36vh, 26vw), 760px);
+  --pip-cutscene-size: clamp(170px, min(20vw, 30vh), 430px);
 
   /* Text sizes */
-  --text-body:        clamp(1rem, 2.5vw, 1.5rem);
-  --text-label:       clamp(0.875rem, 2vw, 1.25rem);
-  --text-hint:        clamp(0.75rem, 1.5vw, 1rem);
+  --text-body:        clamp(1rem, 1vw, 1.8rem);
+  --text-label:       clamp(0.875rem, 1vw, 1.25rem);
+  --text-hint:        clamp(0.75rem, 1vw, 1.35rem);
+  --text-speaker:     clamp(1rem, 1vw, 2rem);
 
   /* Inner element spacing */
   --inner-px:         clamp(0.25rem, 1vw, 0.75rem);
@@ -204,6 +206,20 @@
   --menu-btn-text:    clamp(0.875rem, 2vw, 5rem);
   --menu-btn-py:      clamp(0.5rem, 3vw, 3rem);
   --menu-btn-px:      clamp(1.5rem, 12vw, 12rem);
+
+  /* Paper Minigame */
+  --paper-width:      clamp(100px, 18vw, 600px);
+  --paper-height:     clamp(300px, 50vh, 1000px);
+  --title-size:       clamp(1.25rem, 1vw, 2.5rem);
+
+  /* Sorting Minigame */
+  --sorting-card-w:   clamp(120px, 15vw, 300px);
+  --sorting-card-h:   clamp(92px, 14vh, 250px);
+  --sorting-gap:      clamp(0.5rem, 1vw, 1rem);
+  --sorting-col-gap:  clamp(0.75rem, 2vw, 2rem);
+  --sorting-arrow-w:  clamp(1.5rem, 2vw, 2.5rem);
+  --sorting-arrow-h:  clamp(4rem, 8vh, 8rem);
+  --sorting-bottom:   clamp(1.5rem, 4vh, 3.25rem);
 }
 
 

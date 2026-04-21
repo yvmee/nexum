@@ -76,15 +76,15 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
 
   return (
     <div className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden backdrop-blur-sm bg-black/10">
-      <h2 className="text-white text-base font-bold mb-6 uppercase tracking-widest">
+      <h2 className="text-white [font-size:var(--title-size)] font-bold mb-(--inner-mt) uppercase tracking-widest text-center px-(--inner-px)">
         Choose how to start your tutorial! Drag and drop your selected elements to your right.
       </h2>
 
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-(--sorting-col-gap)">
 
         {/*Item blocks to sort (left)*/}
         <div
-          className="grid grid-cols-2 gap-3"
+          className="grid grid-cols-2 gap-(--sorting-gap)"
           onDragOver={handleDragOver}
           onDrop={handleDropOnPool}
         >
@@ -95,7 +95,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
                 key={item.id}
                 draggable={!isPlaced}
                 onDragStart={!isPlaced ? (e) => handleDragStartItem(e, item.id) : undefined}
-                className="w-40 h-25 flex items-center justify-center text-xs text-center p-2 rounded border transition-all select-none"
+                className="w-(--sorting-card-w) h-(--sorting-card-h) flex items-center justify-center [font-size:var(--text-hint)] text-center p-(--inner-px) rounded border transition-all select-none"
                 style={isPlaced
                   ? { opacity: 0.25, backgroundColor: 'var(--muted)', borderColor: 'var(--border)', color: 'var(--muted-foreground)', cursor: 'not-allowed' }
                   : { backgroundColor: 'var(--secondary)', borderColor: 'var(--ring)', color: 'var(--secondary-foreground)', cursor: 'grab' }
@@ -110,10 +110,10 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
         </div>
 
         {/* Downward arrows aligned with slots (middle) */}
-        <div className="flex flex-col items-center justify-center gap-3">
+        <div className="flex flex-col items-center justify-center gap-(--sorting-gap)">
           {Array(SLOT_COUNT).fill(null).map((_, i) => (
-            <div key={i} className="w-8 h-20 flex items-center justify-center">
-              <svg width="20" height="28" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div key={i} className="w-(--sorting-arrow-w) h-(--sorting-arrow-h) flex items-center justify-center">
+              <svg width="24" height="36" viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-auto">
                 <line x1="10" y1="0" x2="10" y2="20" stroke="rgba(255,255,255,0.4)" strokeWidth="2"/>
                 <path d="M3 16 L10 26 L17 16" stroke="rgba(255,255,255,0.4)" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -122,7 +122,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
         </div>
 
         {/* Drop slots (right) */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-(--sorting-gap)">
           {slots.map((slotItemId, slotIndex) => {
             const slotItem = slotItemId !== null ? ITEMS.find((i) => i.id === slotItemId) : null;
             const isHovered = dragOverSlot === slotIndex;
@@ -132,7 +132,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
                 onDragOver={(e) => handleDragOverSlot(e, slotIndex)}
                 onDragLeave={handleDragLeaveSlot}
                 onDrop={(e) => handleDropOnSlot(e, slotIndex)}
-                className="w-40 h-25 flex items-center justify-center text-xs text-center p-2 rounded border-2 border-dashed transition-all"
+                className="w-(--sorting-card-w) h-(--sorting-card-h) flex items-center justify-center [font-size:var(--text-hint)] text-center p-(--inner-px) rounded border-2 border-dashed transition-all"
                 style={slotItem
                   ? { backgroundColor: 'var(--secondary)', borderColor: 'var(--ring)', color: 'var(--secondary-foreground)' }
                   : isHovered
@@ -149,7 +149,7 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
                     {slotItem.text}
                   </div>
                 ) : (
-                  <span className="text-xs pointer-events-none">Drop here</span>
+                  <span className="[font-size:var(--text-hint)] pointer-events-none">Drop here</span>
                 )}
               </div>
             );
@@ -158,11 +158,11 @@ export const SortingGame: React.FC<SortingGameProps> = ({ onComplete }) => {
       </div>
 
       {/* Done button */}
-      <div className="absolute bottom-10 flex justify-center w-full">
+      <div className="absolute bottom-(--sorting-bottom) flex justify-center w-full">
         <button
           onClick={() => { playSfx('click'); onComplete(slots.filter((s): s is number => s !== null)); }}
           disabled={placedIds.length === 0}
-          className="px-6 py-3 font-bold uppercase tracking-wider rounded shadow transition-colors disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => { if (placedIds.length > 0) e.currentTarget.style.opacity = '0.85'; }} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          className="px-(--submit-px) py-(--submit-py) [font-size:var(--text-label)] font-bold uppercase tracking-wider rounded shadow transition-colors disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }} onMouseEnter={e => { if (placedIds.length > 0) e.currentTarget.style.opacity = '0.85'; }} onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
         >
           Done
         </button>
