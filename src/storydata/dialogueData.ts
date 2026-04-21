@@ -35,7 +35,7 @@ export interface location {
 
 export interface BranchCondition {
   nextId: string;
-  condition: (choices: number[]) => boolean;
+  condition: (playerChoices: Record<string, string | boolean | number>) => boolean;
 }
 
 /**
@@ -662,6 +662,25 @@ export const scenario1Dialogue: SceneNode[] = [
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
     speaker: 'Narrator',
     location: 'studyRoom',
+    type: 'branching',
+    branchConditions: [
+      { nextId: '15participants', condition: (playerChoices) => playerChoices.participantChoice === 15 },
+      { nextId: '25participants', condition: (playerChoices) => playerChoices.participantChoice === 25 },
+      { nextId: 'node_0', condition: () => true }, // fallback
+    ],
+  },
+  {
+    id: '15participants',
+    text: 'The room is actually filled with approximately 15 students. Many of them look up at Mayra as she enters and smile at her, but they quickly avert their gaze again and go back to looking at their sheets and tablets.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'node_0',
+  },
+  {
+    id: '25participants',
+    text: 'The room is filled with a bit over 20 students. Many of them look up at Mayra as she enters and smile at her, but they quickly avert their gaze again and go back to looking at their sheets and tablets.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
     nextId: 'node_0',
   },
   {
@@ -673,14 +692,14 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'node_1',
-    text: 'The students look up and mumble quiet hellos back before averting their gaze again. Mayra moves to the front desk and sits down.',
+    text: 'The students look up again and mumble quiet hellos back. Mayra moves to the front desk and sits down.',
     speaker: 'Narrator',
     characterRight: 'mayra',
     nextId: 'node_2',
   },
   {
     id: 'node_2',
-    text: 'Alrigth, the tutorial starts in a few minutes. I can do this.',
+    text: 'Alrigth, the tutorial starts in a few minutes. I can do this. And they all look friendly to me.',
     speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'node_3',
@@ -742,19 +761,35 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(1) || choices.includes(3));
+        },
         nextId: 'overview',
       },
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+        },
         nextId: 'doubleintro',
       },
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -768,15 +803,27 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+        },
         nextId: 'doubleintro',
       },
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -790,11 +837,19 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -815,7 +870,11 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'faildoomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -848,8 +907,6 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     nextId: 'clock_cutscene',
   },
-  // insert choice based dialogue
-  // insert clock animation cutscene
   {
     id: 'clock_cutscene',
     type: 'cutscene',
@@ -1290,7 +1347,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
     id: 'help_choice',
     text: 'I just don’t know how to start.',
     options: [
-      { text: 'Let’s go through it step by step', nextId: 'choice_step', choice: { helpStyle: 'step' } },
+      { text: 'Let’s go through it step by step', nextId: 'choice_step', choice: { helpStyle: 'help' } },
       { text: 'Here is how you solve it', nextId: 'choice_solution', choice: { helpStyle: 'solution' } },
       { text: 'I am not helping you', nextId: 'choice_nohelp' },
     ],
@@ -1316,7 +1373,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
     text: 'What should Mayra do?',
     options: [
       { text: 'Stick to the decision and not help Noah', nextId: 'nohelp_end', choice: { helpStyle: 'no' } },
-      { text: 'Help him with the start of the exercise', nextId: 'help_start', choice: { helpStyle: 'start' } },
+      { text: 'Help him with the start of the exercise', nextId: 'help_start', choice: { helpStyle: 'help' } },
     ],
   },
   {
@@ -1756,7 +1813,7 @@ export const preparationDialogue: SceneNode[] = [
     text: 'Do you want to take a look at the material on the table?',
     options: [
       { text: 'Take a look at the desk', nextId: 'feelings_unsure_3'},
-      { text: 'Leave it', nextId: 'no_table' },
+      { text: 'Leave it', nextId: 'no_table', choice: { skipTable: true }  },
     ],
   },
   {
@@ -1815,8 +1872,6 @@ export const preparationDialogue: SceneNode[] = [
     characterLeft: 'pip',
   },
 ]
-
-
 
 export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 - Work organization
   {

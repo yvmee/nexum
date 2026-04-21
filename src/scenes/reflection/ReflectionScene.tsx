@@ -33,7 +33,7 @@ export const ReflectionScene: React.FC = () => {
   useEffect(() => {
     if (currentDialogue?.sfx) playSfx(currentDialogue.sfx);
   }, [currentDialogue?.id]);
-  const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
+  const playerChoices = useGameStore((state) => state.playerChoices);
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
@@ -72,10 +72,10 @@ export const ReflectionScene: React.FC = () => {
   // Auto-advance branching nodes
   useEffect(() => {
     if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
-      const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
+      const match = currentDialogue.branchConditions.find(b => b.condition(playerChoices));
       if (match) advanceReflection(match.nextId);
     }
-  }, [currentDialogue]);
+  }, [currentDialogue, playerChoices]);
 
   // Update visibility when current dialogue changes
   useEffect(() => {

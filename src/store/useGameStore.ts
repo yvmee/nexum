@@ -319,11 +319,15 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     return score;
   },
 
-  // Save sorting minigame choices
-  submitSortingGame: (ids: number[]) => set(() => {
+  // Save sorting minigame choices to playerChoices
+  submitSortingGame: (ids: number[]) => set((state) => {
     console.log('sorted ids:', { ids });
     return {
       sortingGameChoices: ids,
+      playerChoices: {
+        ...state.playerChoices,
+        sortingGameChoices: ids.join(','), 
+      },
     };
   }),
 

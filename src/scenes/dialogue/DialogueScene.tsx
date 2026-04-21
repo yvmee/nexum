@@ -17,7 +17,7 @@ export const DialogueScene: React.FC = () => {
   const goBackDialogue = useGameStore((state) => state.goBackDialogue);
   const dialogueHistory = useGameStore((state) => state.dialogueHistory);
   const makeChoice = useGameStore((state) => state.makeChoice);
-  const sortingGameChoices = useGameStore((state) => state.sortingGameChoices);
+  const playerChoices = useGameStore((state) => state.playerChoices);
 
   const currentDialogue = useCurrentDialogue();
 
@@ -74,10 +74,10 @@ export const DialogueScene: React.FC = () => {
 
   useEffect(() => {
     if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
-      const match = currentDialogue.branchConditions.find(b => b.condition(sortingGameChoices));
+      const match = currentDialogue.branchConditions.find(b => b.condition(playerChoices));
       if (match) advanceDialogue(match.nextId);
     }
-  }, [currentDialogue, sortingGameChoices]);
+  }, [currentDialogue, playerChoices]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {

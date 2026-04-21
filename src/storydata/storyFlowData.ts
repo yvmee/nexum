@@ -122,7 +122,7 @@ export const testFlow: StoryFlow = {
   }
 }
 
-// Simple story flow for now
+// Full game story flow
 export const gameFlow: StoryFlow = {
   id: 'story_flow',
   initialChunkId: 'intro',
