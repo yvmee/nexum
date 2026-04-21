@@ -37,20 +37,18 @@ export const EndPage: React.FC = () => {
 
       {/* Content Layer */}
       <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
-        {/* Game Title */}
-        <div className="flex flex-col items-center justify-center mt-20">
-          <h1 className="text-primary font-bold text-6xl mb-4" style={{ fontFamily: 'Segoe UI' }}>
-            The End
-          </h1>
-        </div>
+        <div className="flex flex-col items-center justify-center mt-20"></div>
 
         {/* Buttons*/}
         <div className="flex flex-col items-center justify-center mb-20 pointer-events-auto">
             <button className="
-                start-button bg-primary font-bold rounded mb-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20
-                text-[var(--menu-btn-text)]
-                py-[var(--menu-btn-py)]
-                px-[var(--menu-btn-px)]
+                group relative overflow-hidden rounded-full
+                backdrop-blur-md bg-white/10 border border-white/30 
+                text-(--menu-btn-text) text-xl font-bold uppercase tracking-widest
+                py-(--menu-btn-py) px-(--menu-btn-px) cursor-pointer
+                transition-all duration-300 ease-out
+                hover:bg-white/20 hover:border-white/60 hover:scale-105
+                hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
             " onClick={withClickSound(handleRestartGame)}>
                 Restart Game
             </button>
