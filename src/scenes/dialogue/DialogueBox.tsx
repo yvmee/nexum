@@ -55,7 +55,8 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           {dialogue.options!.map((option, index) => (
             <button
               key={index}
-              className="w-full text-left px-(--btn-px) py-(--btn-py) bg-secondary border border-border/50 rounded-lg text-foreground hover:bg-accent/50 hover:border-accent transition-all duration-150 cursor-pointer"
+              className="w-full text-left px-(--btn-px) py-(--btn-py) bg-secondary/85 border border-border/50 rounded-lg text-foreground 
+              hover:bg-secondary hover:border-primary/40 hover:brightness-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               onClick={() => { withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
             >
               <span className="text-primary mr-2 font-bold">{index + 1}.</span>

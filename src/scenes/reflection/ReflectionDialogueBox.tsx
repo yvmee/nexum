@@ -95,7 +95,8 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
             <button
               key={option.nextId}
               onClick={(e) => { e.stopPropagation(); withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
-              className="w-full px-[var(--btn-px)] py-[var(--btn-py)] bg-secondary border border-border/50 rounded-lg text-[var(--text-label)] text-foreground font-medium hover:bg-primary/20 hover:border-primary transition-all duration-150 cursor-pointer text-left"
+              className="w-full text-left px-(--btn-px) py-(--btn-py) bg-secondary/85 border border-border/50 rounded-lg text-foreground 
+              hover:bg-secondary hover:border-primary/40 hover:brightness-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >
               {option.text}
             </button>
