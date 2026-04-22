@@ -54,7 +54,7 @@ export const Menu: React.FC = () => {
           </h1>
           {/* Optional sub-title or version number to make it look more official */}
           <span className="text-white/70 tracking-widest text-sm uppercase font-semibold">
-            A tutoring onboarding experience
+            A teaching onboarding experience
           </span>
         </div>
 

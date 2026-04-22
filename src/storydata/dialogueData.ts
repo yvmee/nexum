@@ -80,7 +80,7 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',
-    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
+    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the university.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
@@ -347,8 +347,8 @@ export const introDialogue: SceneNode[] = [
     id: 'decision_0',
     text: 'What should Mayra do?',
     options: [
-      { text: 'Stay and take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
-      { text: 'Leave', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
+      { text: 'Take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
+      { text: 'Check out the desk later', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
     ],
   },
   {
@@ -374,10 +374,15 @@ export const introDialogue: SceneNode[] = [
     text: 'How to motivate students...',
     speaker: 'Mayra',
     characterRight: 'mayraThinking',
-    nextId: 'choice_leave',
+    nextId: 'leave',
   },
   {
     id: 'choice_leave',
+    text: 'Mayra decides to check the desk out later and moves to the door.',
+    speaker: 'Narrator',
+  },
+  {
+    id: 'leave',
     text: 'Mayra moves to the door to leave the room.',
     speaker: 'Narrator',
   },
@@ -631,7 +636,6 @@ export const pipIntroDialogue: SceneNode[] = [
     nextId: 'toclassroom_0',
   },
   // _____ Leave Option Start _____
-
   {
     id: 'toclassroom_0',
     text: 'How do I explain the floating ball behind me to the students?',
@@ -646,12 +650,45 @@ export const pipIntroDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
-    nextId: 'toclassroom_2',
+    branchConditions: [
+      { nextId: 'table', condition: (playerChoices) => playerChoices.introChoice === 'leave' },
+      { nextId: 'toclassroom_2', condition: () => true },
+    ],
   },
   {
     id: 'toclassroom_2',
     text: 'Okay... If he says so...',
+    type: 'branching',
     speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+  },
+  {
+    id: 'table',
+    text: 'Oh, the table! The professor said there is some material on the table that I should look at. I should do that now, there is not much time left before the tutorial starts.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'table_1',
+  },
+  {
+    id: 'table_1',
+    text: 'Yes, you should do that. There is quite some interesting stuff written on those papers. I will wait.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'table_game',
+  },
+  {
+    id: 'table_game',
+    type: 'minigame',
+    minigameId: 'paper_table',
+    nextId: 'table_2',
+  },
+  {
+    id: 'table_2',
+    text: 'Alright, time to leave.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
     characterRight: 'mayra',
   },
 ]
