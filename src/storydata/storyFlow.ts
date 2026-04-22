@@ -23,6 +23,7 @@ export interface ChunkTransition {
   targetChunkId: string; 
   /** Return true when this transition should fire. Evaluated against current playerChoices. */
   condition?: (playerChoices: Record<string, string | boolean | number>) => boolean;
+  pipMinScore?: number; // optional pip score as condition
 }
 
 /**
@@ -41,6 +42,7 @@ export function evaluateNextChunk(
   storyFlow: StoryFlow,
   currentChunkId: string,
   playerChoices: Record<string, string | boolean | number>,
+  pipScore: number,
 ): string | null {
   const entry = storyFlow.chunks[currentChunkId];
   if (!entry) return null;
@@ -52,7 +54,7 @@ export function evaluateNextChunk(
   }
 
   for (const transition of entry.transitions) {
-    if (!transition.condition || transition.condition(playerChoices)) {
+    if (!transition.condition || (transition.condition(playerChoices) && (!transition.pipMinScore || transition.pipMinScore <= pipScore) )) {
       return transition.targetChunkId;
     }
   }

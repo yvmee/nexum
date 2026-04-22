@@ -88,13 +88,13 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
+
   },
   {
     id: 'cutscene_1',
-    text: 'Now, a pip test',
+    text: 'Now, a cutscene test',
     speaker: 'Narrator',
-    nextId: 'pip_test',
+    nextId: 'cutscene_2',
   },
   {
     id: 'pip_test',
@@ -105,7 +105,7 @@ export const startDialogue: SceneNode[] = [
   {
     id: 'cutscene_2',
     type: 'cutscene',
-    animationId: 'light_flash',
+    animationId: 'pip_leave',
     nextId: 'cutscene_3',
   },
   {
@@ -2172,7 +2172,39 @@ export const endingDialogue: SceneNode[] = [
     location: 'office',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
+]
+
+export const badEndingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'You know, I think you are still very much at the beginning of your journey. I think it would be best for you if you look at the material on tutoring again and truely internalize it.',
+    speaker: 'Pip',
+    location: 'office',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'ending_0',
+  },
+  {
+    id: 'ending_0',
+    text: 'I will leave now. Unfortunately, I haven\'t fully regained all my power yet to return to the world of thought ghosts, but I can rest for a while and see who else needs my help. Goodbye Mayra, and good luck with your teaching adventure!',
+    speaker: 'Pip',
+    location: 'office',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'pip_cutscene',
+  },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 export const trueEndingDialogue: SceneNode[] = [
@@ -2191,7 +2223,13 @@ export const trueEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 export const secretEndingDialogue: SceneNode[] = [
@@ -2226,7 +2264,13 @@ export const secretEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 // ___________ Dialogue Data End ____________

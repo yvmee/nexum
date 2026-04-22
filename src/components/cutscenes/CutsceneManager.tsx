@@ -5,6 +5,7 @@ import { LightFlashScene } from './LightFlashScene';
 import { PipAppearanceScene } from './PipAppearanceScene';
 import { ClockScene } from './ClockScene';
 import { EnergyGainScene } from './EnergyGainScene';
+import { PipLeaveScene } from './PipLeaveScene';
 import { useSoundStore } from '../../store/useSoundStore';
 
 interface CutsceneProps {
@@ -43,6 +44,9 @@ export const CutsceneManager: React.FC<CutsceneProps> = ({ node, onComplete }) =
 
     case 'energy_gain':
       return <EnergyGainScene onComplete={handleComplete} />;
+
+    case 'pip_leave':
+      return <PipLeaveScene onComplete={handleComplete} />;
       
     default:
       // Failsafe for missing Ids

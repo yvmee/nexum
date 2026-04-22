@@ -10,6 +10,7 @@ import {
 } from '../storydata/storyFlow';
 import { gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
+import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
@@ -39,34 +40,6 @@ function applyDialogueAudio(dialogueNode: SceneNode | undefined): void {
   if (isBgmTrack(locationData.bgm)) {
     playBgm(locationData.bgm);
   }
-}
-
-// Score a single reflection input based on quality heuristics
-function scoreReflectionInput(input: string): number {
-  const trimmed = input.trim();
-  if (trimmed.length === 0) return 0;
-
-  let score = 1; // Base score for any non-empty input
-
-  // Length-based scoring
-  if (trimmed.length > 20) score += 1;
-  if (trimmed.length > 50) score += 1;
-  if (trimmed.length > 80) score += 1;
-
-  // Reflective language bonus (very basic heuristics)
-  const reflectivePatterns = [
-    /\b(because|since|therefore|realized|learned|understand|think|feel|notice|consider)\b/i,
-    /\b(maybe|perhaps|could|would|should|might|wonder)\b/i,
-    /\b(perspective|approach|differently|important|improve|challenge|reflect)\b/i,
-  ];
-  for (const pattern of reflectivePatterns) {
-    if (pattern.test(trimmed)) {
-      score += 1;
-      break; // Max +1 from reflective language
-    }
-  }
-
-  return Math.min(score, 5); // Cap at 5 per answer
 }
 
 interface GameManagerState {
@@ -154,12 +127,12 @@ function activateChunk(
 }
 
 export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
-  currentScene: 'STORY',
+  currentScene: 'STORY' as Scene,
   startNodeId: 'start',
   currentBackground: backupBackground, // set by chunk or default to intro background
   currentDialogueId: null,
   currentReflectionNodeId: null,
-  gameState: 'IDLE',
+  gameState: 'PLAYING',
 
   // Pip color
   pipColorValue: 0,
@@ -312,7 +285,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
   // Evaluate a reflection input and return its score
   evaluateReflectionInput: (input: string) => {
-    const score = scoreReflectionInput(input);
+    const score = scoreInput(input);
     set((state) => ({
       reflectionInputScores: [...state.reflectionInputScores, score],
     }));
@@ -332,7 +305,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   }),
 
   completeChunk: () => {
-    const { storyFlow, currentChunkId } = get();
+    const { storyFlow, currentChunkId, pipColorValue } = get();
     if (!storyFlow || !currentChunkId) return;
 
     // Check if this chunk has a reflection scene
@@ -350,7 +323,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
     // No reflection, go straight to next chunk
     const { playerChoices } = get();
-    const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
+    const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices, pipColorValue);
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
@@ -375,7 +348,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     }
 
     console.log('Reflection completed. Evaluating next chunk');
-    const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices);
+    const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices, pipColorValue);
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
