@@ -35,7 +35,7 @@ export interface location {
 
 export interface BranchCondition {
   nextId: string;
-  condition: (choices: number[]) => boolean;
+  condition: (playerChoices: Record<string, string | boolean | number>) => boolean;
 }
 
 /**
@@ -80,7 +80,7 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',
-    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the academy.',
+    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the university.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
@@ -88,13 +88,13 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help her through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
+
   },
   {
     id: 'cutscene_1',
-    text: 'Now, a pip test',
+    text: 'Now, a cutscene test',
     speaker: 'Narrator',
-    nextId: 'pip_test',
+    nextId: 'cutscene_2',
   },
   {
     id: 'pip_test',
@@ -105,7 +105,7 @@ export const startDialogue: SceneNode[] = [
   {
     id: 'cutscene_2',
     type: 'cutscene',
-    animationId: 'light_flash',
+    animationId: 'pip_leave',
     nextId: 'cutscene_3',
   },
   {
@@ -243,7 +243,64 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_11',
-    text: 'Oh, and there is some material on that desk over there. If you want to have a look before your first session.',
+    text: 'How many people will you have in your tutorial sessions? Have you decided on a maximum number of participants?',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'option_participants',
+  },
+  {
+    id: 'option_participants',
+    text: 'What is the maximum number of participants in your tutorial?',
+    options: [
+      { text: '15', nextId: '15people', choice: { participantChoice: 15 } },
+      { text: '25', nextId: '25people', choice: { participantChoice: 25 } },
+      { text: '50', nextId: '50people', choice: { participantChoice: 25 } },
+    ],
+  },
+  {
+    id: '15people',
+    text: 'Yes, I want to have up to 15 participants. I want to keep the sessions small and personal.',
+    speaker: 'Mayra',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: '15people_1',
+  },
+  {
+    id: '15people_1',
+    text: 'Ah yes, you can have more personal interactions with the students that way. But keep in mind, you can also only reach a smaller number of students with that format.',
+    speaker: 'Mayra',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_12',
+  },
+  {
+    id: '25people',
+    text: 'Yes, I want to have up to 25 participants.',
+    speaker: 'Mayra',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: '25people_1',
+  },
+  {
+    id: '25people_1',
+    text: 'That sounds like a good number. But in the end, you can not always anticipate how many students will actually show up.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'intro_12',
+  },
+  {
+    id: '50people',
+    text: 'Yes, I want to have up to 50 participants. I want to reach as many students as possible.',
+    speaker: 'Mayra',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: '50people_1',
+  },
+  {
+    id: '50people_1',
+    text: 'That sounds ambitious! But I don\'t think that many students are actually assigned to one single tutorial session. I think you can expect around 25 students to show up at most, but it can also be less. It really depends on the timeslot and the students\' preferences.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
@@ -251,7 +308,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_12',
-    text: 'I have to go now, but please, stay and take a look around.',
+    text: 'Oh, and there is some material on that desk over there. If you want to have a look before your first session.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
@@ -259,20 +316,28 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_13',
-    text: 'The Professor rushes out the door.',
-    speaker: 'Narrator',
+    text: 'I have to go now, but please, stay and take a look around. And check out the desk!',
+    speaker: 'Professor',
+    characterLeft: 'professor',
     characterRight: 'mayra',
     nextId: 'intro_14',
   },
   {
     id: 'intro_14',
-    text: 'Uhm, alright! Thank you!',
-    speaker: 'Mayra',
+    text: 'The Professor rushes out the door.',
+    speaker: 'Narrator',
     characterRight: 'mayra',
     nextId: 'intro_15',
   },
   {
     id: 'intro_15',
+    text: 'Uhm, alright! Thank you!',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    nextId: 'intro_16',
+  },
+  {
+    id: 'intro_16',
     text: 'I don’t think the professor heard that anymore… He seemed to be in a rush. But maybe I can find some useful stuff on the desk?',
     speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
@@ -282,8 +347,8 @@ export const introDialogue: SceneNode[] = [
     id: 'decision_0',
     text: 'What should Mayra do?',
     options: [
-      { text: 'Stay and take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
-      { text: 'Leave', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
+      { text: 'Take a look at the desk', nextId: 'choice_look', choice: { introChoice: 'lookAround' } },
+      { text: 'Check out the desk later', nextId: 'choice_leave', choice: { introChoice: 'leave' } },
     ],
   },
   {
@@ -309,10 +374,15 @@ export const introDialogue: SceneNode[] = [
     text: 'How to motivate students...',
     speaker: 'Mayra',
     characterRight: 'mayraThinking',
-    nextId: 'choice_leave',
+    nextId: 'leave',
   },
   {
     id: 'choice_leave',
+    text: 'Mayra decides to check the desk out later and moves to the door.',
+    speaker: 'Narrator',
+  },
+  {
+    id: 'leave',
     text: 'Mayra moves to the door to leave the room.',
     speaker: 'Narrator',
   },
@@ -566,7 +636,6 @@ export const pipIntroDialogue: SceneNode[] = [
     nextId: 'toclassroom_0',
   },
   // _____ Leave Option Start _____
-
   {
     id: 'toclassroom_0',
     text: 'How do I explain the floating ball behind me to the students?',
@@ -581,12 +650,45 @@ export const pipIntroDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
-    nextId: 'toclassroom_2',
+    branchConditions: [
+      { nextId: 'table', condition: (playerChoices) => playerChoices.introChoice === 'leave' },
+      { nextId: 'toclassroom_2', condition: () => true },
+    ],
   },
   {
     id: 'toclassroom_2',
     text: 'Okay... If he says so...',
+    type: 'branching',
     speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+  },
+  {
+    id: 'table',
+    text: 'Oh, the table! The professor said there is some material on the table that I should look at. I should do that now, there is not much time left before the tutorial starts.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'table_1',
+  },
+  {
+    id: 'table_1',
+    text: 'Yes, you should do that. There is quite some interesting stuff written on those papers. I will wait.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayraShocked',
+    nextId: 'table_game',
+  },
+  {
+    id: 'table_game',
+    type: 'minigame',
+    minigameId: 'paper_table',
+    nextId: 'table_2',
+  },
+  {
+    id: 'table_2',
+    text: 'Alright, time to leave.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
     characterRight: 'mayra',
   },
 ]
@@ -597,6 +699,25 @@ export const scenario1Dialogue: SceneNode[] = [
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
     speaker: 'Narrator',
     location: 'studyRoom',
+    type: 'branching',
+    branchConditions: [
+      { nextId: '15participants', condition: (playerChoices) => playerChoices.participantChoice === 15 },
+      { nextId: '25participants', condition: (playerChoices) => playerChoices.participantChoice === 25 },
+      { nextId: 'node_0', condition: () => true }, // fallback
+    ],
+  },
+  {
+    id: '15participants',
+    text: 'The room is actually filled with approximately 15 students. Many of them look up at Mayra as she enters and smile at her, but they quickly avert their gaze again and go back to looking at their sheets and tablets.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
+    nextId: 'node_0',
+  },
+  {
+    id: '25participants',
+    text: 'The room is filled with a bit over 20 students. Many of them look up at Mayra as she enters and smile at her, but they quickly avert their gaze again and go back to looking at their sheets and tablets.',
+    speaker: 'Narrator',
+    characterRight: 'mayra',
     nextId: 'node_0',
   },
   {
@@ -608,14 +729,14 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'node_1',
-    text: 'The students look up and mumble quiet hellos back before averting their gaze again. Mayra moves to the front desk and sits down.',
+    text: 'The students look up again and mumble quiet hellos back. Mayra moves to the front desk and sits down.',
     speaker: 'Narrator',
     characterRight: 'mayra',
     nextId: 'node_2',
   },
   {
     id: 'node_2',
-    text: 'Alrigth, the tutorial starts in a few minutes. I can do this.',
+    text: 'Alrigth, the tutorial starts in a few minutes. I can do this. And they all look friendly to me.',
     speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'node_3',
@@ -677,19 +798,35 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(1) || choices.includes(3));
+        },
         nextId: 'overview',
       },
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+        },
         nextId: 'doubleintro',
       },
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -703,15 +840,27 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(1) || ids.includes(3),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+        },
         nextId: 'doubleintro',
       },
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -725,11 +874,19 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(2),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(2);
+        },
         nextId: 'fail',
       },
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'doomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -750,7 +907,11 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraStressed',
     branchConditions: [
       { 
-        condition: (ids) => ids.includes(8),
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(8);
+        },
         nextId: 'faildoomed',
       },
       { condition: () => true, nextId: 'path_default' }, // fallback
@@ -783,8 +944,6 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayra',
     nextId: 'clock_cutscene',
   },
-  // insert choice based dialogue
-  // insert clock animation cutscene
   {
     id: 'clock_cutscene',
     type: 'cutscene',
@@ -1225,7 +1384,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
     id: 'help_choice',
     text: 'I just don’t know how to start.',
     options: [
-      { text: 'Let’s go through it step by step', nextId: 'choice_step', choice: { helpStyle: 'step' } },
+      { text: 'Let’s go through it step by step', nextId: 'choice_step', choice: { helpStyle: 'help' } },
       { text: 'Here is how you solve it', nextId: 'choice_solution', choice: { helpStyle: 'solution' } },
       { text: 'I am not helping you', nextId: 'choice_nohelp' },
     ],
@@ -1251,7 +1410,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
     text: 'What should Mayra do?',
     options: [
       { text: 'Stick to the decision and not help Noah', nextId: 'nohelp_end', choice: { helpStyle: 'no' } },
-      { text: 'Help him with the start of the exercise', nextId: 'help_start', choice: { helpStyle: 'start' } },
+      { text: 'Help him with the start of the exercise', nextId: 'help_start', choice: { helpStyle: 'help' } },
     ],
   },
   {
@@ -1264,7 +1423,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   { 
     id: 'nohelp_end_1',
-    text: 'Wow, you are ice cold…. Then I will just look at the slides again and try on my own.',
+    text: 'Wow, you are ice cold…. Why did you even become a tutor if you don\'t want to help students? But whatever, I will just look at the slides again and try on my own or ask another tutor.',
     speaker: 'Noah',
     characterRight: 'mayraStressed',
     characterLeft: 'noahSurprised',
@@ -1377,7 +1536,55 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'choice_step_6',
+    text: 'What if I can\'t solve the next one? Can we do the next one together as well?',
+    speaker: 'Noah',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+    nextId: 'choice_step_7',
+  },
+  {
+    id: 'choice_step_7',
+    text: 'It is already really late and I have to leave soon... I also don\'t know if I should do all the exercises together with Noah.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayraThinking',
+    characterLeft: 'noah',
+    nextId: 'option_help_more',
+  },
+  {
+    id: 'option_help_more',
+    text: 'What should Mayra do?',
+    options: [
+      { text: 'Help next time you meet', nextId: 'next_time' },
+      { text: 'Let him do the rest by himself', nextId: 'done' },
+    ],
+  },
+  {
+    id: 'next_time',
+    text: 'Try it on your own first, and if you still can\'t solve it, we can go through it together next time we meet, okay?',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+    nextId: 'next_time_1',
+  },
+  {
+    id: 'next_time_1',
     text: 'Yes, I’ll try. I have to leave now anyways, or I’ll be late for my next class. Thanks, and see you later!',
+    speaker: 'Noah',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+    nextId: 'end_0',
+  },
+  {
+    id: 'done',
+    text: 'I think you should try to solve the next exercises on your own. They are very similar to the first one.',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'noah',
+    nextId: 'done_1',
+  },
+  {
+    id: 'done_1',
+    text: 'Ah, man.... Okay, then I will try it on my own I guess. I have to leave now anyways, thanks, and see you later!',
     speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
@@ -1434,7 +1641,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'solution_6',
-    text: 'Fine, I’ll try them on my own first. I have to leave now anyways. Thanks, and see you later!',
+    text: 'Fine, I’ll try the rest on my own. I have to leave now anyways. Thanks, and see you later!',
     speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
@@ -1643,7 +1850,7 @@ export const preparationDialogue: SceneNode[] = [
     text: 'Do you want to take a look at the material on the table?',
     options: [
       { text: 'Take a look at the desk', nextId: 'feelings_unsure_3'},
-      { text: 'Leave it', nextId: 'no_table' },
+      { text: 'Leave it', nextId: 'no_table', choice: { skipTable: true }  },
     ],
   },
   {
@@ -1702,8 +1909,6 @@ export const preparationDialogue: SceneNode[] = [
     characterLeft: 'pip',
   },
 ]
-
-
 
 export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 - Work organization
   {
@@ -2004,7 +2209,39 @@ export const endingDialogue: SceneNode[] = [
     location: 'office',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
+]
+
+export const badEndingDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'You know, I think you are still very much at the beginning of your journey. I think it would be best for you if you look at the material on tutoring again and truely internalize it.',
+    speaker: 'Pip',
+    location: 'office',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'ending_0',
+  },
+  {
+    id: 'ending_0',
+    text: 'I will leave now. Unfortunately, I haven\'t fully regained all my power yet to return to the world of thought ghosts, but I can rest for a while and see who else needs my help. Goodbye Mayra, and good luck with your teaching adventure!',
+    speaker: 'Pip',
+    location: 'office',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'pip_cutscene',
+  },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 export const trueEndingDialogue: SceneNode[] = [
@@ -2023,7 +2260,13 @@ export const trueEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 export const secretEndingDialogue: SceneNode[] = [
@@ -2058,7 +2301,13 @@ export const secretEndingDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
+    nextId: 'pip_cutscene',
   },
+  {
+    id: 'pip_cutscene',
+    type: 'cutscene',
+    animationId: 'pip_leave',
+  }
 ]
 
 // ___________ Dialogue Data End ____________

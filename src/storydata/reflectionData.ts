@@ -1,6 +1,6 @@
 export interface BranchCondition {
   nextId: string;
-  condition: (sortingChoices: number[]) => boolean;
+  condition: (playerChoices: Record<string, string | boolean | number>) => boolean;
 }
 
 export interface ReflectionOption {

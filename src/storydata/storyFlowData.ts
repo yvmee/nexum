@@ -5,8 +5,7 @@ import {
   pipIntroDialogue, 
   scenario1Dialogue, 
   scenario5Dialogue, 
-  scenario5outro,
-  secretEnd, 
+  scenario5outro, 
   startDialogue, 
   scenario1outro,
   splitintro,
@@ -20,6 +19,7 @@ import {
   endingDialogue,
   trueEndingDialogue,
   secretEndingDialogue,
+  badEndingDialogue,
 } from './dialogueData';
 import { 
   reflectionDialogue1, 
@@ -31,10 +31,13 @@ import {
 export const testFlow: StoryFlow = {
   id: 'test_flow',
   initialChunkId: 'intro',
+
   chunks: {
     intro: {
       id: 'intro',
       dialogueNodes: startDialogue,
+      reflectionNodes: reflectionDialogue1,
+      reflectionSessionNumber: 1,
       transitions: [
         { targetChunkId: 'splitintro'}, 
       ],
@@ -122,7 +125,7 @@ export const testFlow: StoryFlow = {
   }
 }
 
-// Simple story flow for now
+// Full game story flow
 export const gameFlow: StoryFlow = {
   id: 'story_flow',
   initialChunkId: 'intro',
@@ -255,9 +258,30 @@ export const gameFlow: StoryFlow = {
       id: 'connectingDialogue',
       dialogueNodes: connectingDialogue,
       transitions: [
-        { targetChunkId: 'secretEnding', condition: (choices) => choices['thankPip'] === true && choices['helpPip'] === true},
-        { targetChunkId: 'trueEnding', condition: (choices) => choices['splitChoice'] === 'preparation' && choices['workOrganization'] === 'pairs' &&  choices['supportStyle'] === 'walk'},
-        { targetChunkId: 'Ending' }, 
+        { targetChunkId: 'secretEnding', condition: (choices) => choices['thankPip'] === true && choices['helpPip'] === true, pipMinScore: 80},
+        { targetChunkId: 'trueEnding', condition: (choices) => {
+          const choicesStr = choices.sortingGameChoices as string || '';
+          const sortingchoices = choicesStr.split(',').map(Number);
+          const goodIDs = [1, 3, 4, 7];
+          const badIDs = [2, 8];
+          // Check that sorting choices include at least 3 good and no bad choices
+          const goodCount = sortingchoices.filter(id => goodIDs.includes(id)).length;
+          const badCount = sortingchoices.filter(id => badIDs.includes(id)).length;
+          const sortingGameSuccess = goodCount >= 4 && badCount === 0;
+          return (sortingGameSuccess && choices['splitChoice'] === 'preparation' && (choices['workOrganization'] === 'pairs' || choices['workOrganization'] === 'group') &&  choices['supportStyle'] === 'walk')
+        }, pipMinScore: 75},
+        { targetChunkId: 'Ending', condition: (choices) => {
+          const choicesStr = choices.sortingGameChoices as string || '';
+          const sortingchoices = choicesStr.split(',').map(Number);
+          const goodIDs = [1, 3, 4, 7];
+          const badIDs = [2, 8];
+          // Check that sorting choices include at least 3 good and no bad choices
+          const goodCount = sortingchoices.filter(id => goodIDs.includes(id)).length;
+          const badCount = sortingchoices.filter(id => badIDs.includes(id)).length;
+          const sortingGameSuccess = goodCount >= 2 && badCount === 0;
+          return sortingGameSuccess 
+        }, pipMinScore: 60},
+        { targetChunkId: 'BadEnding' }, 
       ],
     },
 
@@ -291,11 +315,10 @@ export const gameFlow: StoryFlow = {
       dialogueNodes: endDialogue, 
     },
 
-    secretEnd: {
-      id: 'secretEnd',
-      startingNodeId: 'end',
-      dialogueNodes: secretEnd,
-    }
+    badEnding: {
+      id: 'badEnding',
+      dialogueNodes: badEndingDialogue,
+    },
 
   },
 };
