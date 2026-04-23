@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ReflectionNode, ReflectionOption } from '../../storydata/reflectionData';
+import { ReflectionNode, ReflectionOption, getVotingOptions } from '../../storydata/reflectionData';
 import { withClickSound } from '../../store/useSoundStore';
+import { VotingResults } from './VotingResults';
 
 /**
  * Dialogue box positioned at the top for ReflectionNodes
@@ -9,10 +10,11 @@ export interface ReflectionDialogueBoxProps {
   dialogue: ReflectionNode | null;
   onAdvance: () => void;
   onSubmitInput: (input: string) => void;
-  onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
+  onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>, optionId?: number) => void;
   isVisible: boolean;
   isAwaitingInput: boolean;
   canContinue?: boolean;
+  votingResults?: Record<number, Record<number, number>>;
 }
 
 export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
@@ -23,6 +25,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
   isVisible,
   isAwaitingInput,
   canContinue = true,
+  votingResults = {},
 }) => {
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -66,6 +69,13 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
         {dialogue.text}
       </div>
 
+      {/* Voting Results (if displayVotes is set) */}
+      {dialogue.displayVotes && dialogue.votingID != null && (() => {
+        const options = getVotingOptions(dialogue.votingID!);
+        const votes = votingResults[dialogue.votingID!] ?? {};
+        return options.length ? <VotingResults options={options} votes={votes} /> : null;
+      })()}
+
       {/* Input Field (if required) */}
       {isAwaitingInput && (
         <div className="flex flex-col gap-(--inner-gap) mt-(--inner-mt)">
@@ -94,7 +104,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
           {dialogue!.options!.map((option: ReflectionOption) => (
             <button
               key={option.nextId}
-              onClick={(e) => { e.stopPropagation(); withClickSound(() => onSelectOption(option.nextId, option.choice))(); }}
+              onClick={(e) => { e.stopPropagation(); withClickSound(() => onSelectOption(option.nextId, option.choice, option.optionId))(); }}
               className="w-full text-left [font-size:var(--text-body)] px-(--btn-px) py-(--btn-py) bg-secondary/85 border border-border/50 rounded-lg text-foreground 
               hover:bg-secondary hover:border-primary/40 hover:brightness-110 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
             >

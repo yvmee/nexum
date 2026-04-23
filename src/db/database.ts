@@ -24,9 +24,21 @@ export interface ReflectionAnswerData {
 }
 
 /**
- * Data structure to store loaded reflection answers
+ * Type for reflection answer data loaded from the database table 'reflectionvotes'
+ */
+export interface ReflectionVoteData {
+  id: number;
+  user_id: string | null;
+  created_at: string;
+  thread_id: number | null;
+  option_id: number | null;
+}
+
+/**
+ * Data structure to store loaded data
  */
 export let reflectionTexts: ReflectionAnswerData[] = [];
+export let reflectionVotes: ReflectionVoteData[] = [];
 
 let profanityRegex: RegExp | null = null;
 
@@ -127,7 +139,7 @@ export const getOrCreateUser = async () => {
 * @param reflectionId - Optional ID of the reflection question this answer belongs to, should be provided!
 * @param threadId - Optional ID of the reflection thread this answer belongs to (not needed for now)
 */
-export const saveData = async (inputtext: string, reflectionId?: number, threadId?: number) => {
+export const saveAnswerData = async (inputtext: string, reflectionId?: number, threadId?: number) => {
   const userId = await getOrCreateUser();
 
   if (!userId) return;
@@ -135,8 +147,13 @@ export const saveData = async (inputtext: string, reflectionId?: number, threadI
   // Sanitize the input before saving
   const sanitizedText = sanitizeInput(inputtext);
 
-  if (!sanitizedText) {
+  if (!sanitizedText) { 
     console.warn('Empty input after sanitization, skipping save');
+    return;
+  }
+
+  if (sanitizedText.length <= 4) { 
+    console.warn('Input too short after sanitization, skipping save');
     return;
   }
 
@@ -152,7 +169,32 @@ export const saveData = async (inputtext: string, reflectionId?: number, threadI
   if (error) {
     console.error('Error saving:', error)
   } else {
-    console.log('Data saved!')
+    console.log('Answer data saved!')
+  }
+}
+
+/**
+* Function to save data to the 'reflectionVotes' table in Supabase.
+* @param votingId - The question the vote belongs to
+* @param optionId - The picked option
+*/
+export const saveVoteData = async (votingId: number, optionId: number) => {
+  const userId = await getOrCreateUser();
+
+  if (!userId) return;
+
+  const { error } = await supabase
+    .from('reflectionvotes') 
+    .upsert({ 
+      user_id: userId,
+      thread_id: votingId,
+      option_id: optionId
+    });
+
+  if (error) {
+    console.error('Error saving:', error)
+  } else {
+    console.log('Vote data saved!')
   }
 }
 
@@ -162,7 +204,7 @@ export const saveData = async (inputtext: string, reflectionId?: number, threadI
  * @returns Promise<ReflectionData[]> - Array of all reflection data
  */
 export const loadReflectionAnswerTexts = async (reflectionId?: number): Promise<ReflectionAnswerData[]> => {
-  const data = await loadData(reflectionId);
+  const data = await loadAnswerData(reflectionId);
   
   if (data) {
     reflectionTexts = data;
@@ -179,7 +221,7 @@ export const loadReflectionAnswerTexts = async (reflectionId?: number): Promise<
 * Function to load data from the 'reflectionanswers' table in Supabase for a specific reflection question
 * @returns array of reflection data
 */
-export const loadData = async (reflectionId?: number): Promise<ReflectionAnswerData[] | null> => {
+export const loadAnswerData = async (reflectionId?: number): Promise<ReflectionAnswerData[] | null> => {
 
   // Get 'reflectionanswers' table corresponding to the reflectionId, if provided, otherwise get all answers
   let query = supabase
@@ -196,8 +238,52 @@ export const loadData = async (reflectionId?: number): Promise<ReflectionAnswerD
   }
 
   // TypeScript knows 'data' has .score and .game_data
-  console.log('Done loading data'); 
+  console.log('Done loading data from "reflectionanswers"'); 
   return data as ReflectionAnswerData[];
+}
+
+/**
+ * Function to load all reflection votes from database and store them in the reflectionVotes array
+ * Call this at the beginning of a reflection to count all relevant votes
+ * @returns Promise<ReflectionData[]> - Array of all reflection data
+ */
+export const loadReflectionVotes = async (threadId?: number): Promise<ReflectionVoteData[]> => {
+  const data = await loadVoteData(threadId);
+  
+  if (data) {
+    reflectionVotes = data;
+    console.log(`Loaded ${reflectionVotes.length} votes into memory`);
+  } else {
+    reflectionVotes = [];
+    console.log('No reflection votes found or error loading');
+  }
+
+  return reflectionVotes;
+};
+
+/**
+* Function to load data from the 'reflectionvotes' table in Supabase for a specific reflection question
+* @returns array of reflection data
+*/
+export const loadVoteData = async (threadId?: number): Promise<ReflectionVoteData[] | null> => {
+
+  // Get 'reflectionvotes' table corresponding to the reflectionId, if provided, otherwise get all answers
+  let query = supabase
+    .from('reflectionvotes') 
+    .select('*');
+  if (threadId !== undefined) {
+    query = query.eq('thread_id', threadId);
+  }
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error loading:', error);
+    return null;
+  }
+
+  // TypeScript knows 'data' has .score and .game_data
+  console.log('Done loading data from "reflectionvotes"'); 
+  return data as ReflectionVoteData[];
 }
 
 /**
