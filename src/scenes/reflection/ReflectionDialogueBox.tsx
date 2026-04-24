@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ReflectionNode, ReflectionOption, getVotingOptions } from '../../storydata/reflectionData';
+import { ReflectionNode, ReflectionOption, reflectionVotingSets } from '../../storydata/reflectionData';
 import { withClickSound } from '../../store/useSoundStore';
 import { VotingResults } from './VotingResults';
 
@@ -54,7 +54,12 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
     }
   };
 
-  const hasOptions = !!dialogue?.options?.length;
+  const votingConfig = dialogue.votingKey ? reflectionVotingSets[dialogue.votingKey] : undefined;
+  const resolvedVotingID = dialogue.votingID ?? votingConfig?.votingID;
+  const resolvedOptions = dialogue.options ?? votingConfig?.options ?? [];
+  const selectableOptions = dialogue.displayVotes ? [] : resolvedOptions;
+
+  const hasOptions = selectableOptions.length > 0;
   const canClick = !isAwaitingInput && !hasOptions && canContinue;
 
   return (
@@ -70,10 +75,9 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
       </div>
 
       {/* Voting Results (if displayVotes is set) */}
-      {dialogue.displayVotes && dialogue.votingID != null && (() => {
-        const options = getVotingOptions(dialogue.votingID!);
-        const votes = votingResults[dialogue.votingID!] ?? {};
-        return options.length ? <VotingResults options={options} votes={votes} /> : null;
+      {dialogue.displayVotes && resolvedVotingID != null && (() => {
+        const votes = votingResults[resolvedVotingID] ?? {};
+        return resolvedOptions.length ? <VotingResults options={resolvedOptions} votes={votes} /> : null;
       })()}
 
       {/* Input Field (if required) */}
@@ -101,7 +105,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
       {/* Options (if present) */}
       {hasOptions && !isAwaitingInput && (
         <div className="flex flex-col gap-2 mt-(--inner-mt)">
-          {dialogue!.options!.map((option: ReflectionOption) => (
+          {selectableOptions.map((option: ReflectionOption) => (
             <button
               key={option.nextId}
               onClick={(e) => { e.stopPropagation(); withClickSound(() => onSelectOption(option.nextId, option.choice, option.optionId))(); }}

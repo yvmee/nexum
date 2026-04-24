@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore, useCurrentReflection } from '../../store/useGameStore';
-import { UserResponse } from '../../storydata/reflectionData';
+import { UserResponse, reflectionVotingSets } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { loadReflectionAnswerTexts, saveAnswerData, ReflectionAnswerData, loadReflectionVotes, saveVoteData } from '../../db/database';
@@ -102,10 +102,11 @@ export const ReflectionScene: React.FC = () => {
       useGameStore.getState().makeChoice(key, value);
     } 
 
-    if (currentDialogue?.votingID) {
-      if (optionId !== undefined) {
-        saveVoteData(currentDialogue.votingID, optionId);
-      }
+    const votingConfig = currentDialogue?.votingKey ? reflectionVotingSets[currentDialogue.votingKey] : undefined;
+    const resolvedVotingID = currentDialogue?.votingID ?? votingConfig?.votingID;
+
+    if (resolvedVotingID !== undefined && optionId !== undefined) {
+      saveVoteData(resolvedVotingID, optionId);
     }
 
     advanceReflection(nextId);
@@ -199,7 +200,7 @@ export const ReflectionScene: React.FC = () => {
         />
       </div>
 
-      {/* Thought Bubbles - shown after user input */}
+      {/* Thought Bubbles */}
       <ThoughtBubbles
         reflections={previousReflections}
         isVisible={showThoughtBubbles}

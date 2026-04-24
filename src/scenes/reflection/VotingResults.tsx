@@ -3,7 +3,7 @@ import { ReflectionOption } from '../../storydata/reflectionData';
 
 interface VotingResultsProps {
   options: ReflectionOption[];
-  votes: Record<number, number>; // optionId -> count
+  votes: Record<number, number>; // optionId to count
 }
 
 export const VotingResults: React.FC<VotingResultsProps> = ({ options, votes }) => {
@@ -31,11 +31,6 @@ export const VotingResults: React.FC<VotingResultsProps> = ({ options, votes }) 
           </div>
         );
       })}
-      {total > 0 && (
-        <div className="[font-size:var(--text-hint)] text-muted-foreground text-right">
-          {total} response{total !== 1 ? 's' : ''}
-        </div>
-      )}
     </div>
   );
 };

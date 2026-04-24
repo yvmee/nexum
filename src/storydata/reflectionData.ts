@@ -10,6 +10,11 @@ export interface ReflectionOption {
   choice?: Record<string, string | boolean | number>;
 }
 
+export interface ReflectionVotingSet {
+  votingID: number;
+  options: ReflectionOption[];
+}
+
 export interface ReflectionNode {
   id: string;
   type?: 'branching'; // If set, auto-advance based on branchConditions
@@ -19,6 +24,7 @@ export interface ReflectionNode {
   showBubbles?: boolean; // If true, show thought bubbles with database insights
   showCharacter?: boolean; // If true, show the character image
   saveResponse?: boolean; // If true, save user response to database
+  votingKey?: string; // Key to resolve voting data from reflectionVotingSets
   votingID?: number; // If set, this node is associated with a voting question
   displayVotes?: boolean; // If true, display current voting results at this node
   options?: ReflectionOption[]; // If present, show clickable choices
@@ -33,6 +39,18 @@ export interface UserResponse {
   response: string;
   timestamp: Date;
 }
+
+export const reflectionVotingSets: Record<string, ReflectionVotingSet> = {
+  tutorialStart: {
+    votingID: 5,
+    options: [
+      { text: 'Give an overview over the topics of whole semester', nextId: 'options_1', optionId: 0 },
+      { text: 'State the learning outcomes of today\'s session', nextId: 'options_1', optionId: 1 },
+      { text: 'Ask the students about their wishes and concerns for the next tutorials', nextId: 'options_1', optionId: 2 },
+      { text: 'Use your own enthusiasm for the topic to interest the students in the subject', nextId: 'options_1', optionId: 3 },
+    ],
+  },
+};
 
 // ___________ Dialogue Data for Reflection Scenes ____________
 
@@ -73,21 +91,15 @@ export const reflectionDialogue1: ReflectionNode[] = [
     id: 'options_0',
     text: 'Which one of these do you deem to be the most useful for the start of a tutorial?',
     showCharacter: true,
-    votingID: 5,
+    votingKey: 'tutorialStart',
     saveResponse: true,
-    options: [
-      { text: 'Give an overview over the topics of whole semester', nextId: 'options_1', optionId: 0 },
-      { text: 'State the learning outcomes of today\'s session', nextId: 'options_1', optionId: 1 },
-      { text: 'Ask the students about their wishes and concerns for the next tutorials', nextId: 'options_1', optionId: 2 },
-      { text: 'Use your own enthusiasm for the topic to interest the students in the subject', nextId: 'options_1', optionId: 3 },
-    ],
   },
   {
     id: 'options_1',
     text: 'This is how other students picked:',
     showCharacter: true,
     displayVotes: true,
-    votingID: 5,
+    votingKey: 'tutorialStart',
     nextId: 'reflect_3',
   },
   {
@@ -217,7 +229,7 @@ export const reflectionDialogue5: ReflectionNode[] = [
   },
   {
     id: 'reflect_3',
-    text: 'Interesting... Others before you have mentioned similar things, but also some different aspects. Let\'s take a look at what they based their decisions on.',
+    text: 'Interesting... Now, let\'s take a look at what others based their decisions on.',
     showCharacter: true,
     nextId: 'bubbles',
   },
@@ -243,19 +255,4 @@ export const reflectionDialogue5: ReflectionNode[] = [
   },
 ];
 
-
 // ___________ End Dialogue Data for Reflection Scenes ____________
-
-
-// Array of dialogue sets for different scenarios
-export const reflectionDialogues: ReflectionNode[][] = [reflectionDialogue1, reflectionDialogue5];
-
-// All nodes across every dialogue for lookups
-const allDialogueNodes: ReflectionNode[] = [
-  ...reflectionDialogue1,
-  ...reflectionDialogueSandwich,
-  ...reflectionDialogue5,
-];
-
-export const getVotingOptions = (votingId: number): ReflectionOption[] =>
-  allDialogueNodes.find(n => n.votingID === votingId && n.options?.length)?.options ?? [];
