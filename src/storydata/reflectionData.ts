@@ -50,6 +50,15 @@ export const reflectionVotingSets: Record<string, ReflectionVotingSet> = {
       { text: 'Use your own enthusiasm for the topic to interest the students in the subject', nextId: 'options_1', optionId: 3 },
     ],
   },
+  sandwichVote: { 
+    votingID: 3, // What impacted your decision the most?
+    options: [
+      { text: 'I want to help other students as much as I can', nextId: 'picked', optionId: 0 },
+      { text: 'Noah is my friend so I want to help him', nextId: 'picked', optionId: 1 },
+      { text: 'I should not help with homework', nextId: 'picked', optionId: 2 },
+      { text: 'Something else', nextId: 'else', optionId: 3 },
+    ],
+  },
 };
 
 // ___________ Dialogue Data for Reflection Scenes ____________
@@ -135,7 +144,7 @@ export const reflectionDialogue1: ReflectionNode[] = [
   },
   {
     id: 'ending',
-    text: 'Thank you for your time.',
+    text: 'Thank you for discussing your thoughts with me.',
     showCharacter: true,
   },
 ];
@@ -175,15 +184,34 @@ export const reflectionDialogueSandwich: ReflectionNode[] = [
   {
     id: 'reflect_1',
     text: 'What factor did you consider the most when making your decision on helping Noah?',
-    requiresInput: true,
+    votingKey: 'sandwichVote',
     showCharacter: true,
+  },
+  {
+    id: 'else',
+    text: 'What other factor did you consider the most when making your decision on helping Noah?',
+    showCharacter: true,
+    requiresInput: true,
     inputPrompt: 'Type your thoughts here...',
+    nextId: 'picked',
+  },
+  {
+    id: 'picked',
+    text: 'This is how other students picked:',
+    votingKey: 'sandwichVote',
+    displayVotes: true,
+    showCharacter: true,
+    nextId: 'pre_bubbles',
+  },
+  {
+    id: 'pre_bubbles',
+    text: 'When making a decision like this, there are many factors to consider. Let\'s take a look at some of the insights other students had on how to handle the situtation.',
+    showCharacter: true,
     nextId: 'bubbles',
   },
-
   {
     id: 'bubbles',
-    text: 'Here is what other students considered to be important factors to consider.',
+    text: 'How to deal with a situation like this...',
     showBubbles: true,
     nextId: 'record',
   },
@@ -198,7 +226,7 @@ export const reflectionDialogueSandwich: ReflectionNode[] = [
   },
   {
     id: 'end',
-    text: 'Thank you for your time.',
+    text: 'Thank you for sharing your thoughts.',
     showCharacter: true,
   },
 ];
@@ -250,7 +278,7 @@ export const reflectionDialogue5: ReflectionNode[] = [
   },
   {
     id: 'ending',
-    text: 'Thank you for your reflections. Your insights have been recorded.',
+    text: 'Thank you for your insights.',
     showCharacter: true,
   },
 ];

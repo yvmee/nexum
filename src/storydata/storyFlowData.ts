@@ -36,8 +36,8 @@ export const testFlow: StoryFlow = {
     intro: {
       id: 'intro',
       dialogueNodes: startDialogue,
-      reflectionNodes: reflectionDialogue1,
-      reflectionSessionNumber: 1,
+      reflectionNodes: reflectionDialogueSandwich,
+      reflectionSessionNumber: 2,
       transitions: [
         { targetChunkId: 'splitintro'}, 
       ],
