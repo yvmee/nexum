@@ -235,10 +235,42 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_10',
-    text: 'All tutors can feel free to use this room at any time when it isn’t currently blocked by someone. To prepare or discuss with students.',
+    text: 'All tutors can feel free to use this room at any time when it isn’t currently blocked by someone. To prepare or if they have something to discuss with a student.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
+    nextId: 'goal_0',
+  },
+  {
+    id: 'goal_0',
+    text: 'You know, the start of a tutorial is actually the most crucial part. If you have the first five minutes planned out well, the rest of the session comes easy. It also helps calm your nerves to have a set start.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'goal_1',
+  },
+  {
+    id: 'goal_1',
+    text: 'I recommend to prepare a smooth start that before your session starts today.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'goal_2',
+  },
+  {
+    id: 'goal_2',
+    text: 'Oh, okay! I will do that.',
+    speaker: 'Mayra',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'goal_3',
+  },
+  {
+    id: 'goal_3',
+    text: 'Whatever a "good start" is exactly...',
+    speaker: 'Mayra (in)',
+    characterLeft: 'professor',
+    characterRight: 'mayraThinking',
     nextId: 'intro_11',
   },
   {
@@ -300,7 +332,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: '50people_1',
-    text: 'That sounds ambitious! But I don\'t think that many students are actually assigned to one single tutorial session. I think you can expect around 25 students to show up at most, but it can also be less. It really depends on the timeslot and the students\' preferences.',
+    text: 'That sounds ambitious! But I don’t think that many students are actually assigned to one single tutorial session. I think you can expect around 25 students to show up at most, but it can also be less. It really depends on the timeslot and the students’ preferences.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
@@ -405,7 +437,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'glimmer_text',
-    text: 'Huh? It\'s that glowing shimmer again...',
+    text: 'Huh? It’s that glowing shimmer again...',
     speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'flash_cutscene',
@@ -473,7 +505,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'intro_6',
-    text: 'Pffft, how can you talk? You can talk too, can\'t you? That\'s just how it is.',
+    text: 'Pffft, how can you talk? You can talk too, can’t you? That’s just how it is.',
     speaker: 'Floating Ball',
     characterLeft: 'pip',
     characterRight: 'mayraThinking',
@@ -613,7 +645,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'leave_1',
-    text: 'Oh, that\'s actually perfect! You don\'t have to worry about me, I will be just behind you and absorb the energy you create.',
+    text: 'Oh, that’s actually perfect! You don’t have to worry about me, I will be just behind you and absorb the energy you create.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayraStressed',
@@ -646,7 +678,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'toclassroom_1',
-    text: 'Don\'t worry, they can\'t see me.',
+    text: 'Don’t worry, they can’t see me.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -765,7 +797,7 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'forward',
-    text: 'Hello everyone, I am Mayra and I will be your tutor for this semester. Let\'s get started.',
+    text: 'Hello everyone, I am Mayra and I will be your tutor for this semester. Let’s get started.',
     speaker: 'Mayra',
     characterRight: 'mayra',
     nextId: 'node_4',
@@ -966,7 +998,7 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'end_2',
-    text: 'Mayra\'s gaze falls on Pip. She hadn\'t noticed him at all during the tutorial and had almost forgotten about him.',
+    text: 'Mayra’s gaze falls on Pip. She hadn’t noticed him at all during the tutorial and had almost forgotten about him.',
     speaker: 'Narrator',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1008,7 +1040,7 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_2',
-    text: 'Oh, that\'s great to hear! I am glad I could help you with that.',
+    text: 'Oh, that’s great to hear! I am glad I could help you with that.',
     speaker: 'Mayra',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1016,7 +1048,7 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_2',
-    text: 'Although I still don\'t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.',
+    text: 'Although I still don’t quite understand how I did that... I just talked to him about the tutorial and how it went... But I am happy that it helped.',
     speaker: 'Mayra (in)',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1064,7 +1096,7 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_8',
-    text: 'Oh don\'t worry about me, I will be just fine. You will see me again when you need me.',
+    text: 'Oh don’t worry about me, I will be just fine. You will see me again when you need me.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1087,14 +1119,14 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_1',
-    text: 'Oh hey Mayra! It\'s good to see you! I was looking for you actually.',
+    text: 'Oh hey Mayra! It’s good to see you! I was looking for you actually.',
     speaker: 'Student',
     characterLeft: 'noah',
     nextId: 'friendintro_2',
   },
   {
     id: 'friendintro_2',
-    text: 'This is Noah, we met in the first semester and have been friends since then. I haven\'t seen him much this semester though, although I know that he is taking the lecture I am tutoring for.',
+    text: 'This is Noah, we met in the first semester and have been friends since then. I haven’t seen him much this semester though, although I know that he is taking the lecture I am tutoring for.',
     speaker: 'Mayra (in)',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1102,7 +1134,7 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_3',
-    text: 'Hey Noah! Yeah, it\'s good to see you too! What\'s up?',
+    text: 'Hey Noah! Yeah, it’s good to see you too! What’s up?',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1110,7 +1142,7 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_4',
-    text: 'I switched into your tutorial group! I hope that\'s okay? I thought it would be nice to have a familiar face there.',
+    text: 'I switched into your tutorial group! I hope that’s okay? I thought it would be nice to have a familiar face there.',
     speaker: 'Noah',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1118,7 +1150,7 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'friendintro_5',
-    text: 'Oh, that\'s actually great! It will be fun to have you there. And I think it will calm my nerves a bit to have a friend in the group.',
+    text: 'Oh, that’s actually great! It will be fun to have you there. And I think it will calm my nerves a bit to have a friend in the group.',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1150,7 +1182,7 @@ export const splitintro: SceneNode[] = [
   },
   {
     id: 'choice_coffee',
-    text: 'Sure coffee sounds great! Let\'s go.',
+    text: 'Sure coffee sounds great! Let’s go.',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1183,13 +1215,29 @@ export const splitintro: SceneNode[] = [
 export const coffeeDialogue: SceneNode[] = [
   {
     id: 'start',
+    text: 'It’s so exciting that we are in the same tutorial group now.',
+    speaker: 'Mayra',
+    characterLeft: 'Noah',
+    characterRight: 'Mayra',
+    nextId: 'goal_0',
+  },
+  {
+    id: 'goal_0',
+    text: 'I am happy to have Noah in the tutorial. But somehow I do have an uneasy feeling about this... It puts me in a weird position, being friends with a student that I give homework to and grade.',
+    speaker: 'Mayra (in)',
+    characterLeft: 'Noah',
+    characterRight: 'mayraThinking',
+    nextId: 'goal_1',
+  },
+  {
+    id: 'start',
     text: 'You know, it is only like the third week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
     location: 'cafe',
     characterLeft: 'noahSurprised',
     characterRight: 'mayra',
     options: [
       { text: 'Yes, I feel the same way', nextId: 'choice_stressed'},
-      { text: 'No, I can\'t relate at all', nextId: 'choice_not_stressed' },
+      { text: 'No, I can’t relate at all', nextId: 'choice_not_stressed' },
     ],
   },
   {
@@ -1226,7 +1274,7 @@ export const coffeeDialogue: SceneNode[] = [
   },
   {
     id: 'choice_not_stressed',
-    text: 'Actually, I can\'t really relate to that. I think it is still a bit too early to be behind with a lecture. I don\'t know how you manage to do that.',
+    text: 'Actually, I can’t really relate to that. I think it is still a bit too early to be behind with a lecture. I don’t know how you manage to do that.',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1254,8 +1302,8 @@ export const coffeeDialogue: SceneNode[] = [
     characterLeft: 'noah',
     characterRight: 'mayra',
     options: [
-      { text: 'It\'s going great', nextId: 'tutorial_good'},
-      { text: 'It\'s stressing me out', nextId: 'tutorial_stressful' },
+      { text: 'It’s going great', nextId: 'tutorial_good'},
+      { text: 'It’s stressing me out', nextId: 'tutorial_stressful' },
     ],
   },
   {
@@ -1276,7 +1324,7 @@ export const coffeeDialogue: SceneNode[] = [
   },
   {
     id: 'tutorial_stressful_1',
-    text: 'Oh don\'t worry, I am sure you are doing great! I can understand that, it is a lot of responsibility, but from now on you will also have me in the tutorial as emotional support!',
+    text: 'Oh don’t worry, I am sure you are doing great! I can understand that, it is a lot of responsibility, but from now on you will also have me in the tutorial as emotional support!',
     speaker: 'Noah',
     characterLeft: 'noah',
     characterRight: 'mayraStressed',
@@ -1292,7 +1340,7 @@ export const coffeeDialogue: SceneNode[] = [
   },
   {
     id: 'end_0',
-    text: 'Speaking of the tutorial, I should probably head there now. Let\'s go together?',
+    text: 'Speaking of the tutorial, I should probably head there now. Let’s go together?',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1415,7 +1463,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'nohelp_end',
-    text: 'I can\'t help you with that, you have to figure it out on your own. Look at the slides of this week\'s lecture again. At the end there is a detailed explanation of the topic and on what calculations to use.',
+    text: 'I can’t help you with that, you have to figure it out on your own. Look at the slides of this week’s lecture again. At the end there is a detailed explanation of the topic and on what calculations to use.',
     speaker: 'Mayra',
     characterRight: 'mayraStressed',
     characterLeft: 'noahWorried',
@@ -1423,7 +1471,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   { 
     id: 'nohelp_end_1',
-    text: 'Wow, you are ice cold…. Why did you even become a tutor if you don\'t want to help students? But whatever, I will just look at the slides again and try on my own or ask another tutor.',
+    text: 'Wow, you are ice cold…. Why did you even become a tutor if you don’t want to help students? But whatever, I will just look at the slides again and try on my own or ask another tutor.',
     speaker: 'Noah',
     characterRight: 'mayraStressed',
     characterLeft: 'noahSurprised',
@@ -1536,7 +1584,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'choice_step_6',
-    text: 'What if I can\'t solve the next one? Can we do the next one together as well?',
+    text: 'What if I can’t solve the next one? Can we do the next one together as well?',
     speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
@@ -1544,7 +1592,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'choice_step_7',
-    text: 'It is already really late and I have to leave soon... I also don\'t know if I should do all the exercises together with Noah.',
+    text: 'It is already really late and I have to leave soon... I also don’t know if I should do all the exercises together with Noah.',
     speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     characterLeft: 'noah',
@@ -1560,7 +1608,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   },
   {
     id: 'next_time',
-    text: 'Try it on your own first, and if you still can\'t solve it, we can go through it together next time we meet, okay?',
+    text: 'Try it on your own first, and if you still can’t solve it, we can go through it together next time we meet, okay?',
     speaker: 'Mayra',
     characterRight: 'mayra',
     characterLeft: 'noah',
@@ -1704,7 +1752,7 @@ export const sandwichOutro: SceneNode[] = [
   },
   {
     id: 'pip_energy_2',
-    text: 'You know, these are difficult questions you have to answer, but if you have thought about it once, you\'ll have a starting point for the next time you encounter this question.',
+    text: 'You know, these are difficult questions you have to answer, but if you have thought about it once, you’ll have a starting point for the next time you encounter this question.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1736,23 +1784,30 @@ export const preparationDialogue: SceneNode[] = [
   },
   {
     id: 'prep_1',
-    text: 'Hello Mayra! Good to see you again.',
-    speaker: 'Pip',
-    characterRight: 'mayra',
-    characterLeft: 'pip',
+    text: 'There are always so many small decisions to make... Like how do I let people work on the exercises, what do I do in the mean time...',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayraThinking',
     nextId: 'prep_2',
   },
   {
     id: 'prep_2',
-    text: 'Oh, Pip! Have you been in here this whole time?',
-    speaker: 'Mayra',
+    text: 'Hello Mayra! Good to see you again.',
+    speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
     nextId: 'prep_3',
   },
   {
     id: 'prep_3',
-    text: 'No, not really. But I am here now. How are you feeling about your upcoming tutorial?',
+    text: 'Oh, Pip! Have you been in here this whole time?',
+    speaker: 'Mayra',
+    characterRight: 'mayra',
+    characterLeft: 'pip',
+    nextId: 'prep_4',
+  },
+  {
+    id: 'prep_4',
+    text: 'No, not really, I just came to check on you. How are you feeling about your upcoming tutorial?',
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
@@ -1792,7 +1847,7 @@ export const preparationDialogue: SceneNode[] = [
   },
   {
     id: 'feelings_unsure_3',
-    text: 'Mayra moves over to the professor\'s desk and looks at the material lying there.',
+    text: 'Mayra moves over to the professor’s desk and looks at the material lying there.',
     speaker: 'Narrator',
     characterRight: 'mayra',
     characterLeft: 'pip',
@@ -2156,7 +2211,7 @@ export const connectingDialogue: SceneNode[] = [
     characterLeft: 'pip',
     options: [
       { text: 'Thank Pip for his help', nextId: 'thanks', choice: { thankPip: true } },
-      { text: 'Remind him, that you didn\'t really have a choice', nextId: 'nothanks', choice: { thankPip: false } },
+      { text: 'Remind him, that you didn’t really have a choice', nextId: 'nothanks', choice: { thankPip: false } },
     ],
   },
   {
@@ -2178,7 +2233,7 @@ export const connectingDialogue: SceneNode[] = [
 
   {
     id: 'nothanks',
-    text: 'I mean, it\'s not like I really had a choice, you just started to follow me around.',
+    text: 'I mean, it’s not like I really had a choice, you just started to follow me around.',
     speaker: 'Mayra',
     characterRight: 'mayra',
     characterLeft: 'pip',
@@ -2204,7 +2259,7 @@ export const connectingDialogue: SceneNode[] = [
 export const endingDialogue: SceneNode[] = [
   {
     id: 'start',
-    text: 'Don\'t worry, if you truely need me, I will reapper. But until then, goodbye!',
+    text: 'Don’t worry, if you truely need me, I will reapper. But until then, goodbye!',
     speaker: 'Pip',
     location: 'office',
     characterRight: 'mayra',
@@ -2230,7 +2285,7 @@ export const badEndingDialogue: SceneNode[] = [
   },
   {
     id: 'ending_0',
-    text: 'I will leave now. Unfortunately, I haven\'t fully regained all my power yet to return to the world of thought ghosts, but I can rest for a while and see who else needs my help. Goodbye Mayra, and good luck with your teaching adventure!',
+    text: 'I will leave now. Unfortunately, I haven’t fully regained all my power yet to return to the world of thought ghosts, but I can rest for a while and see who else needs my help. Goodbye Mayra, and good luck with your teaching adventure!',
     speaker: 'Pip',
     location: 'office',
     characterRight: 'mayra',
@@ -2325,7 +2380,7 @@ export const tutorAcademyDialogues: SceneNode[] = [
   },
   {
     id: 'intro',
-    text: 'Emma is a spirited and resourceful tutor, faced with a classroom full of students who are attentive but surprisingly silent. Each desk is occupied by a student who seems to follow along with the lesson but remains passive, showing little initiative to participate or ask questions. This unusual quietness presents a peculiar challenge for Emma, who is used to a more interactive teaching environment.\n\nDetermined to break through this barrier, Emma scans the room, trying to gauge the students\' interest levels and looking for any signs of confusion or engagement that she might work with. The stillness of the room is almost palpable, making Emma\'s task to draw out their voices and thoughts even more daunting.\n\nShe knows that beneath this layer of silence, there is potential for vibrant discussions and lively interactions that could enrich the learning experience. Emma prepares to employ a range of strategies, from direct questioning to integrating more dynamic group activities, aiming to transform the passive learning atmosphere into one of active participation and enthusiasm. Her goal is clear: to ignite a spark of involvement in each student, turning the quiet class into a lively forum for exchange and learning.',
+    text: 'Emma is a spirited and resourceful tutor, faced with a classroom full of students who are attentive but surprisingly silent. Each desk is occupied by a student who seems to follow along with the lesson but remains passive, showing little initiative to participate or ask questions. This unusual quietness presents a peculiar challenge for Emma, who is used to a more interactive teaching environment.\n\nDetermined to break through this barrier, Emma scans the room, trying to gauge the students’ interest levels and looking for any signs of confusion or engagement that she might work with. The stillness of the room is almost palpable, making Emma’s task to draw out their voices and thoughts even more daunting.\n\nShe knows that beneath this layer of silence, there is potential for vibrant discussions and lively interactions that could enrich the learning experience. Emma prepares to employ a range of strategies, from direct questioning to integrating more dynamic group activities, aiming to transform the passive learning atmosphere into one of active participation and enthusiasm. Her goal is clear: to ignite a spark of involvement in each student, turning the quiet class into a lively forum for exchange and learning.',
     nextId: 'choice_1',
   },
   {
@@ -2339,12 +2394,12 @@ export const tutorAcademyDialogues: SceneNode[] = [
   },
   {
     id: 'ask',
-    text: 'When Emma directly addresses the quietness of the class, the students are visibly caught off guard. They exchange uncertain glances, and the room is filled with a tense silence that lingers momentarily. The unexpected question hangs in the air, giving the students a moment to process their tutor\'s candid concern.',
+    text: 'When Emma directly addresses the quietness of the class, the students are visibly caught off guard. They exchange uncertain glances, and the room is filled with a tense silence that lingers momentarily. The unexpected question hangs in the air, giving the students a moment to process their tutor’s candid concern.',
     nextId: 'ask2',
   },
   {
     id: 'ask2',
-    text: 'Slowly, the atmosphere begins to thaw as a few students muster the courage to respond. One by one, they reveal that their silence is not due to disinterest but rather a shared feeling of uncertainty and lack of confidence in their grasp of the material. Their voices are tentative at first, barely above a whisper, but as they begin to see nods of agreement from their peers, their tones grow slightly stronger.\nThis open communication acts as a bridge, reducing the invisible barrier that had stifled their participation. Emma listens attentively, nodding and encouraging further sharing. This initial break in the silence fosters a sense of solidarity among the students, as they realize they are not alone in their feelings. Emma\'s direct approach, though initially shocking, opens a vital channel of communication that sets the stage for a more engaged and supportive learning environment.',
+    text: 'Slowly, the atmosphere begins to thaw as a few students muster the courage to respond. One by one, they reveal that their silence is not due to disinterest but rather a shared feeling of uncertainty and lack of confidence in their grasp of the material. Their voices are tentative at first, barely above a whisper, but as they begin to see nods of agreement from their peers, their tones grow slightly stronger.\nThis open communication acts as a bridge, reducing the invisible barrier that had stifled their participation. Emma listens attentively, nodding and encouraging further sharing. This initial break in the silence fosters a sense of solidarity among the students, as they realize they are not alone in their feelings. Emma’s direct approach, though initially shocking, opens a vital channel of communication that sets the stage for a more engaged and supportive learning environment.',
     nextId: 'ending',
   },
   {
@@ -2359,12 +2414,12 @@ export const tutorAcademyDialogues: SceneNode[] = [
   },
   {
     id: 'teachingstyle',
-    text: 'Emma\'s decision to adjust her teaching style by reducing her direct lecturing and instead using open-ended questions to prompt critical thinking has significantly altered the classroom dynamics. This approach encourages students to actively engage with the material, ponder deeper questions, and articulate their thoughts. By stepping back, Emma allows the students\' voices to become the primary drivers of the classroom discourse, fostering a more student-centered learning environment.',
+    text: 'Emma’s decision to adjust her teaching style by reducing her direct lecturing and instead using open-ended questions to prompt critical thinking has significantly altered the classroom dynamics. This approach encourages students to actively engage with the material, ponder deeper questions, and articulate their thoughts. By stepping back, Emma allows the students’ voices to become the primary drivers of the classroom discourse, fostering a more student-centered learning environment.',
     nextId: 'teachingstyle2',
   },
   {
     id: 'teachingstyle2',
-    text: 'As sessions progress, the classroom becomes a lively hub of inquiry and debate. Emma poses questions that challenge students to think beyond textbooks, connecting theoretical knowledge with real-world applications. This method not only cultivates a higher level of critical thinking but also enhances students\' confidence in expressing their opinions and defending their viewpoints. The students become more invested in their learning, eager to contribute and share their insights.',
+    text: 'As sessions progress, the classroom becomes a lively hub of inquiry and debate. Emma poses questions that challenge students to think beyond textbooks, connecting theoretical knowledge with real-world applications. This method not only cultivates a higher level of critical thinking but also enhances students’ confidence in expressing their opinions and defending their viewpoints. The students become more invested in their learning, eager to contribute and share their insights.',
     nextId: 'ending',
   },
   {

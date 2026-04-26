@@ -6,7 +6,13 @@ export interface BranchCondition {
 export interface ReflectionOption {
   text: string;
   nextId: string;
+  optionId?: number;
   choice?: Record<string, string | boolean | number>;
+}
+
+export interface ReflectionVotingSet {
+  votingID: number;
+  options: ReflectionOption[];
 }
 
 export interface ReflectionNode {
@@ -18,6 +24,9 @@ export interface ReflectionNode {
   showBubbles?: boolean; // If true, show thought bubbles with database insights
   showCharacter?: boolean; // If true, show the character image
   saveResponse?: boolean; // If true, save user response to database
+  votingKey?: string; // Key to resolve voting data from reflectionVotingSets
+  votingID?: number; // If set, this node is associated with a voting question
+  displayVotes?: boolean; // If true, display current voting results at this node
   options?: ReflectionOption[]; // If present, show clickable choices
   nextId?: string; // Next dialogue ID (undefined = end)
   branchConditions?: BranchCondition[]; // Used if type is 'branching'
@@ -31,6 +40,26 @@ export interface UserResponse {
   timestamp: Date;
 }
 
+export const reflectionVotingSets: Record<string, ReflectionVotingSet> = {
+  tutorialStart: {
+    votingID: 5,
+    options: [
+      { text: 'Give an overview over the topics of whole semester', nextId: 'options_1', optionId: 0 },
+      { text: 'State the learning outcomes of today\'s session', nextId: 'options_1', optionId: 1 },
+      { text: 'Ask the students about their wishes and concerns for the next tutorials', nextId: 'options_1', optionId: 2 },
+      { text: 'Use your own enthusiasm for the topic to interest the students in the subject', nextId: 'options_1', optionId: 3 },
+    ],
+  },
+  sandwichVote: { 
+    votingID: 3, // What impacted your decision the most?
+    options: [
+      { text: 'I want to help other students as much as I can', nextId: 'picked', optionId: 0 },
+      { text: 'Noah is my friend so I want to help him', nextId: 'picked', optionId: 1 },
+      { text: 'I should not help with homework', nextId: 'picked', optionId: 2 },
+      { text: 'Something else', nextId: 'else', optionId: 3 },
+    ],
+  },
+};
 
 // ___________ Dialogue Data for Reflection Scenes ____________
 
@@ -57,7 +86,7 @@ export const reflectionDialogue1: ReflectionNode[] = [
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
-    nextId: 'reflect_2',
+    nextId: 'options_0',
   },
   {
     id: 'same_approach',
@@ -65,15 +94,22 @@ export const reflectionDialogue1: ReflectionNode[] = [
     requiresInput: true,
     showCharacter: true,
     inputPrompt: 'Type your thoughts here...',
-    nextId: 'reflect_2',
+    nextId: 'options_0',
   },
   {
-    id: 'reflect_1',
-    text: 'Can you finish this sentence: "The most important part of the start of the first tutorial is..."',
-    requiresInput: true,
+    id: 'options_0',
+    text: 'Which one of these do you deem to be the most useful for the start of a tutorial?',
     showCharacter: true,
-    inputPrompt: 'Type your thoughts here...',
-    nextId: 'reflect_2',
+    votingKey: 'tutorialStart',
+    saveResponse: true,
+  },
+  {
+    id: 'options_1',
+    text: 'This is how other students picked:',
+    showCharacter: true,
+    displayVotes: true,
+    votingKey: 'tutorialStart',
+    nextId: 'reflect_3',
   },
   {
     id: 'reflect_2',
@@ -108,7 +144,7 @@ export const reflectionDialogue1: ReflectionNode[] = [
   },
   {
     id: 'ending',
-    text: 'Thank you for your time.',
+    text: 'Thank you for discussing your thoughts with me.',
     showCharacter: true,
   },
 ];
@@ -148,15 +184,34 @@ export const reflectionDialogueSandwich: ReflectionNode[] = [
   {
     id: 'reflect_1',
     text: 'What factor did you consider the most when making your decision on helping Noah?',
-    requiresInput: true,
+    votingKey: 'sandwichVote',
     showCharacter: true,
+  },
+  {
+    id: 'else',
+    text: 'What other factor did you consider the most when making your decision on helping Noah?',
+    showCharacter: true,
+    requiresInput: true,
     inputPrompt: 'Type your thoughts here...',
+    nextId: 'picked',
+  },
+  {
+    id: 'picked',
+    text: 'This is how other students picked:',
+    votingKey: 'sandwichVote',
+    displayVotes: true,
+    showCharacter: true,
+    nextId: 'pre_bubbles',
+  },
+  {
+    id: 'pre_bubbles',
+    text: 'When making a decision like this, there are many factors to consider. Let\'s take a look at some of the insights other students had on how to handle the situtation.',
+    showCharacter: true,
     nextId: 'bubbles',
   },
-
   {
     id: 'bubbles',
-    text: 'Here is what other students considered to be important factors to consider.',
+    text: 'How to deal with a situation like this...',
     showBubbles: true,
     nextId: 'record',
   },
@@ -171,7 +226,7 @@ export const reflectionDialogueSandwich: ReflectionNode[] = [
   },
   {
     id: 'end',
-    text: 'Thank you for your time.',
+    text: 'Thank you for sharing your thoughts.',
     showCharacter: true,
   },
 ];
@@ -202,7 +257,7 @@ export const reflectionDialogue5: ReflectionNode[] = [
   },
   {
     id: 'reflect_3',
-    text: 'Interesting... Others before you have mentioned similar things, but also some different aspects. Let\'s take a look at what they based their decisions on.',
+    text: 'Interesting... Now, let\'s take a look at what others based their decisions on.',
     showCharacter: true,
     nextId: 'bubbles',
   },
@@ -223,14 +278,9 @@ export const reflectionDialogue5: ReflectionNode[] = [
   },
   {
     id: 'ending',
-    text: 'Thank you for your reflections. Your insights have been recorded.',
+    text: 'Thank you for your insights.',
     showCharacter: true,
   },
 ];
 
-
 // ___________ End Dialogue Data for Reflection Scenes ____________
-
-
-// Array of dialogue sets for different scenarios
-export const reflectionDialogues: ReflectionNode[][] = [reflectionDialogue1, reflectionDialogue5];

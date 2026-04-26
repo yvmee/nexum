@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore, useCurrentReflection } from '../../store/useGameStore';
-import { UserResponse } from '../../storydata/reflectionData';
+import { UserResponse, reflectionVotingSets } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
-import { loadReflectionAnswerTexts, saveData, ReflectionAnswerData } from '../../db/database';
+import { loadReflectionAnswerTexts, saveAnswerData, ReflectionAnswerData, loadReflectionVotes, saveVoteData } from '../../db/database';
 import { PipImage } from '../../components/PipImage';
 import { useSoundStore } from '../../store/useSoundStore';
 
@@ -39,6 +39,7 @@ export const ReflectionScene: React.FC = () => {
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
   const [_,setUserResponses] = useState<UserResponse[]>([]);
   const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
+  const [votingResults, setVotingResults] = useState<Record<number, Record<number, number>>>({});
   const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
   const [canContinue, setCanContinue] = useState<boolean>(true);
 
@@ -61,6 +62,17 @@ export const ReflectionScene: React.FC = () => {
         const loadedReflections = await loadReflectionAnswerTexts(session);
         setPreviousReflections(loadedReflections);
         console.log('Previous reflections loaded:', loadedReflections.length);
+
+        const loadedVotes = await loadReflectionVotes();
+        // Group votes by votingId, then count per optionId
+        const processed: Record<number, Record<number, number>> = {};
+        for (const vote of loadedVotes) {
+          if (vote.thread_id == null || vote.option_id == null) continue;
+          if (!processed[vote.thread_id]) processed[vote.thread_id] = {};
+          processed[vote.thread_id][vote.option_id] = (processed[vote.thread_id][vote.option_id] ?? 0) + 1;
+        }
+        setVotingResults(processed);
+        console.log('Voting results processed:', processed);
       } catch (error) {
         console.error('Error loading previous reflections:', error);
       }
@@ -84,11 +96,19 @@ export const ReflectionScene: React.FC = () => {
     setIsAwaitingInput(false);
   }, [currentDialogue]);
 
-  const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>) => {
+  const handleSelectOption = (nextId: string, choice?: Record<string, string | boolean | number>, optionId?: number) => {
     if (choice) {
       const [key, value] = Object.entries(choice)[0];
       useGameStore.getState().makeChoice(key, value);
+    } 
+
+    const votingConfig = currentDialogue?.votingKey ? reflectionVotingSets[currentDialogue.votingKey] : undefined;
+    const resolvedVotingID = currentDialogue?.votingID ?? votingConfig?.votingID;
+
+    if (resolvedVotingID !== undefined && optionId !== undefined) {
+      saveVoteData(resolvedVotingID, optionId);
     }
+
     advanceReflection(nextId);
   };
 
@@ -141,7 +161,7 @@ export const ReflectionScene: React.FC = () => {
     // Save the input to the database
     if (currentDialogue.saveResponse) {
       try {
-        await saveData(input, session);
+        await saveAnswerData(input, session);
         console.log('User response saved to database');
       } catch (error) {
         console.error('Error saving user response to database:', error);
@@ -167,7 +187,7 @@ export const ReflectionScene: React.FC = () => {
       {<div className="absolute inset-0 z-5 bg-black/10 backdrop-blur-[1px] pointer-events-none" />}
 
       {/* Dialogue box at the top */}
-      <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
+      <div className="absolute top-8 left-0 right-0 z-20 flex justify-center">
         <ReflectionDialogueBox
           dialogue={currentDialogue}
           onAdvance={handleAdvance}
@@ -176,10 +196,11 @@ export const ReflectionScene: React.FC = () => {
           isVisible={isDialogueVisible}
           isAwaitingInput={isAwaitingInput}
           canContinue={canContinue}
+          votingResults={votingResults}
         />
       </div>
 
-      {/* Thought Bubbles - shown after user input */}
+      {/* Thought Bubbles */}
       <ThoughtBubbles
         reflections={previousReflections}
         isVisible={showThoughtBubbles}
@@ -188,9 +209,9 @@ export const ReflectionScene: React.FC = () => {
       
       {/* Character image */}
       {currentDialogue?.showCharacter === true && (
-        <div className="flex flex-row justify-center h-full items-end pb-8">
+        <div className="flex flex-row justify-center h-full items-end pb-2">
           <PipImage
-            className="z-10 object-contain scale-[90%] max-w-full max-h-[50%]"
+            className="z-10 object-contain scale-[70%] max-w-full max-h-[50%]"
           />
         </div>
       )}

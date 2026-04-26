@@ -38,12 +38,13 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
 
   // Generate non-overlapping random positions for bubbles
   const bubblePositions = useMemo((): BubblePosition[] => {
-    // Estimated bubble dimensions in viewport-percentage units.
-    const BUBBLE_W = 22; // % of viewport width (with a small margin)
-    const BUBBLE_H = 14; // % of viewport height (with a small margin)
+    // Estimated bubble dimensions in viewport-percentage units
+    const BUBBLE_W = 22;
+    const BUBBLE_H = 14;
 
     const placed: BubblePosition[] = [];
 
+    // Check if bubble overlaps with existing ones
     const overlaps = (candidate: { x: number; y: number }, existing: BubblePosition[]) =>
       existing.some(
         (p) => Math.abs(candidate.x - p.x) < BUBBLE_W && Math.abs(candidate.y - p.y) < BUBBLE_H
@@ -51,7 +52,7 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
 
     const generateCandidate = (index: number) => ({
       // Spread across left / right halves avoiding the centre
-      x: 10 + (index % 2 === 0 ? Math.random() * 30 : 60 + Math.random() * 30),
+      x: 5 + (index % 2 === 0 ? Math.random() * 30 : 50 + Math.random() * 30),
       y: 35 + Math.random() * 50,
     });
 
@@ -66,7 +67,7 @@ export const ThoughtBubbles: React.FC<ThoughtBubblesProps> = ({
 
         if (!overlaps(candidate, placed)) {
           bestCandidate = candidate;
-          bestMinDist = Infinity; // no overlap -> perfect
+          bestMinDist = Infinity; // no overlap is best
           break;
         }
 
