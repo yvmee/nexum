@@ -8,7 +8,7 @@ import {
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { gameFlow, testFlow } from '../storydata/storyFlowData';
+import { gameFlow } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
@@ -139,7 +139,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   reflectionInputScores: [],
 
   // Story flow state
-  storyFlow: testFlow,
+  storyFlow: gameFlow,
   currentChunkId: null,
   activeDialogues: [],
   activeReflectionNodes: [],
