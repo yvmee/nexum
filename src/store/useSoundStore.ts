@@ -2,6 +2,17 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Howl, Howler } from 'howler';
 
+// Import audio files through Vite
+import clickSrc from '../../assets/sounds/ClickEdited.mp3';
+import typingSrc from '../../assets/sounds/KeyboardTypingSound.mp3';
+import portalSrc from '../../assets/sounds/PortalSound.mp3';
+import spellSrc from '../../assets/sounds/SpellCast.mp3';
+import healingSrc from '../../assets/sounds/HealingMagic.mp3';
+import ambientSrc from '../../assets/sounds/AmbientSound.mp3';
+import lectureSrc from '../../assets/sounds/LectureSoundEdited.mp3';
+import cafeteriaSrc from '../../assets/sounds/SchoolCafeteriaCut.mp3';
+import tutorialSrc from '../../assets/sounds/TutorialSound.mp3';
+
 // Individual base volumes for SFX and BGM
 const SFX_BASE_VOLUMES: Record<string, number> = {
   click: 1.0,
@@ -21,20 +32,20 @@ const BGM_BASE_VOLUMES: Record<string, number> = {
 
 // Sound effects dictionary
 const SFX: Record<string, Howl | null> = {
-  click: new Howl({ src: ['../../assets/sounds/ClickEdited.mp3']}),
-  typing : new Howl({ src: ['../../assets/sounds/KeyboardTypingSound.mp3']}),
-  flash: new Howl({ src: ['../../assets/sounds/PortalSound.mp3']}),
-  energy: new Howl({ src: ['../../assets/sounds/SpellCast.mp3']}),
-  glow: new Howl({ src: ['../../assets/sounds/HealingMagic.mp3']}),
+  click: new Howl({ src: [clickSrc]}),
+  typing : new Howl({ src: [typingSrc]}),
+  flash: new Howl({ src: [portalSrc]}),
+  energy: new Howl({ src: [spellSrc]}),
+  glow: new Howl({ src: [healingSrc]}),
 };
 
 // Background music dictionary
 const BGM: Record<string, Howl | null> = {
-  reflectionMusic: new Howl({ src: ['../../assets/sounds/AmbientSound.mp3'], loop: true }),
-  lectureHallSound: new Howl({ src: ['../../assets/sounds/LectureSoundEdited.mp3'], loop: true }),
-  cafeteriaSound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true }),
-  hallwaySound: new Howl({ src: ['../../assets/sounds/SchoolCafeteriaCut.mp3'], loop: true }),
-  tutorialSound: new Howl({ src: ['../../assets/sounds/TutorialSound.mp3'], loop: true }),
+  reflectionMusic: new Howl({ src: [ambientSrc], loop: true }),
+  lectureHallSound: new Howl({ src: [lectureSrc], loop: true }),
+  cafeteriaSound: new Howl({ src: [cafeteriaSrc], loop: true }),
+  hallwaySound: new Howl({ src: [cafeteriaSrc], loop: true }),
+  tutorialSound: new Howl({ src: [tutorialSrc], loop: true }),
 };
 
 export type BGMTrack = keyof typeof BGM;
