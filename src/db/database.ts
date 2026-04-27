@@ -84,6 +84,26 @@ export const sanitizeInput = (input: string): string => {
     // Remove HTML tags to prevent XSS
     .replace(/<[^>]*>/g, '');
 
+  // Heuristic spam filters
+  const hasSpamChars = /(.)\1{3,}/.test(result); 
+  if (hasSpamChars) {
+    console.log('Input contains spammy character repetitions, removing');
+    result = result.replace(/(.)\1{3,}/g, '$1');
+  }
+
+  const isGibberish = /^[bcdfghjklmnpqrstvwxz]{5,}$/i.test(result);
+  const isQwertyWalk = /(asdf|qwer|zxcv|yxcv|hjkl)/i.test(result);
+  if (isGibberish || isQwertyWalk) {
+    console.log('Input looks like gibberish or qwerty walk, returning empty');
+    return '';
+  }
+
+  const mostlyPunctuation = (result.match(/[^\w\s]/g)?.length || 0) > (result.length / 2);
+  if (mostlyPunctuation) {
+    console.log('Input is mostly punctuation, returning empty');
+    return '';
+  }
+
   // Filter profanity by removing
   const badWordRegex = getProfanityRegex();
   if (badWordRegex) {
