@@ -13,6 +13,7 @@ export interface ReflectionDialogueBoxProps {
   onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>, optionId?: number) => void;
   isVisible: boolean;
   isAwaitingInput: boolean;
+  isSubmitting?: boolean;
   canContinue?: boolean;
   votingResults?: Record<number, Record<number, number>>;
 }
@@ -24,6 +25,7 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
   onSelectOption,
   isVisible,
   isAwaitingInput,
+  isSubmitting = false,
   canContinue = true,
   votingResults = {},
 }) => {
@@ -94,10 +96,13 @@ export const ReflectionDialogueBox: React.FC<ReflectionDialogueBoxProps> = ({
           />
           <button
             onClick={withClickSound(handleSubmit)}
-            disabled={!inputValue.trim()}
-            className="self-end px-(--submit-px) py-(--submit-py) bg-primary text-primary-foreground [font-size:var(--text-label)] font-bold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer"
+            disabled={!inputValue.trim() || isSubmitting}
+            className="self-end px-(--submit-px) py-(--submit-py) bg-primary text-primary-foreground [font-size:var(--text-label)] font-bold rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 cursor-pointer flex items-center gap-2"
           >
-            Submit
+            {isSubmitting && (
+              <span className="inline-block w-4 h-4 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin" />
+            )}
+            {isSubmitting ? 'Saving...' : 'Submit'}
           </button>
         </div>
       )}

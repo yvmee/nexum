@@ -545,7 +545,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'intro_11',
-    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am this ugly grey… and I feel so weak…',
+    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am colorless and dull… and I feel so weak…',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
