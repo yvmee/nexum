@@ -17,6 +17,7 @@ import noahThinking from "../../assets/characters/MaleStudentThinking.png";
 import noahSurprised from "../../assets/characters/MaleStudentSurprised.png";
 import noahWorried from "../../assets/characters/MaleStudentWorried.png";
 import boyStudent from "../../assets/characters/GuyPortrait.png";
+import boyStudentWorried from "../../assets/characters/GuyWorriedPortrait.png";
 import professor from "../../assets/characters/ProfessorPortrait.png";
 
 
@@ -40,6 +41,7 @@ export const characters = { // Add character assets here
   noahSurprised,
   noahWorried,
   boyStudent,
+  boyStudentWorried,
   professor,
 };
 

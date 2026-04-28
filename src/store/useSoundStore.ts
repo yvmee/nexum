@@ -24,10 +24,10 @@ const SFX_BASE_VOLUMES: Record<string, number> = {
 
 const BGM_BASE_VOLUMES: Record<string, number> = {
   reflectionMusic: 0.5,
-  lectureHallSound: 0.4,
+  lectureHallSound: 0.3,
   cafeteriaSound: 0.4,
   hallwaySound: 0.2,
-  tutorialSound: 0.25,
+  tutorialSound: 0.3,
 };
 
 // Sound effects dictionary

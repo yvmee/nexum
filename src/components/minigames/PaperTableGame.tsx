@@ -18,14 +18,26 @@ interface PaperTableGameProps {
   papers: Paper[];
 }
 
-export const PAPERS: Paper[] = [ // Paper text data 
-  { id: 1, title: 'Motivate Your Students!', text: 'Bring along visual aids or establish a practical connection.\n\nUse your own enthusiasm for the topic to interest the students in the subject and the content being covered.', 
-      x: '60%', y: '40%', rotate: 25 },
-  { id: 2, title: 'A Positive Atmosphere ', text: 'Create a positive atmosphere by approaching students with openness. Create eye contact and use open facial expressions and gestures. Take their wishes and concerns seriously. This isn’t the place for fearmongering, irony or sarcasm.', 
-      x: '35%', y: '20%', rotate: 5 },
-  { id: 3, title: 'Structure', text: 'At the beginning of the tutorial, provide an overview of the topics to be covered. An agenda, a simple list, a mind map, or a learning map are great options for this.\n\nSpecifically state the learning outcomes your event should achieve so that students know what learning gains they can expect.\n\n At the beginning of each lesson, make a connection to the previous one in order to build on the students\' prior knowledge. You can use a mind map, cluster or a quiz for this.', 
-      x: '10%', y: '30%', rotate: -15 },
-];
+const renderPaperText = (text: string) => {
+  return text.split('\n').map((line, lineIndex) => {
+    const segments = line.split(/(\*\*.*?\*\*)/g);
+
+    return (
+      <React.Fragment key={`line-${lineIndex}`}>
+        {segments.map((segment, segmentIndex) => {
+          const isBold = segment.startsWith('**') && segment.endsWith('**') && segment.length > 4;
+
+          if (isBold) {
+            return <strong key={`segment-${lineIndex}-${segmentIndex}`}>{segment.slice(2, -2)}</strong>;
+          }
+
+          return <React.Fragment key={`segment-${lineIndex}-${segmentIndex}`}>{segment}</React.Fragment>;
+        })}
+        {lineIndex < text.split('\n').length - 1 && <br />}
+      </React.Fragment>
+    );
+  });
+};
 
 export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, papers }) => {
   // Tracks which paper is currently shown in reading overlay, null if none
@@ -70,7 +82,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
               onClick={(e) => e.stopPropagation()} // Prevent clicks on the paper from closing it
             >
               <h2 className="[font-size:var(--title-size)] font-bold mb-4 border-b border-black pb-2">{activePaper.title}</h2>
-              <p className="font-serif [font-size:var(--title-size)] leading-relaxed whitespace-pre-wrap">{activePaper.text}</p>
+              <p className="font-serif [font-size:var(--title-size)] leading-relaxed">{renderPaperText(activePaper.text)}</p>
               
               <button 
                 className="mt-auto self-end text-sm text-gray-600 hover:text-black"

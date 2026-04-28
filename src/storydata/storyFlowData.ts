@@ -33,15 +33,24 @@ export const testFlow: StoryFlow = {
   initialChunkId: 'intro',
 
   chunks: {
+
     intro: {
       id: 'intro',
       dialogueNodes: startDialogue,
-      reflectionNodes: reflectionDialogueSandwich,
-      reflectionSessionNumber: 2,
       transitions: [
-        { targetChunkId: 'splitintro'}, 
+        { targetChunkId: 'work_organization'}, 
       ],
     },
+
+    pipIntro: {
+      id: 'pipIntro',
+      dialogueNodes: pipIntroDialogue,
+      transitions: [
+        { targetChunkId: 'splitintro' }, 
+      ],
+    },
+
+
 
     splitintro: {
       id: 'splitintro',
@@ -270,7 +279,7 @@ export const gameFlow: StoryFlow = {
           const sortingGameSuccess = goodCount >= 4 && badCount === 0;
           return (sortingGameSuccess && choices['splitChoice'] === 'preparation' && (choices['workOrganization'] === 'pairs' || choices['workOrganization'] === 'group') &&  choices['supportStyle'] === 'walk')
         }, pipMinScore: 75},
-        { targetChunkId: 'Ending', condition: (choices) => {
+        { targetChunkId: 'ending', condition: (choices) => {
           const choicesStr = choices.sortingGameChoices as string || '';
           const sortingchoices = choicesStr.split(',').map(Number);
           const goodIDs = [1, 3, 4, 7];
@@ -281,12 +290,12 @@ export const gameFlow: StoryFlow = {
           const sortingGameSuccess = goodCount >= 2 && badCount === 0;
           return sortingGameSuccess 
         }, pipMinScore: 60},
-        { targetChunkId: 'BadEnding' }, 
+        { targetChunkId: 'badEnding' }, 
       ],
     },
 
-    Ending: {
-      id: 'Ending',
+    ending: {
+      id: 'ending',
       dialogueNodes: endingDialogue,
       transitions: [
         { targetChunkId: 'end' },

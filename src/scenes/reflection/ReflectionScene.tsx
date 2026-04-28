@@ -37,6 +37,7 @@ export const ReflectionScene: React.FC = () => {
 
   const [isDialogueVisible, setIsDialogueVisible] = useState<boolean>(currentDialogue !== null);
   const [isAwaitingInput, setIsAwaitingInput] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [_,setUserResponses] = useState<UserResponse[]>([]);
   const [previousReflections, setPreviousReflections] = useState<ReflectionAnswerData[]>([]);
   const [votingResults, setVotingResults] = useState<Record<number, Record<number, number>>>({});
@@ -160,11 +161,14 @@ export const ReflectionScene: React.FC = () => {
 
     // Save the input to the database
     if (currentDialogue.saveResponse) {
+      setIsSubmitting(true);
       try {
         await saveAnswerData(input, session);
         console.log('User response saved to database');
       } catch (error) {
         console.error('Error saving user response to database:', error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
 
@@ -195,6 +199,7 @@ export const ReflectionScene: React.FC = () => {
           onSelectOption={handleSelectOption}
           isVisible={isDialogueVisible}
           isAwaitingInput={isAwaitingInput}
+          isSubmitting={isSubmitting}
           canContinue={canContinue}
           votingResults={votingResults}
         />

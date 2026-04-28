@@ -73,14 +73,14 @@ export const locations: Record<string, location> = {
 export const startDialogue: SceneNode[] = [
   {
     id: 'start',
-    text: 'Welcome to this first prototype, a game desgined for the onboarding of student tutors and doctorial candidates.',
+    text: 'Welcome to Nexum, a game designed for the onboarding of student tutors and doctoral candidates.',
     speaker: 'Narrator',
     location: 'introLocation',
     nextId: 'intro_0',
   },
   {
     id: 'intro_0',
-    text: 'In this game you will follow Mayra, a new student tutor, as she navigates her days at the university.',
+    text: 'In this first prototype, you will follow Mayra, a new student tutor, as she navigates her days at the university.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
@@ -151,7 +151,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_1',  
-    text: '… and we will build on this concept in the coming weeks!',
+    text: '… and we will build on this concept in the upcoming weeks!',
     speaker: 'Professor',
     nextId: 'intro_2',
   },
@@ -545,7 +545,7 @@ export const pipIntroDialogue: SceneNode[] = [
   },
   {
     id: 'intro_11',
-    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am this ugly grey… and I feel so weak…',
+    text: 'I have been asleep for a long time and I think I lost a lot of my energy… and now I am colorless and dull… and I feel so weak…',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -604,7 +604,7 @@ export const pipIntroDialogue: SceneNode[] = [
   {
     id: 'help_4',
     text: 'Pffft, no, I am not a vampire! I just need to be around you and see you doing things. That will give me energy. I will get stronger the more you do things and the more energy I have. You will see.',
-    speaker: 'Mayra',
+    speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayraStressed',
     nextId: 'help_5',
@@ -673,7 +673,7 @@ export const pipIntroDialogue: SceneNode[] = [
     text: 'How do I explain the floating ball behind me to the students?',
     speaker: 'Mayra',
     characterLeft: 'pip',
-    characterRight: 'mayra',
+    characterRight: 'mayraThinking',
     nextId: 'toclassroom_1',
   },
   {
@@ -682,6 +682,11 @@ export const pipIntroDialogue: SceneNode[] = [
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
+    nextId: 'table_branch',
+  },
+  {
+    id: 'table_branch',
+    type: 'branching',
     branchConditions: [
       { nextId: 'table', condition: (playerChoices) => playerChoices.introChoice === 'leave' },
       { nextId: 'toclassroom_2', condition: () => true },
@@ -690,8 +695,8 @@ export const pipIntroDialogue: SceneNode[] = [
   {
     id: 'toclassroom_2',
     text: 'Okay... If he says so...',
-    type: 'branching',
     speaker: 'Mayra (in)',
+    characterLeft: 'pip',
     characterRight: 'mayra',
   },
   {
@@ -768,7 +773,7 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'node_2',
-    text: 'Alrigth, the tutorial starts in a few minutes. I can do this. And they all look friendly to me.',
+    text: 'Alright, the tutorial starts in a few minutes. I can do this. And they all look friendly to me.',
     speaker: 'Mayra (in)',
     characterRight: 'mayra',
     nextId: 'node_3',
@@ -1216,25 +1221,32 @@ export const coffeeDialogue: SceneNode[] = [
   {
     id: 'start',
     text: 'It’s so exciting that we are in the same tutorial group now.',
-    speaker: 'Mayra',
-    characterLeft: 'Noah',
-    characterRight: 'Mayra',
+    speaker: 'Noah',
+    characterLeft: 'noah',
+    characterRight: 'mayra',
+    location: 'cafe',
     nextId: 'goal_0',
   },
   {
     id: 'goal_0',
     text: 'I am happy to have Noah in the tutorial. But somehow I do have an uneasy feeling about this... It puts me in a weird position, being friends with a student that I give homework to and grade.',
     speaker: 'Mayra (in)',
-    characterLeft: 'Noah',
+    characterLeft: 'noah',
     characterRight: 'mayraThinking',
     nextId: 'goal_1',
   },
   {
-    id: 'start',
+    id: 'goal_1',
     text: 'You know, it is only like the third week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
-    location: 'cafe',
+    speaker: 'Noah',
     characterLeft: 'noahSurprised',
     characterRight: 'mayra',
+    nextId: 'goal_2',
+  },
+  {
+    id: 'goal_2',
+    text: 'You know, it is only like the third week of the semester, but I am already exhausted. Is it possible to already be behind somehow?',
+    speaker: 'Noah',
     options: [
       { text: 'Yes, I feel the same way', nextId: 'choice_stressed'},
       { text: 'No, I can’t relate at all', nextId: 'choice_not_stressed' },
@@ -1299,8 +1311,7 @@ export const coffeeDialogue: SceneNode[] = [
   {
     id: 'talk_question',
     text: 'But how about you? How are you doing with the tutorial and stuff?',
-    characterLeft: 'noah',
-    characterRight: 'mayra',
+    speaker: 'Noah',
     options: [
       { text: 'It’s going great', nextId: 'tutorial_good'},
       { text: 'It’s stressing me out', nextId: 'tutorial_stressful' },
@@ -1308,7 +1319,7 @@ export const coffeeDialogue: SceneNode[] = [
   },
   {
     id: 'tutorial_good',
-    text: 'It is actually going really well! I am really enjoying it and I think the students are great.',
+    text: 'It is actually going well! I am really enjoying it and I think the students are great.',
     speaker: 'Mayra',
     characterLeft: 'noah',
     characterRight: 'mayra',
@@ -1431,6 +1442,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'help_choice',
     text: 'I just don’t know how to start.',
+    speaker: 'Noah',
     options: [
       { text: 'Let’s go through it step by step', nextId: 'choice_step', choice: { helpStyle: 'help' } },
       { text: 'Here is how you solve it', nextId: 'choice_solution', choice: { helpStyle: 'solution' } },
@@ -1496,7 +1508,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'help_start_1',
     text: 'Thank you! That’s already something.',
-    speaker: 'Mayra',
+    speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
     nextId: 'help_start_2',
@@ -1816,6 +1828,7 @@ export const preparationDialogue: SceneNode[] = [
   {
     id: 'decision_feelings',
     text: 'How are you feeling about your upcoming tutorial?',
+    speaker: 'Pip',
     options: [
       { text: 'I feel well prepared', nextId: 'feelings_good', choice: { prepared: 'good' } },
       { text: 'I am not so sure...', nextId: 'feelings_unsure', choice: { prepared: 'unsure' } },
@@ -1949,15 +1962,15 @@ export const preparationDialogue: SceneNode[] = [
     nextId: 'end_3',
   },
   {
-    id: 'end_2',
+    id: 'end_3',
     text: 'Yes, I will be right behind you.',
     speaker: 'Pip',
     characterRight: 'mayra',
     characterLeft: 'pip',
-    nextId: 'end_3',
+    nextId: 'end_4',
   },
   {
-    id: 'end_3',
+    id: 'end_4',
     text: 'Mayra and pip leave the office room and head to the tutorial room.',
     speaker: 'Narrator',
     characterRight: 'mayra',
@@ -2025,7 +2038,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     id: 'work_1',
     text: 'Some students look unsure about what they are doing… Or maybe I am imagining it? I should remind them that they can ask me questions or be there if someone is lost.',
     speaker: 'Mayra (in)',
-    characterRight: 'mayra',
+    characterRight: 'mayraThinking',
     nextId: 'decision_1',
   },
   {
@@ -2064,7 +2077,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     text: 'Hey, are you managing okay? Do you need any help?',
     speaker: 'Mayra',
     characterRight: 'mayra',
-    characterLeft: 'boyStudent',
+    characterLeft: 'boyStudentWorried',
     nextId: 'walking_1',
   },
   {
@@ -2072,7 +2085,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     text: 'Uhmm…. I just don’t really know how to start…',
     speaker: 'Student',
     characterRight: 'mayra',
-    characterLeft: 'boyStudent',
+    characterLeft: 'boyStudentWorried',
     nextId: 'walking_2',
   },
   {
@@ -2080,7 +2093,7 @@ export const scenario5Dialogue: SceneNode[] = [ // Dialogue data for scenario 5 
     text: 'Ah okay. So, remember the exercise from last week? Similar to that, you start by doing…',
     speaker: 'Mayra',
     characterRight: 'mayra',
-    characterLeft: 'boyStudent',
+    characterLeft: 'boyStudentWorried',
     nextId: 'walking_3',
   },
   {
@@ -2230,7 +2243,6 @@ export const connectingDialogue: SceneNode[] = [
     characterLeft: 'pip',
     nextId: 'continue_0',
   },
-
   {
     id: 'nothanks',
     text: 'I mean, it’s not like I really had a choice, you just started to follow me around.',

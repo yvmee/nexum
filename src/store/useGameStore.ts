@@ -311,6 +311,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     // Check if this chunk has a reflection scene
     if (chunkHasReflection(storyFlow, currentChunkId)) {
       const chunk = storyFlow.chunks[currentChunkId];
+      useSoundStore.getState().playBgm('reflectionMusic');
       set({
         currentScene: 'REFLECTION',
         session: chunk.reflectionSessionNumber ?? 0,
