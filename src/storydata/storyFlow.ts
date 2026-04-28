@@ -50,14 +50,17 @@ export function evaluateNextChunk(
   console.debug(`Evaluating next chunk for completed chunk '${currentChunkId}' with transitions:`, entry.transitions);
 
   if (!entry.transitions || entry.transitions.length === 0) {
+    console.log(`No transitions defined for chunk '${currentChunkId}'. Story will end after this chunk.`);
     return null; // no transitions -> story ends
   }
 
   for (const transition of entry.transitions) {
     if (!transition.condition || (transition.condition(playerChoices) && (!transition.pipMinScore || transition.pipMinScore <= pipScore) )) {
+      console.log (`Transitioning from chunk '${currentChunkId}' to chunk '${transition.targetChunkId}'.`);
       return transition.targetChunkId;
     }
   }
+  console.log(`No matching transition found for chunk '${currentChunkId}'. Story will end after this chunk.`);
   return null; // no matching transition -> story ends
 }
 

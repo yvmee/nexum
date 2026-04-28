@@ -75,7 +75,9 @@ export const DialogueScene: React.FC = () => {
   useEffect(() => {
     if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
       const match = currentDialogue.branchConditions.find(b => b.condition(playerChoices));
-      if (match) advanceDialogue(match.nextId);
+      if (match) {
+        advanceDialogue(match.nextId);
+      }
     }
   }, [currentDialogue, playerChoices]);
 
