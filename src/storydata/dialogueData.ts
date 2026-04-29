@@ -145,7 +145,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',  
-    text: 'The low click sounds of keys being tapped fills the space between the professors words.',
+    text: 'The low click sounds of keys being tapped fills the space between the professor’s words.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
@@ -1061,7 +1061,7 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_3',
-    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me there thoughts?',
+    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me their thoughts?',
     speaker: 'Mayra',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1557,7 +1557,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'choice_step_1',
     text: 'Hmmm, maybe like this?',
-    speaker: 'Mayra',
+    speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noahThinking',
     nextId: 'choice_step_2',
@@ -1686,7 +1686,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'solution_4',
     text: 'Yes, sure, thank you! What about the other exercises??',
-    speaker: 'Mayra',
+    speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
     nextId: 'solution_5',
