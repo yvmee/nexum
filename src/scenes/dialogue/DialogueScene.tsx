@@ -143,60 +143,85 @@ export const DialogueScene: React.FC = () => {
       )}
 
       {/* Content Layer */}
-      <div className="relative z-10 flex flex-col items-center justify-between w-full h-full p-8 pointer-events-none">
-        <div className="flex flex-col items-center justify-center mt-20"></div>
-        {/* Dialogue Box Area */}
-        <div className="pointer-events-auto mb-10 flex flex-col items-center w-full">
-          {/* Optional Speaker Portraits */}
-          {isDialogueActive && transitionPhase === 'idle' && (leftPortrait || rightPortrait) && (
-            <div className="w-(--box-width) max-w-[90vw] -mb-2 px-2 flex items-end justify-between">
-              <div className="min-h-(--portrait-size) flex items-end">
-                {leftPortrait && (
-                  isPipLeft ? (
+      <div className="relative z-10 flex flex-col items-center justify-end w-full h-full pointer-events-none">
+        {/* Centered container matching dialogue box width with portraits as absolute children */}
+        <div className="relative pointer-events-auto mb-10 w-(--box-width) max-w-[90vw]">
+
+          {/* Dialogue Box */}
+          <div className="relative z-10">
+            <DialogueBox
+              dialogue={currentDialogue}
+              onAdvance={handleAdvance}
+              onSelectOption={handleSelectOption}
+              onGoBack={goBackDialogue}
+              canGoBack={dialogueHistory.length > 0 && !currentDialogue?.location}
+              isVisible={isDialogueActive && transitionPhase === 'idle'}
+            />
+          </div>
+
+          {/* Left Portrait (attached to left edge of the dialogue box) */}
+          {isDialogueActive && transitionPhase === 'idle' && leftPortrait && (
+            <div
+              className="absolute bottom-0 left-0 z-20 pointer-events-none"
+              style={{ transform: 'translateX(-70%) translateY(-7rem)' }}
+            >
+              <div className="relative">
+                {isPipLeft ? (
+                  <>
                     <PipImage
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
                       extraFilter={leftPortraitFilter}
                     />
-                  ) : (
+                    <div className="absolute inset-x-30 bottom-0 h-1/5 bg-linear-to-t from-primary/40 to-transparent pointer-events-none rounded-b-3xl" />
+                  </>
+                ) : (
+                  <>
                     <img
                       src={leftPortrait}
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
                       style={{ filter: leftPortraitFilter }}
                     />
-                  )
+                    <div className="absolute inset-x-0 bottom-0 h-1/5 bg-linear-to-t from-black/40 to-transparent pointer-events-none rounded-b-3xl" />
+                  </>
                 )}
               </div>
-              <div className="min-h-(--portrait-size) flex items-end justify-end">
-                {rightPortrait && (
-                  isPipRight ? (
+            </div>
+          )}
+
+          {/* Right Portrait (attached to right edge of the dialogue box) */}
+          {isDialogueActive && transitionPhase === 'idle' && rightPortrait && (
+            <div
+              className="absolute bottom-0 right-0 z-20 pointer-events-none"
+              style={{ transform: 'translateX(70%) translateY(-7rem)' }}
+            >
+              <div className="relative">
+                {isPipRight ? (
+                  <>
                     <PipImage
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
                       extraFilter={rightPortraitFilter}
                       style={{ transform: 'scaleX(-1)' }}
                     />
-                  ) : (
+                    <div className="absolute inset-x-30 bottom-0 h-1/5 bg-linear-to-t from-black/40 to-transparent pointer-events-none rounded-b-3xl" />
+                  </>
+                ) : (
+                  <>
                     <img
                       src={rightPortrait}
                       alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
                       style={{ filter: rightPortraitFilter, transform: 'scaleX(-1)' }}
                     />
-                  )
+                    <div className="absolute inset-x-0 bottom-0 h-1/5 bg-linear-to-t from-primary/40 to-transparent pointer-events-none rounded-b-3xl" />
+                  </>
                 )}
               </div>
             </div>
           )}
-          <DialogueBox
-            dialogue={currentDialogue}
-            onAdvance={handleAdvance}
-            onSelectOption={handleSelectOption}
-            onGoBack={goBackDialogue}
-            canGoBack={dialogueHistory.length > 0 && !currentDialogue?.location}
-            isVisible={isDialogueActive && transitionPhase === 'idle'}
-          />
+
         </div>
       </div>
     </div>
