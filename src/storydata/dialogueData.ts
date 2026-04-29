@@ -740,6 +740,10 @@ export const scenario1Dialogue: SceneNode[] = [
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
     speaker: 'Narrator',
     location: 'studyRoom',
+    nextId: 'branch_start',
+  },
+  {
+    id: 'branch_start',
     type: 'branching',
     branchConditions: [
       { nextId: '15participants', condition: (playerChoices) => playerChoices.participantChoice === 15 },
@@ -833,87 +837,125 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'starting',
-    type: 'branching',
-    text: 'Mayra starts the tutorial and follows her plan.', 
+    text: 'Mayra starts the tutorial and follows her plan...',
     speaker: 'Narrator',
     characterRight: 'mayra',
+    nextId: 'branch_overview',
+  },
+  {
+    id: 'branch_overview',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
           const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(1) || choices.includes(3));
+          return choices.length > 0 && choices.includes(1);
         },
         nextId: 'overview',
       },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
-        },
-        nextId: 'doubleintro',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(2);
-        },
-        nextId: 'fail',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(8);
-        },
-        nextId: 'doomed',
-      },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'branch_learning' }, 
     ],
   },
   {
     id: 'overview',
-    type: 'branching',
     text: 'The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.',
     speaker: 'Mayra (in)',
     characterRight: 'mayra',
+    nextId: 'branch_learning',
+  },
+  {
+    id: 'branch_learning',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
           const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+          return choices.length > 0 && choices.includes(3);
+        },
+        nextId: 'learning',
+      },
+      { condition: () => true, nextId: 'branch_use' }, 
+    ],
+  },
+  {
+    id: 'learning',
+    text: 'The students faces lit up when I explained the learning goals. They seem to appreciate the information.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_use',
+  },
+  {
+    id: 'branch_use',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(4);
+        },
+        nextId: 'use',
+      },
+      { condition: () => true, nextId: 'branch_wish' }, 
+    ],
+  },
+  {
+    id: 'use',
+    text: 'The students look up and seem to be really interested in the example use case of the calculations we will use for the exercises later. They are even starting to ask some questions about it.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_wish',
+  },
+  {
+    id: 'branch_wish',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(7);
+        },
+        nextId: 'wish',
+      },
+      { condition: () => true, nextId: 'branch_intro' }, 
+    ]
+  },
+  {
+    id: 'wish',
+    text: 'It seems to really have a positive effect on the students when I asked for their wishes and expectations. They mentioned a few of their worries and I think I can prepare well for my next lessons now.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_intro',
+  },
+  {
+    id: 'branch_intro',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) && choices.includes(6));
         },
         nextId: 'doubleintro',
       },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(2);
-        },
-        nextId: 'fail',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(8);
-        },
-        nextId: 'doomed',
-      },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'branch_fail' }, 
     ],
   },
   {
     id: 'doubleintro',
-    type: 'branching',
     text: 'Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…',
     speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
-    branchConditions: [
+    nextId: 'branch_fail',
+  },
+  {
+    id: 'branch_fail',
+    type: 'branching',
+    branchConditions: [ 
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
@@ -930,22 +972,19 @@ export const scenario1Dialogue: SceneNode[] = [
         },
         nextId: 'doomed',
       },
-      { condition: () => true, nextId: 'path_default' }, // fallback
-    ],
-  },
-  {
-    id: 'doomed',
-    text: 'They don’t look amused at all about my sarcastic joke…',
-    speaker: 'Mayra (in)',
-    characterRight: 'mayraStressed',
-    nextId: 'path_default',
+      { condition: () => true, nextId: 'path_default' },
+    ]
   },
   {
     id: 'fail',
-    type: 'branching',
     text: 'The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.',
     speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
+    nextId: 'branch_faildoomed',
+  },
+  {
+    id: 'branch_faildoomed',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
@@ -955,7 +994,7 @@ export const scenario1Dialogue: SceneNode[] = [
         },
         nextId: 'faildoomed',
       },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'path_default' },
     ],
   },
   {
@@ -972,6 +1011,15 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraWorried',
     nextId: 'path_default',
   },
+  {
+    id: 'doomed',
+    text: 'They don’t look amused at all about my sarcastic joke…',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayraStressed',
+    nextId: 'path_default',
+  },
+
+
   {
     id: 'path_default',
     text: '...',
