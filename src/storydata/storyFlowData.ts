@@ -38,7 +38,7 @@ export const testFlow: StoryFlow = {
       id: 'intro',
       dialogueNodes: startDialogue,
       transitions: [
-        { targetChunkId: 'work_organization'}, 
+        { targetChunkId: 'scenario1'}, 
       ],
     },
 
@@ -50,7 +50,13 @@ export const testFlow: StoryFlow = {
       ],
     },
 
-
+    scenario1: {
+      id: 'scenario1',
+      dialogueNodes: scenario1Dialogue,
+      transitions: [
+        { targetChunkId: 'splitintro' }, 
+      ],
+    },
 
     splitintro: {
       id: 'splitintro',

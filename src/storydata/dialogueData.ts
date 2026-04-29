@@ -145,7 +145,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',  
-    text: 'The low click sounds of keys being tapped fills the space between the professors words.',
+    text: 'The low click sounds of keys being tapped fills the space between the professor’s words.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
@@ -475,6 +475,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'intro_2',
     text: '....Huh.',
     speaker: 'Floating Ball',
+    activeSide: 'left',
     characterLeft: 'pip',
     characterRight: 'mayraShocked',
     nextId: 'intro_3',
@@ -491,6 +492,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'intro_4',
     text: 'No, this is real. I am here to help you. But I have been asleep for a long time, so I am also really surprised to be here.',
     speaker: 'Floating Ball',
+    activeSide: 'left',
     characterLeft: 'pip',
     characterRight: 'mayraStressed',
     nextId: 'intro_5',
@@ -507,6 +509,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'intro_6',
     text: 'Pffft, how can you talk? You can talk too, can’t you? That’s just how it is.',
     speaker: 'Floating Ball',
+    activeSide: 'left',
     characterLeft: 'pip',
     characterRight: 'mayraThinking',
     nextId: 'intro_7',
@@ -515,6 +518,7 @@ export const pipIntroDialogue: SceneNode[] = [
     id: 'intro_7',
     text: 'I am Pip. You can think of me as the manifestation of learning and reflection.',
     speaker: 'Floating Ball',
+    activeSide: 'left',
     characterLeft: 'pip',
     characterRight: 'mayraThinking',
     nextId: 'intro_8',
@@ -736,6 +740,10 @@ export const scenario1Dialogue: SceneNode[] = [
     text: 'Mayra enters the classroom for her first tutorial session. The students are already seated and looking at their exercise sheets.',
     speaker: 'Narrator',
     location: 'studyRoom',
+    nextId: 'branch_start',
+  },
+  {
+    id: 'branch_start',
     type: 'branching',
     branchConditions: [
       { nextId: '15participants', condition: (playerChoices) => playerChoices.participantChoice === 15 },
@@ -829,87 +837,125 @@ export const scenario1Dialogue: SceneNode[] = [
   },
   {
     id: 'starting',
-    type: 'branching',
-    text: 'Mayra starts the tutorial and follows her plan.', 
+    text: 'Mayra starts the tutorial and follows her plan...',
     speaker: 'Narrator',
     characterRight: 'mayra',
+    nextId: 'branch_overview',
+  },
+  {
+    id: 'branch_overview',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
           const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(1) || choices.includes(3));
+          return choices.length > 0 && choices.includes(1);
         },
         nextId: 'overview',
       },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
-        },
-        nextId: 'doubleintro',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(2);
-        },
-        nextId: 'fail',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(8);
-        },
-        nextId: 'doomed',
-      },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'branch_learning' }, 
     ],
   },
   {
     id: 'overview',
-    type: 'branching',
     text: 'The students seem to be happy about the overview of the content. They noted down a lot and looked very interested.',
     speaker: 'Mayra (in)',
     characterRight: 'mayra',
+    nextId: 'branch_learning',
+  },
+  {
+    id: 'branch_learning',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
           const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && (choices.includes(5) || choices.includes(6));
+          return choices.length > 0 && choices.includes(3);
+        },
+        nextId: 'learning',
+      },
+      { condition: () => true, nextId: 'branch_use' }, 
+    ],
+  },
+  {
+    id: 'learning',
+    text: 'The students faces lit up when I explained the learning goals. They seem to appreciate the information.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_use',
+  },
+  {
+    id: 'branch_use',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(4);
+        },
+        nextId: 'use',
+      },
+      { condition: () => true, nextId: 'branch_wish' }, 
+    ],
+  },
+  {
+    id: 'use',
+    text: 'The students look up and seem to be really interested in the example use case of the calculations we will use for the exercises later. They are even starting to ask some questions about it.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_wish',
+  },
+  {
+    id: 'branch_wish',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && choices.includes(7);
+        },
+        nextId: 'wish',
+      },
+      { condition: () => true, nextId: 'branch_intro' }, 
+    ]
+  },
+  {
+    id: 'wish',
+    text: 'It seems to really have a positive effect on the students when I asked for their wishes and expectations. They mentioned a few of their worries and I think I can prepare well for my next lessons now.',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayra',
+    nextId: 'branch_intro',
+  },
+  {
+    id: 'branch_intro',
+    type: 'branching',
+    branchConditions: [
+      { 
+        condition: (playerChoices) => {
+          const choicesStr = playerChoices.sortingGameChoices as string || '';
+          const choices = choicesStr.split(',').map(Number);
+          return choices.length > 0 && (choices.includes(5) && choices.includes(6));
         },
         nextId: 'doubleintro',
       },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(2);
-        },
-        nextId: 'fail',
-      },
-      { 
-        condition: (playerChoices) => {
-          const choicesStr = playerChoices.sortingGameChoices as string || '';
-          const choices = choicesStr.split(',').map(Number);
-          return choices.length > 0 && choices.includes(8);
-        },
-        nextId: 'doomed',
-      },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'branch_fail' }, 
     ],
   },
   {
     id: 'doubleintro',
-    type: 'branching',
     text: 'Two introduction rounds might have been a bit much… The students look a bit irritated. And I am running out of time…',
     speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
-    branchConditions: [
+    nextId: 'branch_fail',
+  },
+  {
+    id: 'branch_fail',
+    type: 'branching',
+    branchConditions: [ 
       { 
         condition: (playerChoices) => {
           const choicesStr = playerChoices.sortingGameChoices as string || '';
@@ -926,22 +972,19 @@ export const scenario1Dialogue: SceneNode[] = [
         },
         nextId: 'doomed',
       },
-      { condition: () => true, nextId: 'path_default' }, // fallback
-    ],
-  },
-  {
-    id: 'doomed',
-    text: 'They don’t look amused at all about my sarcastic joke…',
-    speaker: 'Mayra (in)',
-    characterRight: 'mayraStressed',
-    nextId: 'path_default',
+      { condition: () => true, nextId: 'path_default' },
+    ]
   },
   {
     id: 'fail',
-    type: 'branching',
     text: 'The students don’t look so motivated since I told them about the possibility of failing… They look rather worried and stressed.',
     speaker: 'Mayra (in)',
     characterRight: 'mayraStressed',
+    nextId: 'branch_faildoomed',
+  },
+  {
+    id: 'branch_faildoomed',
+    type: 'branching',
     branchConditions: [
       { 
         condition: (playerChoices) => {
@@ -951,7 +994,7 @@ export const scenario1Dialogue: SceneNode[] = [
         },
         nextId: 'faildoomed',
       },
-      { condition: () => true, nextId: 'path_default' }, // fallback
+      { condition: () => true, nextId: 'path_default' },
     ],
   },
   {
@@ -968,6 +1011,15 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraWorried',
     nextId: 'path_default',
   },
+  {
+    id: 'doomed',
+    text: 'They don’t look amused at all about my sarcastic joke…',
+    speaker: 'Mayra (in)',
+    characterRight: 'mayraStressed',
+    nextId: 'path_default',
+  },
+
+
   {
     id: 'path_default',
     text: '...',
@@ -1061,7 +1113,7 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_3',
-    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me there thoughts?',
+    text: 'Oh Pip, what was that thing at the end? You can also communicate with other students and tutors? And tell me their thoughts?',
     speaker: 'Mayra',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1557,7 +1609,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'choice_step_1',
     text: 'Hmmm, maybe like this?',
-    speaker: 'Mayra',
+    speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noahThinking',
     nextId: 'choice_step_2',
@@ -1686,7 +1738,7 @@ export const scenarioSandwichDialogue: SceneNode[] = [ // Dialogue data for scen
   {
     id: 'solution_4',
     text: 'Yes, sure, thank you! What about the other exercises??',
-    speaker: 'Mayra',
+    speaker: 'Noah',
     characterRight: 'mayra',
     characterLeft: 'noah',
     nextId: 'solution_5',

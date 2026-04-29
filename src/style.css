@@ -176,6 +176,8 @@
   /* Character portraits */
   --portrait-size:    clamp(220px, min(36vh, 26vw), 760px);
   --pip-cutscene-size: clamp(170px, min(20vw, 30vh), 430px);
+  /* How much portrait width overlaps the dialogue box */
+  --portrait-overlap: calc(var(--portrait-size) * 0.25);
 
   /* Text sizes */
   --text-body:        clamp(1rem, 1vw, 1.8rem);

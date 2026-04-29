@@ -79,7 +79,6 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
               initial={{ scale: 0.8, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 20, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()} // Prevent clicks on the paper from closing it
             >
               <h2 className="[font-size:var(--title-size)] font-bold mb-4 border-b border-black pb-2">{activePaper.title}</h2>
               <p className="font-serif [font-size:var(--title-size)] leading-relaxed">{renderPaperText(activePaper.text)}</p>
@@ -88,7 +87,7 @@ export const PaperTableGame: React.FC<PaperTableGameProps> = ({ onComplete, pape
                 className="mt-auto self-end text-sm text-gray-600 hover:text-black"
                 onClick={() => setActivePaperId(null)}
               >
-                (Click outside to put down)
+                (Click to put down)
               </button>
             </motion.div>
           </motion.div>

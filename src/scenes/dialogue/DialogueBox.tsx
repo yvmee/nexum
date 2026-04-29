@@ -29,7 +29,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   const hasOptions = dialogue.options && dialogue.options.length > 0;
   const isInnerMonologue = dialogue.speaker === 'Mayra (in)'
     && typeof dialogue.text === 'string';
-  const speakerLabel = isInnerMonologue ? 'Mayra' : dialogue.speaker;
+  const speakerLabel = isInnerMonologue ? 'Mayra (to herself)' : dialogue.speaker;
 
   return (
     <div
@@ -40,12 +40,12 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
     >
       {/* Speaker Name (hide for Narrator and change for Mayra (in)) */}
       {dialogue.speaker && dialogue.speaker !== 'Narrator' && (
-        <div className="flex text-primary [font-size:var(--text-speaker)] font-semibold">
+        <div className="flex text-primary [font-size:var(--text-speaker)] font-semibold" style={{ paddingLeft: 'var(--portrait-overlap)', paddingRight: 'var(--portrait-overlap)' }}>
           {speakerLabel}
         </div>
       )}
       {/* Dialogue Text (italic for Narrator / inner monologue) */}
-      <div className={`flex [font-size:var(--text-body)] leading-relaxed px-(--inner-px) font-medium ${dialogue.speaker === 'Narrator' || isInnerMonologue ? 'italic' : ''} ${isInnerMonologue ? 'text-foreground/90' : ''}`}>
+      <div className={`flex [font-size:var(--text-body)] leading-relaxed px-(--inner-px) font-medium ${dialogue.speaker === 'Narrator' || isInnerMonologue ? 'italic' : ''} ${isInnerMonologue ? 'text-foreground/90' : ''}`} style={{ paddingLeft: 'var(--portrait-overlap)', paddingRight: 'var(--portrait-overlap)' }}>
         {dialogue.text}
       </div>
 
