@@ -29,7 +29,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   const hasOptions = dialogue.options && dialogue.options.length > 0;
   const isInnerMonologue = dialogue.speaker === 'Mayra (in)'
     && typeof dialogue.text === 'string';
-  const speakerLabel = isInnerMonologue ? 'Mayra' : dialogue.speaker;
+  const speakerLabel = isInnerMonologue ? 'Mayra (to herself)' : dialogue.speaker;
 
   return (
     <div
