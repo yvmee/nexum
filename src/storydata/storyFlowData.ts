@@ -38,7 +38,7 @@ export const testFlow: StoryFlow = {
       id: 'intro',
       dialogueNodes: startDialogue,
       transitions: [
-        { targetChunkId: 'scenario1'}, 
+        { targetChunkId: 'outro'}, 
       ],
     },
 
@@ -137,6 +137,11 @@ export const testFlow: StoryFlow = {
         { targetChunkId: 'coffeeDialogue' }, 
       ],
     },
+
+    outro: {
+      id: 'outro',
+      dialogueNodes: endDialogue,
+    }
   }
 }
 

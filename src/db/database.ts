@@ -342,7 +342,7 @@ export const loadReflectionTableData = async (): Promise<ReflectionData[] | null
  * Upload evaluation survey data to the 'evaluation' table in Supabase
  * @param evaluation The completed evaluation data
  */
-export const uploadEvaluation = async (evaluation: import('../pages/Evaluation').EvaluationData): Promise<void> => {
+export const uploadEvaluation = async (evaluation: import('../pages/Evaluation').EvaluationData, playtime?: number | null): Promise<void> => {
   const userId = await getOrCreateUser();
 
   if (!userId) {
@@ -389,6 +389,8 @@ export const uploadEvaluation = async (evaluation: import('../pages/Evaluation')
       missing: sanitizeInput(evaluation.missing),
       mostEssential: sanitizeInput(evaluation.most_essential),
       otherComments: evaluation.other_comments ? sanitizeInput(evaluation.other_comments) : null,
+      // Playtime in seconds
+      playtime: playtime ?? null,
     });
 
   if (error) {

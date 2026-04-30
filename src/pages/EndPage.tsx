@@ -24,10 +24,6 @@ export const EndPage: React.FC = () => {
       void navigate('/game');
     }
 
-    const handleGoToEvaluation = (): void => {
-      void navigate('/evaluation');
-    };
-
   return (
     <div className="w-full h-full">
       {/* Background Layer */}
@@ -38,7 +34,7 @@ export const EndPage: React.FC = () => {
           className="w-full h-full object-cover transition-transform duration-[10s] ease-in-out hover:scale-105"
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/80"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-black/80"></div>
       </div>
 
       {/* Content Layer */}
@@ -52,17 +48,6 @@ export const EndPage: React.FC = () => {
 
         {/* Buttons*/}
         <div className="flex flex-col items-center justify-center gap-4 mb-20 pointer-events-auto">
-            <button className="
-                group relative overflow-hidden rounded-full
-                backdrop-blur-md bg-white/10 border border-white/30 
-                text-(--menu-btn-text) text-xl font-bold uppercase tracking-widest
-                py-(--menu-btn-py) px-(--menu-btn-px) cursor-pointer
-                transition-all duration-300 ease-out
-                hover:bg-white/20 hover:border-white/60 hover:scale-105
-                hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
-            " onClick={withClickSound(handleGoToEvaluation)}>
-                Go to Evaluation
-            </button>
             <button className="
                 group relative overflow-hidden rounded-full
                 backdrop-blur-md bg-white/10 border border-white/30 
