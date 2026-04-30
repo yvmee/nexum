@@ -7,7 +7,7 @@ import { useSoundStore, withClickSound } from '../store/useSoundStore';
 const background = SchoolBackground;
 
 /**
- * End page component stand-in
+ * End page component
  */
 export const EndPage: React.FC = () => {
     const navigate = useNavigate();
@@ -23,6 +23,10 @@ export const EndPage: React.FC = () => {
       useGameStore.getState().startGame(); 
       void navigate('/game');
     }
+
+    const handleGoToEvaluation = (): void => {
+      void navigate('/evaluation');
+    };
 
   return (
     <div className="w-full h-full">
@@ -47,7 +51,18 @@ export const EndPage: React.FC = () => {
         </div>
 
         {/* Buttons*/}
-        <div className="flex flex-col items-center justify-center mb-20 pointer-events-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mb-20 pointer-events-auto">
+            <button className="
+                group relative overflow-hidden rounded-full
+                backdrop-blur-md bg-white/10 border border-white/30 
+                text-(--menu-btn-text) text-xl font-bold uppercase tracking-widest
+                py-(--menu-btn-py) px-(--menu-btn-px) cursor-pointer
+                transition-all duration-300 ease-out
+                hover:bg-white/20 hover:border-white/60 hover:scale-105
+                hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
+            " onClick={withClickSound(handleGoToEvaluation)}>
+                Go to Evaluation
+            </button>
             <button className="
                 group relative overflow-hidden rounded-full
                 backdrop-blur-md bg-white/10 border border-white/30 
