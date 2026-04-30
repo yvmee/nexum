@@ -71,6 +71,10 @@ interface GameManagerState {
   dialogueHistory: string[];
   historyLength: number;
 
+  // Playtime tracking
+  playStartTime: number | null;
+  playtime: number | null;
+
   // Actions to manage game flow
   startGame: () => void;
   setScene: (scene: Scene) => void;
@@ -134,6 +138,10 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentReflectionNodeId: null,
   gameState: 'PLAYING',
 
+  // Playtime tracking
+  playStartTime: null,
+  playtime: null,
+
   // Pip color
   pipColorValue: 0,
   reflectionInputScores: [],
@@ -169,6 +177,8 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         reflectionAnswers: {},
         sortingGameChoices: [],
         dialogueHistory: [],
+        playStartTime: Date.now(),
+        playtime: null,
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
@@ -328,8 +338,9 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
-      set({ currentScene: 'END' });
-      set({ gameState: 'END' });
+      const startTime = get().playStartTime;
+      const playtime = startTime != null ? Math.round((Date.now() - startTime) / 1000) : null;
+      set({ currentScene: 'END', gameState: 'END', playtime });
     }
   },
 
@@ -353,8 +364,9 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
-      set({ currentScene: 'END' });
-      set({ gameState: 'END' });
+      const startTime = get().playStartTime;
+      const playtime = startTime != null ? Math.round((Date.now() - startTime) / 1000) : null;
+      set({ currentScene: 'END', gameState: 'END', playtime });
     }
   },
 }), { // persist gameStore so refreshing doesn't lose progress
@@ -375,6 +387,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     pipColorValue: state.pipColorValue,
     sortingGameChoices: state.sortingGameChoices,
     dialogueHistory: state.dialogueHistory,
+    playtime: state.playtime,
   }),
   onRehydrateStorage: () => (state) => {
     if (!state?.currentChunkId) return;

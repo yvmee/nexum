@@ -41,7 +41,7 @@ export const Menu: React.FC = () => {
           className="w-full h-full object-cover transition-transform duration-[10s] ease-in-out hover:scale-105"
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/80"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-black/80"></div>
       </div>
 
       {/* Content Layer */}

@@ -38,7 +38,7 @@ export const testFlow: StoryFlow = {
       id: 'intro',
       dialogueNodes: startDialogue,
       transitions: [
-        { targetChunkId: 'scenario1'}, 
+        { targetChunkId: 'outro'}, 
       ],
     },
 
@@ -137,6 +137,11 @@ export const testFlow: StoryFlow = {
         { targetChunkId: 'coffeeDialogue' }, 
       ],
     },
+
+    outro: {
+      id: 'outro',
+      dialogueNodes: endDialogue,
+    }
   }
 }
 
@@ -233,7 +238,6 @@ export const gameFlow: StoryFlow = {
       ],
     },
     
-
     preparationDialogue: {
       id: 'preparationDialogue',
       dialogueNodes: preparationDialogue,
@@ -324,15 +328,18 @@ export const gameFlow: StoryFlow = {
       ],
     },
 
+    badEnding: {
+      id: 'badEnding',
+      dialogueNodes: badEndingDialogue,
+      transitions: [
+        { targetChunkId: 'end' },
+      ],
+    },
+
     end: {
       id: 'end',
       startingNodeId: 'endnote', // 'start' override
       dialogueNodes: endDialogue, 
-    },
-
-    badEnding: {
-      id: 'badEnding',
-      dialogueNodes: badEndingDialogue,
     },
 
   },

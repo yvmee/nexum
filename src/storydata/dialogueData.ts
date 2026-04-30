@@ -68,7 +68,7 @@ export const locations: Record<string, location> = {
   },
 }
 
-// start and end dialogue for prototyping
+// start and end dialogue for framing
 
 export const startDialogue: SceneNode[] = [
   {
@@ -80,15 +80,14 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',
-    text: 'In this first prototype, you will follow Mayra, a new student tutor, as she navigates her days at the university.',
+    text: 'In this demo, you will follow Mayra, a new student tutor, as she navigates her days at the university.',
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
   {
     id: 'intro_1',
-    text: 'Help her through the semester and enjoy your journey!',
+    text: 'Completing this game demo will take approximately 20 minutes. Afterwards there is a short survey about your experience. Help Mayra through the semester and enjoy your journey!',
     speaker: 'Narrator',
-
   },
   {
     id: 'cutscene_1',
@@ -118,9 +117,15 @@ export const startDialogue: SceneNode[] = [
 export const endDialogue: SceneNode[] = [
   {
     id: 'end',
-    text: 'Your journey has only just begun. Thanks for playing the Nexum prototype!',
+    text: 'Thank you for playing the Nexum demo!',
     speaker: 'Narrator',
     location: 'hallway',
+    nextId: 'end_1',
+  },
+  {
+    id: 'end_1',
+    text: 'You will now be redirected to a short anonymous survey about your experience. Your feedback is very valuable to us!',
+    speaker: 'Narrator',
   }
 ]
 

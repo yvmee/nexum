@@ -337,3 +337,66 @@ export const loadReflectionTableData = async (): Promise<ReflectionData[] | null
   console.log('Done loading data'); 
   return data as ReflectionData[];
 }
+
+/**
+ * Upload evaluation survey data to the 'evaluation' table in Supabase
+ * @param evaluation The completed evaluation data
+ */
+export const uploadEvaluation = async (evaluation: import('../pages/Evaluation').EvaluationData, playtime?: number | null): Promise<void> => {
+  const userId = await getOrCreateUser();
+
+  if (!userId) {
+    throw new Error('Could not create or retrieve user.');
+  }
+
+  // Sanitize text inputs and save to database
+  const { error } = await (supabase as any)
+    .from('evaluation')
+    .insert({
+      user_id: userId,
+      // Demographics
+      age: parseInt(evaluation.age) || null,
+      gender: evaluation.gender,
+      study: sanitizeInput(evaluation.study),
+      gamingExperience: evaluation.gamingExperience,
+      tutorialVisited: evaluation.tutorialVisited,
+      tutorialHeld: evaluation.tutorialHeld,
+      exerciseHeld: evaluation.exerciseHeld,
+      // Likert pre/post pairs
+      uncomfortableBefore: evaluation.uncomfortable_before,
+      uncomfortableAfter: evaluation.uncomfortable_after,
+      worriedTutorBefore: evaluation.worried_tutor_before,
+      worriedTutorAfter: evaluation.worried_tutor_after,
+      betterPreparedBefore: evaluation.better_prepared_before,
+      betterPreparedAfter: evaluation.better_prepared_after,
+      rapportWorryBefore: evaluation.rapport_worry_before,
+      rapportWorryAfter: evaluation.rapport_worry_after,
+      keepInterestedBefore: evaluation.keep_interested_before,
+      keepInterestedAfter: evaluation.keep_interested_after,
+      presentInfoBefore: evaluation.present_info_before,
+      presentInfoAfter: evaluation.present_info_after,
+      // Likert game experience
+      scenariosBetterSense: evaluation.scenarios_better_sense,
+      scenariosTooDifferent: evaluation.scenarios_too_different,
+      reflectionHelped: evaluation.reflection_helped,
+      reflectionDifficultConnect: evaluation.reflection_difficult_connect,
+      othersPerspectives: evaluation.others_perspectives,
+      ownContributionMeaningful: evaluation.own_contribution_meaningful,
+      moreConfident: evaluation.more_confident,
+      noChange: evaluation.no_change,
+      // Open questions
+      mostRelevant: sanitizeInput(evaluation.most_relevant),
+      missing: sanitizeInput(evaluation.missing),
+      mostEssential: sanitizeInput(evaluation.most_essential),
+      otherComments: evaluation.other_comments ? sanitizeInput(evaluation.other_comments) : null,
+      // Playtime in seconds
+      playtime: playtime ?? null,
+    });
+
+  if (error) {
+    console.error('Error saving evaluation:', error);
+    throw error;
+  }
+
+  console.log('Evaluation saved successfully!');
+};
