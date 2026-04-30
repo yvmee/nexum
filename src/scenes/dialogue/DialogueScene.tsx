@@ -183,7 +183,7 @@ export const DialogueScene: React.FC = () => {
                       className={leftPortraitClass}
                       style={{ filter: leftPortraitFilter }}
                     />
-                    <div className="absolute inset-x-0 bottom-0 h-1/5 bg-linear-to-t from-black/40 to-transparent pointer-events-none rounded-b-3xl" />
+                    <div className="absolute inset-x-0 bottom-0 h-1/5 bg-linear-to-t from-primary/40 to-transparent pointer-events-none rounded-b-3xl" />
                   </>
                 )}
               </div>
@@ -205,7 +205,7 @@ export const DialogueScene: React.FC = () => {
                       extraFilter={rightPortraitFilter}
                       style={{ transform: 'scaleX(-1)' }}
                     />
-                    <div className="absolute inset-x-30 bottom-0 h-1/5 bg-linear-to-t from-black/40 to-transparent pointer-events-none rounded-b-3xl" />
+                    <div className="absolute inset-x-30 bottom-0 h-1/5 bg-linear-to-t from-primary/40 to-transparent pointer-events-none rounded-b-3xl" />
                   </>
                 ) : (
                   <>
