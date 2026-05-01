@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import * as motion from "motion/react-client"
-import clockImage from '../../../assets/props/Clock.png';
+import clockImage from '../../../assets/props/ClockDots.png';
 
 interface ClockSceneProps {
   onComplete: () => void;
@@ -10,6 +10,7 @@ const CLOCK_SIZE = 300;
 const HAND_WIDTH = 6;
 const HAND_LENGTH = CLOCK_SIZE * 0.33;
 const ANIMATION_DURATION = 3; // seconds for one full rotation
+const CLOCK_COLOR = '#413106'; //'#6B500A'
 
 export const ClockScene: React.FC<ClockSceneProps> = ({ onComplete }) => {
 
@@ -42,7 +43,7 @@ export const ClockScene: React.FC<ClockSceneProps> = ({ onComplete }) => {
             bottom: '50%',
             width: HAND_WIDTH,
             height: HAND_LENGTH,
-            backgroundColor: '#111',
+            backgroundColor: CLOCK_COLOR,
             borderRadius: '3px 3px 0 0',
             transformOrigin: 'bottom center',
           }}
