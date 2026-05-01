@@ -86,7 +86,7 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'intro_1',
-    text: 'Completing this game demo will take approximately 20 minutes. Afterwards there is a short survey about your experience. Help Mayra through the semester and enjoy your journey!',
+    text: 'Help Mayra through the semester and enjoy your journey!',
     speaker: 'Narrator',
   },
   {
