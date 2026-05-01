@@ -54,7 +54,7 @@ export const Menu: React.FC = () => {
           </h1>
           {/* Optional sub-title or version number to make it look more official */}
           <span className="text-white/70 tracking-widest text-sm uppercase font-semibold">
-            A teaching onboarding experience
+            A teaching onboarding game
           </span>
         </div>
 
@@ -70,7 +70,7 @@ export const Menu: React.FC = () => {
                     hover:bg-white/20 hover:border-white/60 hover:scale-105
                     hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
                 " onClick={withClickSound(handleStartGame)}>
-                Start Game
+                Start Game Survey
             </button>
         </div>
       </div>
