@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
 import { backgrounds, characters } from '../storydata/assetData';
 import { preloadImage } from '../lib/preloadImage';
+import { ConsentForm } from '../components/ConsentForm';
 
 const background = SchoolBackground;
 
@@ -14,6 +15,7 @@ const background = SchoolBackground;
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
     const stopBgm = useSoundStore((state) => state.stopBgm);
+    const [showConsent, setShowConsent] = useState(false);
 
     useEffect(() => {
         stopBgm();
@@ -69,11 +71,19 @@ export const Menu: React.FC = () => {
                     transition-all duration-300 ease-out
                     hover:bg-white/20 hover:border-white/60 hover:scale-105
                     hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
-                " onClick={withClickSound(handleStartGame)}>
-                Start Game Survey
+                " onClick={withClickSound(() => setShowConsent(true))}>
+                Start
             </button>
         </div>
       </div>
+
+      {/* Consent Form Overlay */}
+      {showConsent && (
+        <ConsentForm
+          onConsent={handleStartGame}
+          onCancel={() => setShowConsent(false)}
+        />
+      )}
     </div>
   );
 };

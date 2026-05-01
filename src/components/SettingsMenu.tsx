@@ -92,7 +92,7 @@ export const SettingsMenu: React.FC = () => {
                 End Page
               </button>
               <button
-                onClick={withClickSound(handleEndPage)}
+                onClick={withClickSound(handleEvaluation)}
                 className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
               >
                 Evaluation

@@ -514,7 +514,7 @@ export const Evaluation: React.FC = () => {
 
                     <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
                         <LikertRow
-                            label="I found it difficult to connect my answers in the reflection questions to my future role as a tutor."
+                            label="I found it difficult to connect my answers in the reflection questions to the role as a tutor."
                             name="reflection_difficult_connect"
                             value={data.reflection_difficult_connect}
                             onChange={setLikert}
