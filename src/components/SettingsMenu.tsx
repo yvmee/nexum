@@ -21,11 +21,6 @@ export const SettingsMenu: React.FC = () => {
     void navigate('/endpage');
   };
 
-  const handleEvaluationPage = () => {
-    setIsOpen(false);
-    void navigate('/evaluation');
-  };
-
   return (
     <>
       {/* Gear Button */}
@@ -81,21 +76,15 @@ export const SettingsMenu: React.FC = () => {
             <div className="flex flex-col gap-3">
               <button
                 onClick={withClickSound(handleMainMenu)}
-                className="w-full bg-primary text-white font-bold rounded py-2.5 px-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
+                className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
               >
                 Return to Main Menu
               </button>
               <button
                 onClick={withClickSound(handleEndPage)}
-                className="w-full bg-primary text-white font-bold rounded py-2.5 px-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
+                className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
               >
                 End Page
-              </button>
-              <button
-                onClick={withClickSound(handleEvaluationPage)}
-                className="w-full bg-primary text-white font-bold rounded py-2.5 px-4 cursor-pointer transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
-              >
-                Evaluation Page
               </button>
             </div>
           </div>
