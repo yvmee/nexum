@@ -7,9 +7,9 @@ interface ConsentFormProps {
 }
 
 export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel }) => {
-    const [checked, setChecked] = useState({ c1: false, c2: false, c3: false });
+    const [checked, setChecked] = useState({ c1: false, c2: false, c3: false, c4: false });
 
-    const allChecked = checked.c1 && checked.c2 && checked.c3;
+    const allChecked = checked.c1 && checked.c2 && checked.c3 && checked.c4;
 
     const toggle = (key: keyof typeof checked) =>
         setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -53,25 +53,61 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                     </p>
                 </section>
 
+                {/* Section: Asynchronous */}
+                <section className="flex flex-col gap-2">
+                    <h3 className="text-lg font-semibold text-white/90 border-b border-white/20 pb-1">
+                        Asynchronous Game Content
+                    </h3>
+                    <p className="text-sm text-white/80 leading-relaxed">
+                        Part of the game involves responding to discussion prompts, where your text input or selected option 
+                        is saved and displayed to other players in the game. 
+                        This content is stored without your name or any identifying information, 
+                        but it is readable by anyone who plays the game or accesses the game database. 
+                        This data is kept for the game's functionality and is not used for the academic evaluation. 
+                        If you prefer, you may keep your responses general or fictional. 
+                    </p>
+                </section>
+
                 {/* Section: Data & Privacy */}
                 <section className="flex flex-col gap-2">
                     <h3 className="text-lg font-semibold text-white/90 border-b border-white/20 pb-1">
                         Data & Privacy
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
-                        The survey is fully anonymous. Your responses will be used solely for the 
-                        academic evaluation of the Nexum prototype and will not be shared with third parties. 
-                        Survey data is accessible only to the researcher.
-                        Your participation is entirely voluntary. 
+                        The survey answers and total playtime will be saved and are fully anonymous and stored securely. 
+                        This data will be used solely for the academic evaluation 
+                        of the Nexum game demo and will not be shared with third parties. 
+                        Survey data and playtime are accessible only to the researcher.
+                    </p>
+                </section>
+
+                {/* Section: Participation */}
+                <section className="flex flex-col gap-2">
+                    <h3 className="text-lg font-semibold text-white/90 border-b border-white/20 pb-1">
+                        Participation
+                    </h3>
+                    <p className="text-sm text-white/80 leading-relaxed">
+                        Your participation is entirely voluntary.
                         You may withdraw from the study at any time without consequence. 
-                        No data from incomplete sessions will be retained.
+                        Simply closing the browser tab will end your participation.
+                        No survey data from incomplete surveys will be retained.
+                    </p>
+                </section>
+
+                {/* Section: Contact */}
+                <section className="flex flex-col gap-2">
+                    <h3 className="text-lg font-semibold text-white/90 border-b border-white/20 pb-1">
+                        Contact
+                    </h3>
+                    <p className="text-sm text-white/80 leading-relaxed">
+                        If you have any questions about the study or your participation, reach out to <a href="mailto:lara.liebmann@tum.de" className="underline text-white/90">lara.liebmann@tum.de</a>.
                     </p>
                 </section>
 
                 {/* Checkboxes */}
                 <section className="flex flex-col gap-3 pt-2">
                     <h3 className="text-lg font-semibold text-white/90 border-b border-white/20 pb-1">
-                        Please confirm 
+                        Please Confirm 
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
                         By checking all boxes below and clicking "Begin study", you confirm that you have read and understood the information above and agree to participate on these terms.
@@ -81,15 +117,20 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                         {
                             key: 'c1' as const,
                             label:
-                                'I understand the purpose of this study and what my participation involves. I understand that my responses are anonymous and will be used only for academic evaluation of the Nexum demo.',
+                                'I understand the purpose of this study and what my participation involves. I understand that my survey responses and playtime are anonymous and will be used only for academic evaluation of the Nexum game demo.',
                         },
                         {
                             key: 'c2' as const,
                             label:
-                                'I understand that my participation is voluntary and that I may withdraw at any time without consequence.',
+                                'I understand that my text input or selected options during the asynchronous discussion parts of the game will be saved and may be visible to other players. I understand this data is not linked to my name or other identifying information but is readable by others.',
                         },
                         {
                             key: 'c3' as const,
+                            label:
+                                'I understand that my participation is voluntary and that I may withdraw at any time without consequence.',
+                        },
+                        {
+                            key: 'c4' as const,
                             label:
                                 'I confirm that I am 18 years of age or older.',
                         },

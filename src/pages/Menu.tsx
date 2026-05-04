@@ -28,7 +28,6 @@ export const Menu: React.FC = () => {
 
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
-        console.log('Start Game button clicked!');
         useGameStore.getState().startGame(); 
         void navigate('/game');
     }

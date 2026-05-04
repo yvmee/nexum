@@ -14,8 +14,6 @@ export const scoreInput = (input: string): number => {
   if (trimmed.length > 50) score += 1;
   if (trimmed.length > 80) score += 1;
 
-  console.log(`Input length is ${trimmed.length}`);
-
   // Reflective language bonus (very basic heuristics)
   const reflectivePatterns = [
     /\b(because|since|therefore|realized|learned|understand|think|feel|notice|consider)\b/i,
@@ -29,7 +27,7 @@ export const scoreInput = (input: string): number => {
     }
   }
 
-  console.log(`Score for input: ${score}`);
+  //console.log(`Score for input: ${score}`);
 
   return Math.min(score, 5); // Cap at 5 per answer
 }

@@ -189,7 +189,7 @@ export const saveAnswerData = async (inputtext: string, reflectionId?: number, t
   if (error) {
     console.error('Error saving:', error)
   } else {
-    console.log('Answer data saved!')
+    console.log('Answer data saved to database.')
   }
 }
 
@@ -214,7 +214,7 @@ export const saveVoteData = async (votingId: number, optionId: number) => {
   if (error) {
     console.error('Error saving:', error)
   } else {
-    console.log('Vote data saved!')
+    console.log('Vote data saved to database.')
   }
 }
 
@@ -228,10 +228,9 @@ export const loadReflectionAnswerTexts = async (reflectionId?: number): Promise<
   
   if (data) {
     reflectionTexts = data;
-    console.log(`Loaded ${reflectionTexts.length} reflection answers into memory`);
   } else {
     reflectionTexts = [];
-    console.log('No reflection answers found or error loading');
+    console.error('No reflection answers found or error loading.');
   }
   
   return reflectionTexts;
@@ -258,7 +257,7 @@ export const loadAnswerData = async (reflectionId?: number): Promise<ReflectionA
   }
 
   // TypeScript knows 'data' has .score and .game_data
-  console.log('Done loading data from "reflectionanswers"'); 
+  console.log('Successfully loaded data from "reflectionanswers"'); 
   return data as ReflectionAnswerData[];
 }
 
@@ -272,10 +271,9 @@ export const loadReflectionVotes = async (threadId?: number): Promise<Reflection
   
   if (data) {
     reflectionVotes = data;
-    console.log(`Loaded ${reflectionVotes.length} votes into memory`);
   } else {
     reflectionVotes = [];
-    console.log('No reflection votes found or error loading');
+    console.error('No reflection votes found or error loading.');
   }
 
   return reflectionVotes;
@@ -301,8 +299,7 @@ export const loadVoteData = async (threadId?: number): Promise<ReflectionVoteDat
     return null;
   }
 
-  // TypeScript knows 'data' has .score and .game_data
-  console.log('Done loading data from "reflectionvotes"'); 
+  console.log('Successfully loaded data from "reflectionvotes"'); 
   return data as ReflectionVoteData[];
 }
 
@@ -330,11 +327,6 @@ export const loadReflectionTableData = async (): Promise<ReflectionData[] | null
     return null;
   }
 
-  // console.log all text fields of data for debugging
-  console.log('Loaded data:', data?.map(row => row.text));
-
-  // TypeScript knows 'data' has .score and .game_data
-  console.log('Done loading data'); 
   return data as ReflectionData[];
 }
 

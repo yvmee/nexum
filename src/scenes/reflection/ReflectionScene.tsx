@@ -62,7 +62,6 @@ export const ReflectionScene: React.FC = () => {
       try {
         const loadedReflections = await loadReflectionAnswerTexts(session);
         setPreviousReflections(loadedReflections);
-        console.log('Previous reflections loaded:', loadedReflections.length);
 
         const loadedVotes = await loadReflectionVotes();
         // Group votes by votingId, then count per optionId
@@ -73,9 +72,8 @@ export const ReflectionScene: React.FC = () => {
           processed[vote.thread_id][vote.option_id] = (processed[vote.thread_id][vote.option_id] ?? 0) + 1;
         }
         setVotingResults(processed);
-        console.log('Voting results processed:', processed);
       } catch (error) {
-        console.error('Error loading previous reflections:', error);
+        console.error('Error loading previous reflection nodes:', error);
       }
     };
 
@@ -155,7 +153,6 @@ export const ReflectionScene: React.FC = () => {
 
     setUserResponses((prev) => {
       const updated = [...prev, newResponse];
-      console.log('User responses updated:', updated);
       return updated;
     });
 
@@ -164,7 +161,6 @@ export const ReflectionScene: React.FC = () => {
       setIsSubmitting(true);
       try {
         await saveAnswerData(input, session);
-        console.log('User response saved to database');
       } catch (error) {
         console.error('Error saving user response to database:', error);
       } finally {
