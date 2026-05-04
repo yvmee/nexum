@@ -387,19 +387,19 @@ export const Evaluation: React.FC = () => {
                         options={[
                             { value: 'never', label: 'No, never' },
                             { value: 'once', label: 'Yes, at least once' },
-                            { value: 'multiple', label: 'Yes, multiple (3+)' },
+                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
                         ]}
                     />
 
                     <RadioGroup
-                        label="Have you ever held a university tutorial? (one means one tutorial spanning over a semester, not one session) *"
+                        label="Have you ever held a university tutorial accompanying a lecture? *"
                         name="tutorialHeld"
                         value={data.tutorialHeld}
                         onChange={setRadio('tutorialHeld')}
                         options={[
                             { value: 'never', label: 'No, never' },
                             { value: 'one', label: 'Yes, at least one' },
-                            { value: 'multiple', label: 'Yes, multiple (3+)' },
+                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
                         ]}
                     />
 
@@ -411,7 +411,7 @@ export const Evaluation: React.FC = () => {
                         options={[
                             { value: 'never', label: 'No, never' },
                             { value: 'one', label: 'Yes, at least one' },
-                            { value: 'multiple', label: 'Yes, multiple (3+)' },
+                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
                         ]}
                     />
 
