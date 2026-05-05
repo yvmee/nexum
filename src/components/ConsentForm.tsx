@@ -29,7 +29,7 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                         About the Study
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
-                        This study involves playing a game demo for Nexum, a visual novel web game designed as an onboarding experience 
+                        This study involves playing a game demo for <strong>Nexum</strong>, a visual novel web game designed as an onboarding experience 
                         for student tutors and doctoral candidates, and completing a short survey about your experience. 
                         The goal is to evaluate the game's effectiveness and usability. 
                         This study is conducted as part of a master thesis at TUM.
@@ -66,6 +66,11 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                         This data is kept for the game's functionality and is not used for the academic evaluation. 
                         If you prefer, you may keep your responses general or fictional. 
                     </p>
+                    <p className="text-sm text-white/80 leading-relaxed"> 
+                        As your input is visible to others, please handle it <strong>responsibly</strong>. 
+                        Keep your responses respectful and appropriate. 
+                        Discriminatory, insulting, offensive, or otherwise harmful content is not acceptable.
+                    </p>
                 </section>
 
                 {/* Section: Data & Privacy */}
@@ -75,9 +80,11 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
                         The survey answers and total playtime will be saved and are fully anonymous and stored securely. 
+                        Survey data and playtime are accessible only to the researcher.
                         This data will be used solely for the academic evaluation 
                         of the Nexum game demo and will not be shared with third parties. 
-                        Survey data and playtime are accessible only to the researcher.
+                        The data will be analyzed anonymously using descriptive and statistical methods and
+                        used for a master's thesis and potential academic publications.
                     </p>
                 </section>
 

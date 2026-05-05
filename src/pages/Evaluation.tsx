@@ -40,6 +40,9 @@ export interface EvaluationData {
     own_contribution_meaningful: number | null;
     more_confident: number | null;
     no_change: number | null;
+    fun: number | null;
+    easy_navigation: number | null;
+    recommend: number | null;
     // Open questions
     most_relevant: string;
     missing: string;
@@ -59,7 +62,8 @@ const EMPTY: EvaluationData = {
     scenarios_better_sense: null, scenarios_too_different: null,
     reflection_helped: null, reflection_difficult_connect: null,
     others_perspectives: null, own_contribution_meaningful: null,
-    more_confident: null, no_change: null,
+    more_confident: null, no_change: null, fun: null, 
+    easy_navigation: null, recommend: null,
     most_relevant: '', missing: '', most_essential: '', other_comments: '',
 };
 
@@ -82,7 +86,8 @@ function isComplete(d: EvaluationData): boolean {
         'scenarios_better_sense', 'scenarios_too_different',
         'reflection_helped', 'reflection_difficult_connect',
         'others_perspectives', 'own_contribution_meaningful',
-        'more_confident', 'no_change',
+        'more_confident', 'no_change', 
+        'fun', 'easy_navigation', 'recommend',
     ];
     if (requiredLikert.some((k) => d[k] === null)) return false;
 
@@ -131,7 +136,7 @@ interface LikertRowProps {
 
 const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange }) => (
     <div className="mb-5">
-        <p className="text-foreground text-sm mb-3 leading-snug">{label}</p>
+        <p className="text-foreground text-sm mb-3 leading-snug">{label}<span className="text-primary ml-1">*</span></p>
         <div className="flex gap-2 flex-wrap">
             {[1, 2, 3, 4, 5, 6].map((n) => (
                 <label
@@ -280,7 +285,8 @@ export const Evaluation: React.FC = () => {
                         Thank you!
                     </h1>
                     <p className="text-white/70 text-lg max-w-md">
-                        Your responses have been saved. We appreciate your participation.
+                        Your responses have been saved and the survey is completed. 
+                        We appreciate your participation! You may close this window now.
                     </p>
                     <button
                         onClick={withClickSound(handleMenu)}
@@ -551,6 +557,33 @@ export const Evaluation: React.FC = () => {
                             label="I do not see how the game experience will change anything about how I approach my tutoring role."
                             name="no_change"
                             value={data.no_change}
+                            onChange={setLikert}
+                        />
+                    </div>
+
+                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
+                        <LikertRow
+                            label="I had fun playing the game."
+                            name="fun"
+                            value={data.fun}
+                            onChange={setLikert}
+                        />
+                    </div>
+
+                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
+                        <LikertRow
+                            label="I found it easy to navigate the game and understand the controls."
+                            name="easy_navigation"
+                            value={data.easy_navigation}
+                            onChange={setLikert}
+                        />
+                    </div>
+
+                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
+                        <LikertRow
+                            label="I would recommend this game to other tutors or doctoral candidates."
+                            name="recommend"
+                            value={data.recommend}
                             onChange={setLikert}
                         />
                     </div>

@@ -376,6 +376,9 @@ export const uploadEvaluation = async (evaluation: import('../pages/Evaluation')
       ownContributionMeaningful: evaluation.own_contribution_meaningful,
       moreConfident: evaluation.more_confident,
       noChange: evaluation.no_change,
+      fun: evaluation.fun,
+      easyNavigation: evaluation.easy_navigation,
+      recommend: evaluation.recommend,
       // Open questions
       mostRelevant: sanitizeInput(evaluation.most_relevant),
       missing: sanitizeInput(evaluation.missing),
