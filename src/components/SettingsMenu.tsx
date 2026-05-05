@@ -16,16 +16,6 @@ export const SettingsMenu: React.FC = () => {
     void navigate('/');
   };
 
-  const handleEndPage = () => {
-    setIsOpen(false);
-    void navigate('/endpage');
-  };
-
-  const handleEvaluation = () => {
-    setIsOpen(false);
-    void navigate('/evaluation');
-  }
-
   return (
     <>
       {/* Gear Button */}
@@ -84,18 +74,6 @@ export const SettingsMenu: React.FC = () => {
                 className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
               >
                 Return to Main Menu
-              </button>
-              <button
-                onClick={withClickSound(handleEndPage)}
-                className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
-              >
-                End Page
-              </button>
-              <button
-                onClick={withClickSound(handleEvaluation)}
-                className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
-              >
-                Evaluation
               </button>
             </div>
           </div>
