@@ -20,6 +20,11 @@ import boyStudent from "../../assets/characters/GuyPortrait.png";
 import boyStudentWorried from "../../assets/characters/GuyWorriedPortrait.png";
 import professor from "../../assets/characters/ProfessorPortrait.png";
 
+// Props
+import clockDots from "../../assets/props/ClockDots.png";
+import paper from "../../assets/props/Paper.png";
+import tableTop from "../../assets/props/TableTop.png";
+
 
 export const backgrounds = { // Add background assets here
   lecturehall,
@@ -43,6 +48,12 @@ export const characters = { // Add character assets here
   boyStudent,
   boyStudentWorried,
   professor,
+};
+
+export const props = { // Add prop assets here
+  clockDots,
+  paper,
+  tableTop,
 };
 
 // Reduce size of pip's character portrait

@@ -3,7 +3,7 @@ import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
-import { backgrounds, characters } from '../storydata/assetData';
+import { backgrounds, characters, props } from '../storydata/assetData';
 import { preloadImage } from '../lib/preloadImage';
 import { ConsentForm } from '../components/ConsentForm';
 
@@ -23,7 +23,7 @@ export const Menu: React.FC = () => {
 
     useEffect(() => {
         // Preload all game background images imediately
-        [...Object.values(backgrounds), ...Object.values(characters)].forEach(preloadImage);
+        [...Object.values(backgrounds), ...Object.values(characters), ...Object.values(props)].forEach(preloadImage);
     }, []);
 
     // Navigate to GameContainer to start the game
