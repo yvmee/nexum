@@ -14,7 +14,7 @@ import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
-type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
+type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state 
 
 const backupBackground = backgrounds.hallway; // Fallback background 
 
@@ -135,7 +135,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentBackground: backupBackground, // set by chunk or default to intro background
   currentDialogueId: null,
   currentReflectionNodeId: null,
-  gameState: 'PLAYING',
+  gameState: 'IDLE',
 
   // Playtime tracking
   playStartTime: null,
