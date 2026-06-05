@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
 import { backgrounds, characters, props } from '../storydata/assetData';
 import { preloadImage } from '../lib/preloadImage';
-import { ConsentForm } from '../components/ConsentForm';
 
 const background = SchoolBackground;
 
@@ -15,7 +14,6 @@ const background = SchoolBackground;
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
     const stopBgm = useSoundStore((state) => state.stopBgm);
-    const [showConsent, setShowConsent] = useState(false);
 
     useEffect(() => {
         stopBgm();
