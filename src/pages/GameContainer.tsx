@@ -14,8 +14,10 @@ export default function GameContainer() {
   const gameState = useGameStore((state) => state.gameState);
 
   useEffect(() => {
-    if (gameState === 'END') {
-      void navigate('/endpage');
+    if (gameState === 'IDLE') {
+      void navigate('/');
+    } else if (gameState === 'END') {
+      void navigate('/evaluation');
     }
   }, [gameState, navigate]);
 

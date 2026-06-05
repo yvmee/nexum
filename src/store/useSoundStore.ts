@@ -153,8 +153,6 @@ export const useSoundStore = create<SoundState>()(
   playBgm: (track) => { // Smooth fade in/out when switching tracks
     const { currentBgm, bgmVolume } = get();
 
-    console.log(`Playing BGM: ${track}, Current BGM: ${currentBgm}, BGM Volume: ${bgmVolume}`);
-
     // Return if it's already playing
     if (currentBgm === track) return;
 

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
-import { backgrounds, characters } from '../storydata/assetData';
+import { backgrounds, characters, props } from '../storydata/assetData';
 import { preloadImage } from '../lib/preloadImage';
+import { ConsentForm } from '../components/ConsentForm';
 
 const background = SchoolBackground;
 
@@ -14,6 +15,7 @@ const background = SchoolBackground;
 export const Menu: React.FC = () => {
     const navigate = useNavigate();
     const stopBgm = useSoundStore((state) => state.stopBgm);
+    const [showConsent, setShowConsent] = useState(false);
 
     useEffect(() => {
         stopBgm();
@@ -21,12 +23,11 @@ export const Menu: React.FC = () => {
 
     useEffect(() => {
         // Preload all game background images imediately
-        [...Object.values(backgrounds), ...Object.values(characters)].forEach(preloadImage);
+        [...Object.values(backgrounds), ...Object.values(characters), ...Object.values(props)].forEach(preloadImage);
     }, []);
 
     // Navigate to GameContainer to start the game
     const handleStartGame = (): void => {
-        console.log('Start Game button clicked!');
         useGameStore.getState().startGame(); 
         void navigate('/game');
     }
@@ -54,7 +55,7 @@ export const Menu: React.FC = () => {
           </h1>
           {/* Optional sub-title or version number to make it look more official */}
           <span className="text-white/70 tracking-widest text-sm uppercase font-semibold">
-            A teaching onboarding experience
+            A teaching onboarding game
           </span>
         </div>
 
@@ -69,11 +70,19 @@ export const Menu: React.FC = () => {
                     transition-all duration-300 ease-out
                     hover:bg-white/20 hover:border-white/60 hover:scale-105
                     hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
-                " onClick={withClickSound(handleStartGame)}>
-                Start Game
+                " onClick={withClickSound(() => setShowConsent(true))}>
+                Start
             </button>
         </div>
       </div>
+
+      {/* Consent Form Overlay */}
+      {showConsent && (
+        <ConsentForm
+          onConsent={handleStartGame}
+          onCancel={() => setShowConsent(false)}
+        />
+      )}
     </div>
   );
 };

@@ -14,7 +14,7 @@ import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
-type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state (for future use, e.g. pause menu)
+type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state 
 
 const backupBackground = backgrounds.hallway; // Fallback background 
 
@@ -116,7 +116,6 @@ function activateChunk(
     : backupBackground;
   const firstReflectionNodeId = chunk.reflectionNodes?.[0]?.id ?? null;
   applyDialogueAudio(firstNode);
-  console.debug(`Activating chunk with node id:`, firstDialogueId);
   return {
     currentChunkId: chunkId,
     activeDialogues: chunk.dialogueNodes,
@@ -136,7 +135,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   currentBackground: backupBackground, // set by chunk or default to intro background
   currentDialogueId: null,
   currentReflectionNodeId: null,
-  gameState: 'PLAYING',
+  gameState: 'IDLE',
 
   // Playtime tracking
   playStartTime: null,
@@ -167,7 +166,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     const { storyFlow } = get();
     if (storyFlow) {
 
-      console.log('Starting game with story flow:', storyFlow.id);
+      console.log('Starting a new game session with story flow:', storyFlow.id);
       set({
         currentScene: 'STORY',
         gameState: 'PLAYING',
@@ -185,8 +184,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       console.error('No story flow found to start the game!');
       set({ currentScene: 'STORY', startNodeId: 'start', gameState: 'PLAYING' });
     }
-
-    console.log('Game started. Current pip color value:', get().pipColorValue);
   },
 
   // Simple scene switcher for manual overrides
@@ -225,7 +222,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     }
 
     // No next node or target found, complete the chunk
-    console.log('Dialogue sequence completed!');
     completeChunk();
   },
 
@@ -269,14 +265,11 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         return;
       }
     }
-
-    console.log('Reflection sequence completed!');
     completeReflection();
   },
 
   // Save player choice for branching and move the story
   makeChoice: (variableId, value) => set((state) => {
-    console.log('Choice made:', { variableId, value });
     return {
       playerChoices: {
         ...state.playerChoices,
@@ -304,7 +297,6 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
   // Save sorting minigame choices to playerChoices
   submitSortingGame: (ids: number[]) => set((state) => {
-    console.log('sorted ids:', { ids });
     return {
       sortingGameChoices: ids,
       playerChoices: {
@@ -355,15 +347,16 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
       const scoreRatio = totalScore / maxPossible; // 0 to 1
       const colorIncrease = Math.round(scoreRatio * 33); // Up to +33 per reflection because there are currently only 3 reflections
       const newColorValue = Math.min(pipColorValue + colorIncrease, 100);
-      console.log(`Reflection score: ${totalScore}/${maxPossible} (${Math.round(scoreRatio * 100)}%). Color: ${pipColorValue} -> ${newColorValue}`);
+      console.log(`Reflection score: ${totalScore}/${maxPossible} (${Math.round(scoreRatio * 100)}%). Pip's color value: ${pipColorValue} -> ${newColorValue}`);
       set({ pipColorValue: newColorValue, reflectionInputScores: [] });
     }
 
-    console.log('Reflection completed. Evaluating next chunk');
+    console.log('Reflection completed');
     const nextChunkId = evaluateNextChunk(storyFlow, currentChunkId, playerChoices, pipColorValue);
     if (nextChunkId) {
       set(activateChunk(storyFlow, nextChunkId));
     } else {
+      console.log('No next story chunk, ending game.');
       const startTime = get().playStartTime;
       const playtime = startTime != null ? Math.round((Date.now() - startTime) / 1000) : null;
       set({ currentScene: 'END', gameState: 'END', playtime });

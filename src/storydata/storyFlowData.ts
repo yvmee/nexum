@@ -147,7 +147,7 @@ export const testFlow: StoryFlow = {
 
 // Full game story flow
 export const gameFlow: StoryFlow = {
-  id: 'story_flow',
+  id: 'three_scenarios',
   initialChunkId: 'intro',
 
   chunks: {
