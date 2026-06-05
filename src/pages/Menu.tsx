@@ -70,19 +70,11 @@ export const Menu: React.FC = () => {
                     transition-all duration-300 ease-out
                     hover:bg-white/20 hover:border-white/60 hover:scale-105
                     hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]
-                " onClick={withClickSound(() => setShowConsent(true))}>
+                " onClick={withClickSound(handleStartGame)}>
                 Start
             </button>
         </div>
       </div>
-
-      {/* Consent Form Overlay */}
-      {showConsent && (
-        <ConsentForm
-          onConsent={handleStartGame}
-          onCancel={() => setShowConsent(false)}
-        />
-      )}
     </div>
   );
 };
