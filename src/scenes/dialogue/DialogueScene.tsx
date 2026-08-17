@@ -6,6 +6,7 @@ import { MinigameManager } from '../../components/minigames/MinigameManager.tsx'
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
 import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
 import { PipImage } from '../../components/PipImage.tsx';
+import { isDialogueNode, isCutsceneNode, isMinigameNode, isBranchingNode } from '../../storydata/dialogueData.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support
@@ -21,33 +22,35 @@ export const DialogueScene: React.FC = () => {
 
   const currentDialogue = useCurrentDialogue();
 
-  const nodeType = currentDialogue?.type || 'dialogue'; 
-  const isCutsceneActive = currentDialogue !== null && nodeType === 'cutscene';
-  const isMinigameActive = currentDialogue !== null && nodeType === 'minigame';
-  const isDialogueActive = currentDialogue !== null && nodeType === 'dialogue';
+  const dialogueNode = currentDialogue && isDialogueNode(currentDialogue) ? currentDialogue : null;
+  const cutsceneNode = currentDialogue && isCutsceneNode(currentDialogue) ? currentDialogue : null;
+  const minigameNode = currentDialogue && isMinigameNode(currentDialogue) ? currentDialogue : null;
+  const branchingNode = currentDialogue && isBranchingNode(currentDialogue) ? currentDialogue : null;
 
-  const leftPortrait = currentDialogue?.characterLeft
-    ? characters[currentDialogue.characterLeft as keyof typeof characters]
+  const isDialogueActive = dialogueNode !== null;
+
+  const leftPortrait = dialogueNode?.characterLeft
+    ? characters[dialogueNode.characterLeft as keyof typeof characters]
     : undefined;
-  const rightPortrait = currentDialogue?.characterRight
-    ? characters[currentDialogue.characterRight as keyof typeof characters]
+  const rightPortrait = dialogueNode?.characterRight
+    ? characters[dialogueNode.characterRight as keyof typeof characters]
     : undefined;
 
   // Common styles for portraits with drop shadow, mirrored for right portrait
   const portraitImageClass = 'h-(--portrait-size) w-auto object-contain';
   const dropShadowFilter = 'drop-shadow(0 0 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 22px rgba(0, 0, 0, 0.55))';
-  const isPipLeft = currentDialogue?.characterLeft === 'pip';
-  const isPipRight = currentDialogue?.characterRight === 'pip';
+  const isPipLeft = dialogueNode?.characterLeft === 'pip';
+  const isPipRight = dialogueNode?.characterRight === 'pip';
 
   // Determine which side is the active speaker for portrait dimming
   const activeSide = (() => {
-    if (!currentDialogue) return 'both'; // no dialogue
-    if (currentDialogue.activeSide) return currentDialogue.activeSide; // explicit override
-    if (!currentDialogue.speaker || currentDialogue.speaker === 'Narrator') return 'none'; 
-    // Infer active side based on speaker 
-    const speakerKey = currentDialogue.speaker.toLowerCase();
-    const leftActive = currentDialogue.characterLeft?.toLowerCase().startsWith(speakerKey);
-    const rightActive = currentDialogue.characterRight?.toLowerCase().startsWith(speakerKey);
+    if (!dialogueNode) return 'both'; // no dialogue
+    if (dialogueNode.activeSide) return dialogueNode.activeSide; // explicit override
+    if (!dialogueNode.speaker || dialogueNode.speaker === 'Narrator') return 'none';
+    // Infer active side based on speaker
+    const speakerKey = dialogueNode.speaker.toLowerCase();
+    const leftActive = dialogueNode.characterLeft?.toLowerCase().startsWith(speakerKey);
+    const rightActive = dialogueNode.characterRight?.toLowerCase().startsWith(speakerKey);
     if (leftActive) return 'left';
     if (rightActive) return 'right';
     return 'both';
@@ -57,8 +60,8 @@ export const DialogueScene: React.FC = () => {
   const inactiveFilter = 'grayscale(35%) brightness(0.7)';
   const leftPortraitFilter = (activeSide === 'right' || activeSide === 'none') ? `${inactiveFilter} ${dropShadowFilter}` : dropShadowFilter;
   const rightPortraitFilter = (activeSide === 'left' || activeSide === 'none') ? `${inactiveFilter} ${dropShadowFilter}` : dropShadowFilter;
-  const leftPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterLeft ? characterRenderClasses[currentDialogue.characterLeft as keyof typeof characters] ?? '' : ''}`;
-  const rightPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${currentDialogue?.characterRight ? characterRenderClasses[currentDialogue.characterRight as keyof typeof characters] ?? '' : ''}`;
+  const leftPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${dialogueNode?.characterLeft ? characterRenderClasses[dialogueNode.characterLeft as keyof typeof characters] ?? '' : ''}`;
+  const rightPortraitClass = `${portraitImageClass} transition-[filter] duration-300 ${dialogueNode?.characterRight ? characterRenderClasses[dialogueNode.characterRight as keyof typeof characters] ?? '' : ''}`;
 
   // Background animation state
   const [displayedBackground, setDisplayedBackground] = useState(currentBackground);
@@ -73,13 +76,13 @@ export const DialogueScene: React.FC = () => {
   }, [currentBackground, displayedBackground, transitionPhase]);
 
   useEffect(() => {
-    if (currentDialogue?.type === 'branching' && currentDialogue.branchConditions) {
-      const match = currentDialogue.branchConditions.find(b => b.condition(playerChoices));
+    if (branchingNode) {
+      const match = branchingNode.branchConditions.find(b => b.condition(playerChoices));
       if (match) {
         advanceDialogue(match.nextId);
       }
     }
-  }, [currentDialogue, playerChoices]);
+  }, [branchingNode, playerChoices]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {
@@ -121,19 +124,19 @@ export const DialogueScene: React.FC = () => {
       )}
 
       {/* Cutscene Layer */}
-      {isCutsceneActive && (
+      {cutsceneNode && (
         <div className="absolute inset-0 z-10 pointer-events-auto">
-          <CutsceneManager 
-            node={currentDialogue} 
-            onComplete={handleAdvance} 
+          <CutsceneManager
+            node={cutsceneNode}
+            onComplete={handleAdvance}
           />
         </div>
       )}
 
       {/* Minigame Layer */}
-      {isMinigameActive && (
+      {minigameNode && (
         <div className="absolute inset-0 z-10 pointer-events-auto bg-black/80">
-          <MinigameManager node={currentDialogue} onComplete={handleAdvance} />
+          <MinigameManager node={minigameNode} onComplete={handleAdvance} />
         </div>
       )}
 
@@ -150,7 +153,7 @@ export const DialogueScene: React.FC = () => {
           {/* Dialogue Box */}
           <div className="relative z-10">
             <DialogueBox
-              dialogue={currentDialogue}
+              dialogue={dialogueNode}
               onAdvance={handleAdvance}
               onSelectOption={handleSelectOption}
               onGoBack={goBackDialogue}
@@ -169,7 +172,7 @@ export const DialogueScene: React.FC = () => {
                 {isPipLeft ? (
                   <>
                     <PipImage
-                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      alt={`${dialogueNode?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
                       extraFilter={leftPortraitFilter}
                     />
@@ -179,7 +182,7 @@ export const DialogueScene: React.FC = () => {
                   <>
                     <img
                       src={leftPortrait}
-                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      alt={`${dialogueNode?.speaker ?? 'Character'} portrait`}
                       className={leftPortraitClass}
                       style={{ filter: leftPortraitFilter }}
                     />
@@ -200,7 +203,7 @@ export const DialogueScene: React.FC = () => {
                 {isPipRight ? (
                   <>
                     <PipImage
-                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      alt={`${dialogueNode?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
                       extraFilter={rightPortraitFilter}
                       style={{ transform: 'scaleX(-1)' }}
@@ -211,7 +214,7 @@ export const DialogueScene: React.FC = () => {
                   <>
                     <img
                       src={rightPortrait}
-                      alt={`${currentDialogue?.speaker ?? 'Character'} portrait`}
+                      alt={`${dialogueNode?.speaker ?? 'Character'} portrait`}
                       className={rightPortraitClass}
                       style={{ filter: rightPortraitFilter, transform: 'scaleX(-1)' }}
                     />

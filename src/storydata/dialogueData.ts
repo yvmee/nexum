@@ -9,24 +9,54 @@ export interface DialogueOption {
 }
 
 /**
- * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id; or a cutscene with id
+ * Fields shared by every scene node, regardless of subtype.
  */
-export interface SceneNode {
+interface SceneNodeBase {
   id: string;
   type?: 'dialogue' | 'cutscene' | 'minigame' | 'branching'; // 'dialogue' is default if undefined
-  animationId?: string; // Used if type is 'cutscene'
-  minigameId?: string; // Used if type is 'minigame'
-  text?: string;
-  speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name
-  options?: DialogueOption[]; // If present, show choices (max 3)
-  branchConditions?: BranchCondition[]; // Defines branching based on player choices
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
-  characterLeft?: string; // Optional character key (from assetData.characters) on the left
-  characterRight?: string; // Optional character key (from assetData.characters) on the right
-  activeSide?: 'left' | 'right' | 'both' | 'none'; // Optional override
   location?: string; // Optional location key (from dialogueData.locations) to set background and bgm
   sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
 }
+
+/**
+ * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id
+ */
+export interface DialogueNode extends SceneNodeBase {
+  type?: 'dialogue';
+  text: string; // Dialogue nodes must have text
+  speaker?: string; // Optional speaker name, Narrator makes text italic and hides speaker name; omitted for pure choice prompts
+  options?: DialogueOption[]; // If present, show choices (max 3)
+  characterLeft?: string; // Optional character key (from assetData.characters) on the left
+  characterRight?: string; // Optional character key (from assetData.characters) on the right
+  activeSide?: 'left' | 'right' | 'both' | 'none'; // Optional override
+}
+
+export interface BranchingNode extends SceneNodeBase {
+  type: 'branching';
+  branchConditions: BranchCondition[]; // Defines branching based on player choices
+}
+
+export interface CutsceneNode extends SceneNodeBase {
+  type: 'cutscene';
+  animationId: string; // Required for cutscene nodes
+}
+
+export interface MinigameNode extends SceneNodeBase {
+  type: 'minigame';
+  minigameId: string; // Required for minigame nodes
+}
+
+/**
+ * Union of every concrete scene node subtype.
+ */
+export type SceneNode = DialogueNode | BranchingNode | CutsceneNode | MinigameNode;
+
+export const isDialogueNode = (n: SceneNode): n is DialogueNode =>
+  n.type === undefined || n.type === 'dialogue';
+export const isCutsceneNode = (n: SceneNode): n is CutsceneNode => n.type === 'cutscene';
+export const isMinigameNode = (n: SceneNode): n is MinigameNode => n.type === 'minigame';
+export const isBranchingNode = (n: SceneNode): n is BranchingNode => n.type === 'branching';
 
 export interface location {
   background: string;
@@ -88,6 +118,7 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help Mayra through the semester and enjoy your journey!',
     speaker: 'Narrator',
+    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
