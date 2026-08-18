@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { SceneNode } from '../../storydata/dialogueData';
+import { MinigameNode } from '../../storydata/dialogueData';
 import { PaperTableGame, Paper } from './PaperTableGame';
 import { SortingGame } from './SortingGame';
 import { useGameStore } from '../../store/useGameStore';
 
 interface MinigameProps {
-  node: SceneNode;
+  node: MinigameNode;
   onComplete: () => void;
 }
 
@@ -28,7 +28,7 @@ export const PAPERS_EXEC: Paper[] = [ // Paper text data
 export const MinigameManager: React.FC<MinigameProps> = ({ node, onComplete }) => {
   const submitSortingChoices = useGameStore((state) => state.submitSortingGame);
 
-  const isUnknownMinigame = !['paper_table', 'variant_paper_table', 'sorting_game'].includes(node.minigameId ?? '');
+  const isUnknownMinigame = !['paper_table', 'variant_paper_table', 'sorting_game'].includes(node.minigameId);
 
   useEffect(() => {
     if (isUnknownMinigame) {

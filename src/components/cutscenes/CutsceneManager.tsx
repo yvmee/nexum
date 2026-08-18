@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SceneNode } from '../../storydata/dialogueData';
+import { CutsceneNode } from '../../storydata/dialogueData';
 import { GlowParticleScene } from './GlowParticleScene';
 import { LightFlashScene } from './LightFlashScene';
 import { PipAppearanceScene } from './PipAppearanceScene';
@@ -9,7 +9,7 @@ import { PipLeaveScene } from './PipLeaveScene';
 import { useSoundStore } from '../../store/useSoundStore';
 
 interface CutsceneProps {
-  node: SceneNode;
+  node: CutsceneNode;
   onComplete: () => void;
 }
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { SceneNode } from '../../storydata/dialogueData.ts';
+import { DialogueNode } from '../../storydata/dialogueData.ts';
 import { withClickSound } from '../../store/useSoundStore.ts';
 
 type DialogueBoxProps = {
-  dialogue: SceneNode | null;
+  dialogue: DialogueNode | null;
   onAdvance: () => void;
   onSelectOption: (nextId: string, choice?: Record<string, string | boolean | number>) => void;
   onGoBack?: () => void;

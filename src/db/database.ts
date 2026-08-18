@@ -77,7 +77,7 @@ export const sanitizeInput = (input: string): string => {
   if (!input || typeof input !== 'string') {
     return '';
   }
-  
+
   let result = input
     // Trim whitespace
     .trim()
@@ -112,11 +112,8 @@ export const sanitizeInput = (input: string): string => {
 
   return result
     // Escape special HTML characters
-    .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
     // Remove null bytes
     .replace(/\0/g, '')
     // Limit length to prevent overly long inputs
