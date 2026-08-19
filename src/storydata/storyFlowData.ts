@@ -341,8 +341,20 @@ export const gameFlow: StoryFlow = {
     end: {
       id: 'end',
       startingNodeId: 'endnote', // 'start' override
-      dialogueNodes: endDialogue, 
+      dialogueNodes: endDialogue,
     },
 
   },
+};
+
+// Story path options
+export type StoryPath = 'phd' | 'tutor';
+
+// TODO: write actual storyflows 
+export const phdFlow: StoryFlow = gameFlow;
+export const tutorFlow: StoryFlow = gameFlow;
+
+export const pathFlows: Record<StoryPath, StoryFlow> = {
+  phd: phdFlow,
+  tutor: tutorFlow,
 };

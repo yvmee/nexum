@@ -19,6 +19,7 @@ export const DialogueScene: React.FC = () => {
   const dialogueHistory = useGameStore((state) => state.dialogueHistory);
   const makeChoice = useGameStore((state) => state.makeChoice);
   const playerChoices = useGameStore((state) => state.playerChoices);
+  const openPathSelection = useGameStore((state) => state.openPathSelection);
 
   const currentDialogue = useCurrentDialogue();
 
@@ -83,6 +84,12 @@ export const DialogueScene: React.FC = () => {
       }
     }
   }, [branchingNode, playerChoices]);
+
+  useEffect(() => {
+    if (dialogueNode?.triggersPathSelection) {
+      openPathSelection();
+    }
+  }, [dialogueNode?.id]);
 
   // Advance to the next dialogue for non-branching nodes
   const handleAdvance = (): void => {

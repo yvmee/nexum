@@ -1,4 +1,3 @@
-
 /**
  * Dialogue option for branching choices
  */
@@ -9,7 +8,7 @@ export interface DialogueOption {
 }
 
 /**
- * Fields shared by every scene node, regardless of subtype.
+ * Fields shared by every scene node
  */
 interface SceneNodeBase {
   id: string;
@@ -17,10 +16,11 @@ interface SceneNodeBase {
   nextId?: string; // Define the next dialogue (undefined = end), only used for non-branching dialogue
   location?: string; // Optional location key (from dialogueData.locations) to set background and bgm
   sfx?: string; // Optional SFX key (from useSoundStore SFX) to play when this node becomes active
+  triggersPathSelection?: boolean; // If true, shows the PathSelection overlay when this node becomes active
 }
 
 /**
- * Single dialogue node with text, optional speaker, and optional branching choices or next dialogue id
+ * Dialogue node for displaying dialogue text and options
  */
 export interface DialogueNode extends SceneNodeBase {
   type?: 'dialogue';
@@ -32,23 +32,32 @@ export interface DialogueNode extends SceneNodeBase {
   activeSide?: 'left' | 'right' | 'both' | 'none'; // Optional override
 }
 
+/**
+ * Branching node for story branching
+ */
 export interface BranchingNode extends SceneNodeBase {
   type: 'branching';
   branchConditions: BranchCondition[]; // Defines branching based on player choices
 }
 
+/**
+ * Cutscene node for playing animation by id
+ */
 export interface CutsceneNode extends SceneNodeBase {
   type: 'cutscene';
   animationId: string; // Required for cutscene nodes
 }
 
+/**
+ * Minigame node for starting minigame by id
+ */
 export interface MinigameNode extends SceneNodeBase {
   type: 'minigame';
   minigameId: string; // Required for minigame nodes
 }
 
 /**
- * Union of every concrete scene node subtype.
+ * Union of every concrete scene node subtype
  */
 export type SceneNode = DialogueNode | BranchingNode | CutsceneNode | MinigameNode;
 
@@ -142,7 +151,14 @@ export const startDialogue: SceneNode[] = [
     id: 'cutscene_3',
     text: 'How did it look? Pretty cool, right?',
     speaker: 'Narrator',
+    nextId: 'selection',
   },
+  {
+    id: 'selection',
+    text: 'Select your path.',
+    speaker: 'Narrator',
+    triggersPathSelection: true,
+  }
 ]
 
 export const endDialogue: SceneNode[] = [

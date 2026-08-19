@@ -8,7 +8,7 @@ import {
   evaluateNextChunk,
   chunkHasReflection,
 } from '../storydata/storyFlow';
-import { gameFlow } from '../storydata/storyFlowData';
+import { gameFlow, pathFlows, StoryPath } from '../storydata/storyFlowData';
 import { backgrounds } from '../storydata/assetData';
 import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
@@ -61,6 +61,10 @@ interface GameManagerState {
   activeReflectionNodes: ReflectionNode[];
   session: number; // for db
 
+  // Story path selection (Doctoral Candidate vs Student Tutor)
+  pathSelectionActive: boolean;
+  selectedPath: StoryPath | null;
+
   // Player Data for tracking choices and branching
   playerChoices: Record<string, string | boolean | number>;
   reflectionAnswers: Record<string, string>; // maybe not needed bc db
@@ -84,6 +88,8 @@ interface GameManagerState {
   completeChunk: () => void;
   completeReflection: () => void;
   makeChoice: (variableId: string, value: string | boolean | number) => void;
+  openPathSelection: () => void;
+  selectPath: (path: StoryPath) => void;
   submitReflection: (promptId: string, answer: string) => void;
   evaluateReflectionInput: (input: string) => number;
   submitSortingGame: (ids: number[]) => void;
@@ -152,6 +158,10 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   activeReflectionNodes: [],
   session: 0,
 
+  // Story path selection
+  pathSelectionActive: false,
+  selectedPath: null,
+
   // Dialogue history
   dialogueHistory: [],
   historyLength: 5, 
@@ -178,6 +188,8 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         dialogueHistory: [],
         playStartTime: Date.now(),
         playtime: null,
+        pathSelectionActive: false,
+        selectedPath: null,
         ...activateChunk(storyFlow, storyFlow.initialChunkId),
       });
     } else {
@@ -278,6 +290,24 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     };
   }),
 
+  // Show the path selection overlay
+  openPathSelection: () => set({ pathSelectionActive: true }),
+
+  // Record the chosen path, swap to its story flow, and jump into its first chunk
+  selectPath: (path: StoryPath) => set((state) => {
+    const flow = pathFlows[path];
+    return {
+      playerChoices: {
+        ...state.playerChoices,
+        path,
+      },
+      selectedPath: path,
+      pathSelectionActive: false,
+      storyFlow: flow,
+      ...activateChunk(flow, flow.initialChunkId),
+    };
+  }),
+
   // Save reflection and transition back to dialogue
   submitReflection: (promptId, answer) => set((state) => ({
     reflectionAnswers: {
@@ -375,6 +405,8 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     currentChunkId: state.currentChunkId,
     // activeDialogues excluded since it contains functions that can't be serialized
     // activeReflectionNodes excluded for same reason
+    // storyFlow excluded for same reason; rehydrated from selectedPath below
+    selectedPath: state.selectedPath,
     playerChoices: state.playerChoices,
     reflectionAnswers: state.reflectionAnswers,
     pipColorValue: state.pipColorValue,
@@ -384,7 +416,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   }),
   onRehydrateStorage: () => (state) => {
     if (!state?.currentChunkId) return;
-    const flow = state.storyFlow ?? gameFlow;
+    const flow = (state.selectedPath ? pathFlows[state.selectedPath] : state.storyFlow) ?? gameFlow;
     const chunk = flow?.chunks[state.currentChunkId];
     if (chunk) {
       state.activeDialogues = chunk.dialogueNodes;
