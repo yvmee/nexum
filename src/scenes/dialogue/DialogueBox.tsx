@@ -1,6 +1,7 @@
 import React from 'react';
 import { DialogueNode } from '../../storydata/dialogueData.ts';
 import { withClickSound } from '../../store/useSoundStore.ts';
+import { tutorName } from '../../storydata/dialogueData.ts';
 
 type DialogueBoxProps = {
   dialogue: DialogueNode | null;
@@ -27,9 +28,9 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   }
 
   const hasOptions = dialogue.options && dialogue.options.length > 0;
-  const isInnerMonologue = dialogue.speaker === 'Mayra (in)'
+  const isInnerMonologue = dialogue.speaker === `${tutorName} (in)`
     && typeof dialogue.text === 'string';
-  const speakerLabel = isInnerMonologue ? 'Mayra (to herself)' : dialogue.speaker;
+  const speakerLabel = isInnerMonologue ? `${tutorName} (to herself)` : dialogue.speaker;
 
   return (
     <div

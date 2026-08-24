@@ -2,7 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { withClickSound } from '../store/useSoundStore';
 import { characters } from '../storydata/assetData';
-import { phdName } from '../storydata/dialogueData';
+import { phdName, tutorName } from '../storydata/dialogueData';
 
 /**
  * Overlay shown over running game to select 
@@ -56,7 +56,7 @@ export const PathSelection: React.FC = () => {
             className="h-(--portrait-size) object-contain"
           />
           <span className="text-white uppercase tracking-widest font-bold [font-size:var(--text-label)]">
-            Mayra the student tutor
+            {tutorName} the student tutor
           </span>
         </button>
       </div>
