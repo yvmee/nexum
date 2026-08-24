@@ -20,6 +20,7 @@ import {
   trueEndingDialogue,
   secretEndingDialogue,
   badEndingDialogue,
+  phdIntroDialogue,
 } from './dialogueData';
 import { 
   reflectionDialogue1, 
@@ -147,13 +148,12 @@ export const testFlow: StoryFlow = {
   }
 }
 
-// Full game story flow
+// Full game story flows
+
 export const gameFlow: StoryFlow = {
-  id: 'three_scenarios',
+  id: 'start_flow',
   initialChunkId: 'intro',
-
   chunks: {
-
     intro: {
       id: 'intro',
       dialogueNodes: startDialogue,
@@ -161,6 +161,25 @@ export const gameFlow: StoryFlow = {
         { targetChunkId: 'introMayra' }, 
       ],
     },
+  }
+}
+
+export const phdFlow: StoryFlow = {
+  id: 'phd_scenarios',
+  initialChunkId: 'introPhd',
+  chunks: {
+    introPhd: {
+      id: 'introPhd',
+      dialogueNodes: phdIntroDialogue,
+    }
+  }
+}
+
+export const tutorFlow: StoryFlow = {
+  id: 'tutor_scenarios',
+  initialChunkId: 'introMayra',
+
+  chunks: {
 
     introMayra: {
       id: 'introMayra',
@@ -349,10 +368,6 @@ export const gameFlow: StoryFlow = {
 
 // Story path options
 export type StoryPath = 'phd' | 'tutor';
-
-// TODO: write actual storyflows 
-export const phdFlow: StoryFlow = gameFlow;
-export const tutorFlow: StoryFlow = gameFlow;
 
 export const pathFlows: Record<StoryPath, StoryFlow> = {
   phd: phdFlow,

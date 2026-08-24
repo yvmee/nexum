@@ -2,6 +2,7 @@ import React from 'react';
 import { useGameStore } from '../store/useGameStore';
 import { withClickSound } from '../store/useSoundStore';
 import { characters } from '../storydata/assetData';
+import { phdName } from '../storydata/dialogueData';
 
 /**
  * Overlay shown over running game to select 
@@ -13,7 +14,7 @@ export const PathSelection: React.FC = () => {
   return (
     <div className="absolute inset-0 z-60 flex flex-col items-center justify-center gap-8 p-8 bg-black/50 backdrop-blur-md">
       {/* Prompt */}
-      <h1 className="text-center text-white font-bold [font-size:var(--text-speaker)] tracking-widest drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
+      <h1 className="text-center text-white text-2xl font-bold tracking-widest drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
         Which path will you take?
       </h1>
 
@@ -35,7 +36,7 @@ export const PathSelection: React.FC = () => {
             className="h-(--portrait-size) object-contain"
           />
           <span className="text-white uppercase tracking-widest font-bold [font-size:var(--text-label)]">
-            Doctoral Candidate
+            {phdName} the doctoral candidate
           </span>
         </button>
 
@@ -55,7 +56,7 @@ export const PathSelection: React.FC = () => {
             className="h-(--portrait-size) object-contain"
           />
           <span className="text-white uppercase tracking-widest font-bold [font-size:var(--text-label)]">
-            Student Tutor
+            Mayra the student tutor
           </span>
         </button>
       </div>

@@ -55,6 +55,7 @@ interface GameManagerState {
   reflectionInputScores: number[]; // scores for current reflection section
 
   // Story flow state
+  startFlow: StoryFlow;
   storyFlow: StoryFlow | null;
   currentChunkId: string | null;
   activeDialogues: SceneNode[];
@@ -152,6 +153,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   reflectionInputScores: [],
 
   // Story flow state
+  startFlow: gameFlow,
   storyFlow: gameFlow,
   currentChunkId: null,
   activeDialogues: [],
@@ -173,9 +175,11 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
 
   // Start the game loop by activating the first chunk of the loaded story flow
   startGame: () => {
-    const { storyFlow } = get();
-    if (storyFlow) {
+    
+    // Set storyFlow to the defined startFlow 
+    const storyFlow = get().startFlow;
 
+    if (storyFlow) {
       console.log('Starting a new game session with story flow:', storyFlow.id);
       set({
         currentScene: 'STORY',
@@ -404,8 +408,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     gameState: state.gameState,
     currentChunkId: state.currentChunkId,
     // activeDialogues excluded since it contains functions that can't be serialized
-    // activeReflectionNodes excluded for same reason
-    // storyFlow excluded for same reason; rehydrated from selectedPath below
+    // activeReflectionNodes + storyflow excluded for same reason
     selectedPath: state.selectedPath,
     playerChoices: state.playerChoices,
     reflectionAnswers: state.reflectionAnswers,

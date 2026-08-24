@@ -107,8 +107,12 @@ export const locations: Record<string, location> = {
   },
 }
 
-// start and end dialogue for framing
+/**
+ * Text variables
+ */
+export const phdName = 'Kai';
 
+// start and end dialogue for framing
 export const startDialogue: SceneNode[] = [
   {
     id: 'start',
@@ -119,15 +123,21 @@ export const startDialogue: SceneNode[] = [
   },
   {
     id: 'intro_0',
-    text: 'In this demo, you will follow Mayra, a new student tutor, as she navigates her days at the university.',
+    text: `In this demo, you will either follow Mayra, a new student tutor, as she navigates her days at the university or ${phdName}, a doctoral candidate that just started teaching.`,
     speaker: 'Narrator',
     nextId: 'intro_1',
   },
   {
     id: 'intro_1',
-    text: 'Help Mayra through the semester and enjoy your journey!',
+    text: `Help Mayra and ${phdName} through the semester and enjoy your journey!`,
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
+    nextId: 'intro_2',
+  },
+  {
+    id: 'intro_2',
+    text: 'Now, select the path you want to follow.',
+    speaker: 'Narrator',
+    nextId: 'selection',
   },
   {
     id: 'cutscene_1',
@@ -2479,6 +2489,15 @@ export const secretEndingDialogue: SceneNode[] = [
     type: 'cutscene',
     animationId: 'pip_leave',
   }
+]
+
+
+export const phdIntroDialogue: SceneNode[] = [
+  {
+    id: 'start',
+    text: 'Your phd journey is starting now.',
+    speaker: 'Narrator',
+  },
 ]
 
 // ___________ Dialogue Data End ____________
