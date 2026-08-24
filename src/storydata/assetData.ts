@@ -8,11 +8,15 @@ import cafe from "../../assets/backgrounds/BackgroundCafe.png";
 // Character portraits
 import pip from "../../assets/characters/Sphere.png";
 import mayra from "../../assets/characters/StudentPortrait.png";
-import phd from "../../assets/characters/PhdPortrait.png";
 import mayraShocked from "../../assets/characters/StudentShocked.png";
 import mayraStressed from "../../assets/characters/StudentStressed.png";
 import mayraThinking from "../../assets/characters/StudentThinking.png";
 import mayraWorried from "../../assets/characters/StudentWorried.png";
+import phd from "../../assets/characters/PhdPortrait.png";
+import phdNeutral from "../../assets/characters/PhdNeutral.png";
+import phdThinking from "../../assets/characters/PhdThinking.png";
+import phdWorried from "../../assets/characters/PhdWorried.png";
+import phdShocked from "../../assets/characters/PhdShocked.png";
 import noah from "../../assets/characters/MaleStudent.png";
 import noahThinking from "../../assets/characters/MaleStudentThinking.png";
 import noahSurprised from "../../assets/characters/MaleStudentSurprised.png";
@@ -38,11 +42,15 @@ export const backgrounds = { // Add background assets here
 export const characters = { // Add character assets here
   pip,
   mayra,
-  phd,
   mayraShocked,
   mayraStressed,
   mayraThinking,
   mayraWorried,
+  phd,
+  phdNeutral,
+  phdThinking,
+  phdWorried,
+  phdShocked,
   noah,
   noahThinking,
   noahSurprised,

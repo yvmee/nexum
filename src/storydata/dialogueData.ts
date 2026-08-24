@@ -2498,7 +2498,15 @@ export const phdIntroDialogue: SceneNode[] = [
     id: 'start',
     text: 'Your phd journey is starting now.',
     speaker: 'Narrator',
+    location: 'office',
+    nextId: 'phd_0',
   },
+  {
+    id: 'phd_0',
+    text: `Hello! It is me, ${phdName}. Is someone there?`,
+    speaker: `${phdName}`,
+    characterRight: 'phd',
+  }
 ]
 
 // ___________ Dialogue Data End ____________
