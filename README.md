@@ -1,6 +1,8 @@
-# nexum
+# Nexum
 
 Nexum is educational story-driven browser game prototype built with React 19.2, TypeScript and Tailwind. The goal of the game is to onboard student tutors and doctoral candidates and prepare them for their teaching tasks. It also features a reflection and discussion mechanic based on [Play x Discuss](https://ieeexplore.ieee.org/document/11114385).
+
+<img src="./assets/external/nexumoverview.gif" alt="Scenes from the game">
 
 Play the game here:
 https://yvmee.github.io/nexum/
