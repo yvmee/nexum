@@ -17,8 +17,8 @@ import tutorialSrc from '../../assets/sounds/TutorialSound.mp3';
 const SFX_BASE_VOLUMES: Record<string, number> = {
   click: 1.0,
   typing: 0.8,
-  flash: 0.5,
-  glow: 0.5,
+  flash: 0.4,
+  glow: 0.4,
   energy: 0.7,
 };
 
