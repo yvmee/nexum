@@ -118,7 +118,6 @@ export const startDialogue: SceneNode[] = [
     id: 'intro_1',
     text: 'Help Mayra through the semester and enjoy your journey!',
     speaker: 'Narrator',
-    nextId: 'cutscene_1',
   },
   {
     id: 'cutscene_1',
@@ -287,7 +286,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'goal_1',
-    text: 'I recommend to prepare a smooth start that before your session starts today.',
+    text: 'I recommend to prepare a smooth start before your first tutorial session today.',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
@@ -303,7 +302,7 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'goal_3',
-    text: 'Whatever a "good start" is exactly...',
+    text: 'Whatever a "good start" is, exactly...',
     speaker: 'Mayra (in)',
     characterLeft: 'professor',
     characterRight: 'mayraThinking',
@@ -337,7 +336,7 @@ export const introDialogue: SceneNode[] = [
   {
     id: '15people_1',
     text: 'Ah yes, you can have more personal interactions with the students that way. But keep in mind, you can also only reach a smaller number of students with that format.',
-    speaker: 'Mayra',
+    speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',
     nextId: 'intro_12',
@@ -429,7 +428,7 @@ export const introDialogue: SceneNode[] = [
     id: 'table_game',
     type: 'minigame',
     minigameId: 'paper_table',
-    nextId: 'choice_leave',
+    nextId: 'leave',
   },
   {
     id: 'choice_look_2',
@@ -1337,7 +1336,7 @@ export const coffeeDialogue: SceneNode[] = [
     speaker: 'Noah',
     options: [
       { text: 'Yes, I feel the same way', nextId: 'choice_stressed'},
-      { text: 'No, I can’t relate at all', nextId: 'choice_not_stressed' },
+      { text: 'No, I can’t relate', nextId: 'choice_not_stressed' },
     ],
   },
   {

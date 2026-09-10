@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import * as motion from "motion/react-client";
 import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
@@ -68,14 +68,19 @@ export const DialogueScene: React.FC = () => {
   const [transitionPhase, setTransitionPhase] = useState<'idle' | 'cover' | 'reveal'>('idle');
   const pendingBg = useRef<string>('');
 
-  useEffect(() => {
+  // True from exact render that commits a new location, until black wipe swaps over background over
+  const isLocationChanging = currentBackground !== displayedBackground;
+  const isContentVisible = isDialogueActive && transitionPhase === 'idle' && !isLocationChanging;
+
+  // useLayoutEffect (instead of useEffect) so the cover phase comes before the browser paints currentDialogueId
+  useLayoutEffect(() => {
     if (currentBackground !== displayedBackground && transitionPhase === 'idle') {
       pendingBg.current = currentBackground;
       setTransitionPhase('cover');
     }
   }, [currentBackground, displayedBackground, transitionPhase]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (branchingNode) {
       const match = branchingNode.branchConditions.find(b => b.condition(playerChoices));
       if (match) {
@@ -124,7 +129,7 @@ export const DialogueScene: React.FC = () => {
       )}
 
       {/* Cutscene Layer */}
-      {cutsceneNode && (
+      {cutsceneNode && transitionPhase === 'idle' && !isLocationChanging && (
         <div className="absolute inset-0 z-10 pointer-events-auto">
           <CutsceneManager
             node={cutsceneNode}
@@ -134,14 +139,14 @@ export const DialogueScene: React.FC = () => {
       )}
 
       {/* Minigame Layer */}
-      {minigameNode && (
+      {minigameNode && transitionPhase === 'idle' && !isLocationChanging && (
         <div className="absolute inset-0 z-10 pointer-events-auto bg-black/80">
           <MinigameManager node={minigameNode} onComplete={handleAdvance} />
         </div>
       )}
 
       {/* Blur overlay on background*/}
-      {isDialogueActive && (
+      {isContentVisible && (
         <div className="absolute inset-0 z-5 bg-black/15 backdrop-blur-[1px] pointer-events-none" />
       )}
 
@@ -158,12 +163,12 @@ export const DialogueScene: React.FC = () => {
               onSelectOption={handleSelectOption}
               onGoBack={goBackDialogue}
               canGoBack={dialogueHistory.length > 0 && !currentDialogue?.location}
-              isVisible={isDialogueActive && transitionPhase === 'idle'}
+              isVisible={isContentVisible}
             />
           </div>
 
           {/* Left Portrait (attached to left edge of the dialogue box) */}
-          {isDialogueActive && transitionPhase === 'idle' && leftPortrait && (
+          {isContentVisible && leftPortrait && (
             <div
               className="absolute bottom-0 left-0 z-20 pointer-events-none"
               style={{ transform: 'translateX(-70%) translateY(-7rem)' }}
@@ -194,7 +199,7 @@ export const DialogueScene: React.FC = () => {
           )}
 
           {/* Right Portrait (attached to right edge of the dialogue box) */}
-          {isDialogueActive && transitionPhase === 'idle' && rightPortrait && (
+          {isContentVisible && rightPortrait && (
             <div
               className="absolute bottom-0 right-0 z-20 pointer-events-none"
               style={{ transform: 'translateX(70%) translateY(-7rem)' }}
