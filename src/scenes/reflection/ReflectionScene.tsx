@@ -106,6 +106,14 @@ export const ReflectionScene: React.FC = () => {
 
     if (resolvedVotingID !== undefined && optionId !== undefined) {
       saveVoteData(resolvedVotingID, optionId);
+      // Include the player's own vote in the displayed results
+      setVotingResults((prev) => ({
+        ...prev,
+        [resolvedVotingID]: {
+          ...prev[resolvedVotingID],
+          [optionId]: (prev[resolvedVotingID]?.[optionId] ?? 0) + 1,
+        },
+      }));
     }
 
     advanceReflection(nextId);
