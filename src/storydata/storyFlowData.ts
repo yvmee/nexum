@@ -35,8 +35,8 @@ export const testFlow: StoryFlow = {
   chunks: {
 
     intro: {
-      id: 'intro',
-      dialogueNodes: startDialogue,
+      id: 'pipOutro',
+      dialogueNodes: preparationDialogue,
       reflectionNodes: reflectionDialogueSandwich,
       reflectionSessionNumber: 1,
       transitions: [

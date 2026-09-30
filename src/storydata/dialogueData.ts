@@ -1077,8 +1077,6 @@ export const scenario1Dialogue: SceneNode[] = [
     characterRight: 'mayraStressed',
     nextId: 'path_default',
   },
-
-
   {
     id: 'path_default',
     text: '...',
@@ -1204,15 +1202,39 @@ export const scenario1outro: SceneNode[] = [
   },
   {
     id: 'pip_energy_7',
-    text: 'Hey, I think I will leave now and go home. What are you going to do now?',
+    text: 'But you know, I am not completely sure if this went as good as it could have gone.',
     speaker: 'Mayra',
     characterLeft: 'pip',
-    characterRight: 'mayra',
+    characterRight: 'mayraThinking',
     nextId: 'pip_energy_8',
   },
   {
     id: 'pip_energy_8',
-    text: 'Oh don’t worry about me, I will be just fine. You will see me again when you need me.',
+    text: 'Oh don’t worry about that. Mistakes are absolutely okay, and an essential part of learning.',
+    speaker: 'Pip',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_9',
+  },
+  {
+    id: 'pip_energy_9',
+    text: 'Alright, if you say so. Thank you Pip.',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_10',
+  },
+  {
+    id: 'pip_energy_10',
+    text: 'Hey, I think I will leave now and go home. What are you going to do now?',
+    speaker: 'Mayra',
+    characterLeft: 'pip',
+    characterRight: 'mayra',
+    nextId: 'pip_energy_11',
+  },
+  {
+    id: 'pip_energy_11',
+    text: 'I will be just fine. You will see me again when you need me.',
     speaker: 'Pip',
     characterLeft: 'pip',
     characterRight: 'mayra',
@@ -1907,7 +1929,7 @@ export const preparationDialogue: SceneNode[] = [
   },
   {
     id: 'prep_1',
-    text: 'There are always so many small decisions to make... Like how do I let people work on the exercises, what do I do in the mean time...',
+    text: 'There are always so many small decisions to make... Like how do I let people work on the exercises, what do I do in the meantime...',
     speaker: 'Mayra (in)',
     characterRight: 'mayraThinking',
     nextId: 'prep_2',

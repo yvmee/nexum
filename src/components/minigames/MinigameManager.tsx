@@ -20,9 +20,11 @@ export const PAPERS_START: Paper[] = [ // Paper text data
 
 export const PAPERS_EXEC: Paper[] = [ // Paper text data 
   { id: 1, title: 'Structure - Continued', text: 'Your course should be **structured** so that a **clear narrative thread is evident**. For example, refer back to your overview from the beginning of the course and clearly separate subtopics and individual topics.', 
-      x: '55%', y: '20%', rotate: 25 },
-  { id: 3, title: 'Activities', text: '**Activate** the students through activities such as **small group work**, **buzz groups**, and **regular questioning**.\n\nBe mindful of the students\' attention span. A teaching unit should not exceed 30-40 minutes. **Input and active sessions** should **alternate**.', 
+      x: '40%', y: '20%', rotate: 25 },
+  { id: 2, title: 'Activities', text: '**Activate** the students through activities such as **small group work**, **buzz groups**, and **regular questioning**.\n\nBe mindful of the students\' attention span. A teaching unit should not exceed 30-40 minutes. **Input and active sessions** should **alternate**.', 
       x: '10%', y: '40%', rotate: -15 },
+  { id: 3, title: 'Three Important Aspects', text: 'Give direct **feedback** to the students.\n\nStudents should have **social interactions**.\n\nChoose a good difficulty of exercises.', 
+      x: '65%', y: '40%', rotate: -10 },
 ];
 
 export const MinigameManager: React.FC<MinigameProps> = ({ node, onComplete }) => {
