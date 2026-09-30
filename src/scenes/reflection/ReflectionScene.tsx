@@ -3,6 +3,7 @@ import { useGameStore, useCurrentReflection } from '../../store/useGameStore';
 import { UserResponse, reflectionVotingSets } from '../../storydata/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
+import { ReflectionParticles } from './ReflectionParticles';
 import { loadReflectionAnswerTexts, saveAnswerData, ReflectionAnswerData, loadReflectionVotes, saveVoteData } from '../../db/database';
 import { PipImage } from '../../components/PipImage';
 import { useSoundStore } from '../../store/useSoundStore';
@@ -193,6 +194,9 @@ export const ReflectionScene: React.FC = () => {
 
       {/* Blur overlay on background*/}
       {<div className="absolute inset-0 z-5 bg-black/10 backdrop-blur-[1px] pointer-events-none" />}
+
+      {/* Glowing particles for points earned by answers */}
+      <ReflectionParticles />
 
       {/* Dialogue box at the top */}
       <div className="absolute top-8 left-0 right-0 z-20 flex justify-center">

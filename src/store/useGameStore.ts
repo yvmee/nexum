@@ -16,7 +16,31 @@ import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state 
 
-const backupBackground = backgrounds.hallway; // Fallback background 
+const backupBackground = backgrounds.hallway; // Fallback background
+
+// Glowing particle shown at the screen sides for points earned in reflection
+export interface ReflectionParticle {
+  id: number;
+  xPct: number; // horizontal position in % of screen width
+  yPct: number; // vertical position in % of screen height
+  size: number;
+  floatDelay: number;
+}
+
+let reflectionParticleCounter = 0;
+
+function createReflectionParticles(count: number): ReflectionParticle[] {
+  return Array.from({ length: count }, () => {
+    const left = Math.random() < 0.5;
+    return {
+      id: reflectionParticleCounter++,
+      xPct: left ? 3 + Math.random() * 11 : 86 + Math.random() * 11,
+      yPct: 25 + Math.random() * 65,
+      size: 6 + Math.random() * 6,
+      floatDelay: Math.random() * 2,
+    };
+  });
+}
 
 function applyDialogueAudio(dialogueNode: SceneNode | undefined): void {
   if (!dialogueNode) return;
@@ -53,6 +77,7 @@ interface GameManagerState {
   // Pip color value: 0 = fully grey, 100 = fully colorful
   pipColorValue: number;
   reflectionInputScores: number[]; // scores for current reflection section
+  reflectionParticles: ReflectionParticle[]; // one per earned point, consumed by the energy gain cutscene
 
   // Story flow state
   storyFlow: StoryFlow | null;
@@ -86,6 +111,7 @@ interface GameManagerState {
   makeChoice: (variableId: string, value: string | boolean | number) => void;
   submitReflection: (promptId: string, answer: string) => void;
   evaluateReflectionInput: (input: string) => number;
+  clearReflectionParticles: () => void;
   submitSortingGame: (ids: number[]) => void;
 }
 
@@ -144,6 +170,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   // Pip color
   pipColorValue: 0,
   reflectionInputScores: [],
+  reflectionParticles: [],
 
   // Story flow state
   storyFlow: testFlow,
@@ -172,6 +199,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
         gameState: 'PLAYING',
         pipColorValue: 20,
         reflectionInputScores: [],
+        reflectionParticles: [],
         playerChoices: {},
         reflectionAnswers: {},
         sortingGameChoices: [],
@@ -291,9 +319,12 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     const score = scoreInput(input);
     set((state) => ({
       reflectionInputScores: [...state.reflectionInputScores, score],
+      reflectionParticles: [...state.reflectionParticles, ...createReflectionParticles(score)],
     }));
     return score;
   },
+
+  clearReflectionParticles: () => set({ reflectionParticles: [] }),
 
   // Save sorting minigame choices to playerChoices
   submitSortingGame: (ids: number[]) => set((state) => {
@@ -378,6 +409,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     playerChoices: state.playerChoices,
     reflectionAnswers: state.reflectionAnswers,
     pipColorValue: state.pipColorValue,
+    reflectionParticles: state.reflectionParticles,
     sortingGameChoices: state.sortingGameChoices,
     dialogueHistory: state.dialogueHistory,
     playtime: state.playtime,

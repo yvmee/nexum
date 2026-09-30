@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as motion from "motion/react-client";
 import { MotionPipImage } from '../MotionPipImage';
 import { useSoundStore } from '../../store/useSoundStore';
+import { useGameStore, ReflectionParticle } from '../../store/useGameStore';
 
 interface EnergyGainSceneProps {
   onComplete: () => void;
@@ -16,8 +17,9 @@ export interface EnergyParticle {
   duration: number;
 }
 
+// Kept low so the particles the player earned during reflection dominate the visual
 const createEnergyParticles = (): EnergyParticle[] =>
-  Array.from({ length: 25 }, (_, i) => ({
+  Array.from({ length: 8 }, (_, i) => ({
     id: i,
     angle: Math.random() * Math.PI * 2,
     distance: Math.random() * 300 + 80,
@@ -37,6 +39,17 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
 
   const [particles] = useState<EnergyParticle[]>(createEnergyParticles);
 
+  // Take over the particles earned during reflection so they flow into Pip
+  const [earnedParticles] = useState<ReflectionParticle[]>(
+    () => useGameStore.getState().reflectionParticles
+  );
+  useEffect(() => {
+    useGameStore.getState().clearReflectionParticles();
+  }, []);
+
+  // Larger bloom for more earned points
+  const bloomSize = 350 + Math.min(earnedParticles.length * 8, 150);
+
   return (
     <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
 
@@ -46,8 +59,8 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
         style={{ zIndex: 1 }}
         initial={{ width: '0px', height: '0px', opacity: 0 }}
         animate={{
-          width: ['0px', '80px', '350px'],
-          height: ['0px', '80px', '350px'],
+          width: ['0px', '80px', `${bloomSize}px`],
+          height: ['0px', '80px', `${bloomSize}px`],
           opacity: [0, 0.25, 0.65],
         }}
         transition={{
@@ -88,6 +101,40 @@ export const EnergyGainScene: React.FC<EnergyGainSceneProps> = ({ onComplete }) 
               // easeIn makes particles start slow then rush inward (gravity-pull feel)
               ease: 'easeIn',
               times: [0, 0.15, 0.5, 0.75, 1],
+            }}
+          />
+        );
+      })}
+
+      {/* Particles earned in reflection: start at the screen sides and flow into Pip */}
+      {earnedParticles.map((p, i) => {
+        // Offsets from screen center (Pip), converted from the stored screen percentages
+        const startX = `${p.xPct - 50}vw`;
+        const startY = `${p.yPct - 50}vh`;
+        const delay = 0.2 + (i / Math.max(earnedParticles.length, 1)) * 1.4 + Math.random() * 0.2;
+
+        return (
+          <motion.div
+            key={`earned-${p.id}`}
+            className="absolute rounded-full bg-white blur-[1px]"
+            style={{
+              width: p.size,
+              height: p.size,
+              boxShadow: '0 0 15px 2px rgba(254, 249, 195, 0.9)',
+              zIndex: 6,
+            }}
+            initial={{ x: startX, y: startY, opacity: 1, scale: 1 }}
+            animate={{
+              x: 0,
+              y: 0,
+              opacity: [1, 1, 0.8, 0],
+              scale: [1, 1.1, 0.7, 0],
+            }}
+            transition={{
+              duration: 1.4 + Math.random() * 0.6,
+              delay,
+              ease: 'easeIn',
+              times: [0, 0.3, 0.75, 1],
             }}
           />
         );

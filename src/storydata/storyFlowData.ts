@@ -35,12 +35,20 @@ export const testFlow: StoryFlow = {
   chunks: {
 
     intro: {
-      id: 'pipOutro',
-      dialogueNodes: preparationDialogue,
-      reflectionNodes: reflectionDialogueSandwich,
+      id: 'intro',
+      dialogueNodes: startDialogue,
+      reflectionNodes: reflectionDialogue1,
       reflectionSessionNumber: 1,
       transitions: [
-        { targetChunkId: 'outro'}, 
+        { targetChunkId: 'scenario1Outro'}, 
+      ],
+    },
+
+    scenario1Outro: {
+      id: 'scenario1Outro',
+      dialogueNodes: scenario1outro,
+      transitions: [
+        { targetChunkId: 'splitintro' }, 
       ],
     },
 
