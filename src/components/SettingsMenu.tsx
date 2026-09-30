@@ -16,6 +16,11 @@ export const SettingsMenu: React.FC = () => {
     void navigate('/');
   };
 
+  const handleSkipToEvaluation = () => {
+    setIsOpen(false);
+    void navigate('/evaluation');
+  }
+
   return (
     <>
       {/* Gear Button */}
@@ -74,6 +79,17 @@ export const SettingsMenu: React.FC = () => {
                 className="w-full bg-primary text-primary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
               >
                 Return to Main Menu
+              </button>
+            </div>
+
+
+            {/* Button to skip to Evaluation */}
+            <div className="flex flex-col gap-3 mt-4">
+              <button
+                onClick={withClickSound(() => {handleSkipToEvaluation()})}
+                className="w-full bg-secondary text-secondary-foreground font-bold rounded py-2.5 px-4 cursor-pointer transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-secondary/20"
+              >
+                Skip to Evaluation
               </button>
             </div>
           </div>
