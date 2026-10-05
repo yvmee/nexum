@@ -255,26 +255,7 @@
   }
 }
 
+/* Per-bubble duration/delay variations are set inline in ThoughtBubbles.tsx */
 .thought-bubble {
   animation: float 4s ease-in-out infinite;
-}
-
-.thought-bubble:nth-child(2n) {
-  animation-duration: 5s;
-  animation-delay: 0.5s;
-}
-
-.thought-bubble:nth-child(3n) {
-  animation-duration: 4.5s;
-  animation-delay: 1s;
-}
-
-.thought-bubble:nth-child(4n) {
-  animation-duration: 5.5s;
-  animation-delay: 0.3s;
-}
-
-.thought-bubble:nth-child(5n) {
-  animation-duration: 4.2s;
-  animation-delay: 0.7s;
 }

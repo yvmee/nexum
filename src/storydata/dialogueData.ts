@@ -383,7 +383,15 @@ export const introDialogue: SceneNode[] = [
   },
   {
     id: 'intro_13',
-    text: 'I have to go now, but please, stay and take a look around. And check out the desk!',
+    text: 'I have to go now, but please, stay and take a look around.',
+    speaker: 'Professor',
+    characterLeft: 'professor',
+    characterRight: 'mayra',
+    nextId: 'teaching_note',
+  },
+  {
+    id: 'teaching_note',
+    text: 'Oh and remember: the most important part is that the students are there to solve a problem. It is not a lecture, let them actively work. An check out the desk!',
     speaker: 'Professor',
     characterLeft: 'professor',
     characterRight: 'mayra',

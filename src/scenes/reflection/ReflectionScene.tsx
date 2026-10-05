@@ -44,6 +44,8 @@ export const ReflectionScene: React.FC = () => {
   const [votingResults, setVotingResults] = useState<Record<number, Record<number, number>>>({});
   const [showThoughtBubbles, setShowThoughtBubbles] = useState<boolean>(false);
   const [canContinue, setCanContinue] = useState<boolean>(true);
+  // True while the thought bubble outro plays after a submit
+  const [isOutro, setIsOutro] = useState<boolean>(false);
 
   // Start 3-second timeout when thought bubbles appear
   useEffect(() => {
@@ -179,6 +181,17 @@ export const ReflectionScene: React.FC = () => {
 
     setIsAwaitingInput(false);
 
+    // With thought bubbles on screen, play the outro first and advance once it finishes
+    if (currentDialogue.showBubbles) {
+      setIsOutro(true);
+      return;
+    }
+
+    advanceReflection();
+  };
+
+  const handleOutroComplete = () => {
+    setIsOutro(false);
     advanceReflection();
   };
 
@@ -208,7 +221,7 @@ export const ReflectionScene: React.FC = () => {
           isVisible={isDialogueVisible}
           isAwaitingInput={isAwaitingInput}
           isSubmitting={isSubmitting}
-          canContinue={canContinue}
+          canContinue={canContinue && !isOutro}
           votingResults={votingResults}
         />
       </div>
@@ -218,6 +231,8 @@ export const ReflectionScene: React.FC = () => {
         reflections={previousReflections}
         isVisible={showThoughtBubbles}
         maxBubbles={5}
+        isOutro={isOutro}
+        onOutroComplete={handleOutroComplete}
       />
       
       {/* Character image */}
