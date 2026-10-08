@@ -4,12 +4,19 @@ import { useSoundStore, withClickSound } from '../store/useSoundStore';
 import { uploadEvaluation } from '../db/database';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
+import {
+    NGSE_FIELDS, NGSE_ITEMS, NGSE_SCALE_MAX, emptyNgseAnswers, ngseField,
+    type NgseAnswers, type NgsePhase,
+} from '../storydata/ngseData';
 
 const background = SchoolBackground;
 
+// Button labels for the before/after TCHAS items
+const FREQUENCY_LABELS = ['Never', 'Infrequently', 'Occasionally', 'Frequently', 'Always'];
+
 // Types for evaluation items
 
-export interface EvaluationData {
+export interface EvaluationData extends NgseAnswers {
     // Demographics
     age: string;
     gender: string;
@@ -18,7 +25,7 @@ export interface EvaluationData {
     tutorialVisited: string;
     tutorialHeld: string;
     exerciseHeld: string;
-    // Likert pre/post TCHAS pairs (1–6)
+    // Likert pre/post TCHAS pairs (1–5, never to always)
     uncomfortable_before: number | null;
     uncomfortable_after: number | null;
     worried_tutor_before: number | null;
@@ -31,6 +38,7 @@ export interface EvaluationData {
     keep_interested_after: number | null;
     present_info_before: number | null;
     present_info_after: number | null;
+    // NGSE items (1–5) are inherited from NgseAnswers
     // Likert perceived usability items
     scenarios_better_sense: number | null;
     scenarios_too_different: number | null;
@@ -59,6 +67,7 @@ const EMPTY: EvaluationData = {
     rapport_worry_before: null, rapport_worry_after: null,
     keep_interested_before: null, keep_interested_after: null,
     present_info_before: null, present_info_after: null,
+    ...emptyNgseAnswers(),
     scenarios_better_sense: null, scenarios_too_different: null,
     reflection_helped: null, reflection_difficult_connect: null,
     others_perspectives: null, own_contribution_meaningful: null,
@@ -83,6 +92,7 @@ function isComplete(d: EvaluationData): boolean {
         'rapport_worry_before', 'rapport_worry_after',
         'keep_interested_before', 'keep_interested_after',
         'present_info_before', 'present_info_after',
+        ...NGSE_FIELDS,
         'scenarios_better_sense', 'scenarios_too_different',
         'reflection_helped', 'reflection_difficult_connect',
         'others_perspectives', 'own_contribution_meaningful',
@@ -132,13 +142,16 @@ interface LikertRowProps {
     name: keyof EvaluationData;
     value: number | null;
     onChange: (key: keyof EvaluationData, v: number) => void;
+    scaleMax?: number;
+    // Optional label per button (index 0 = value 1); defaults to agree/disagree on the end points
+    labels?: string[];
 }
 
-const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange }) => (
+const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange, scaleMax = 6, labels }) => (
     <div className="mb-5">
         <p className="text-foreground text-sm mb-3 leading-snug">{label}<span className="text-primary ml-1">*</span></p>
         <div className="flex gap-2 flex-wrap">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
+            {Array.from({ length: scaleMax }, (_, i) => i + 1).map((n) => (
                 <label
                     key={n}
                     className={`flex flex-col items-center gap-1 cursor-pointer px-3 py-2 rounded-lg border transition-all
@@ -156,7 +169,9 @@ const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange }) =
                         className="sr-only"
                     />
                     <span className="font-bold text-sm">{n}</span>
-                    {(n === 1 || n === 6) && (
+                    {labels ? (
+                        <span className="text-xs text-center leading-tight">{labels[n - 1]}</span>
+                    ) : (n === 1 || n === scaleMax) && (
                         <span className="text-xs text-center leading-tight whitespace-pre-line">
                             {n === 1 ? 'Strongly\ndisagree' : 'Strongly\nagree'}
                         </span>
@@ -175,15 +190,42 @@ interface LikertPairProps {
     beforeValue: number | null;
     afterValue: number | null;
     onChange: (key: keyof EvaluationData, v: number) => void;
+    scaleMax?: number;
+    labels?: string[];
 }
+
+interface NgseBlockProps {
+    phase: NgsePhase;
+    data: EvaluationData;
+    onChange: (key: keyof EvaluationData, v: number) => void;
+}
+
+const NgseBlock: React.FC<NgseBlockProps> = ({ phase, data, onChange }) => (
+    <>
+        {NGSE_ITEMS.map((item) => {
+            const key = ngseField(item.id, phase);
+            return (
+                <div key={key} className="mb-6 p-4 rounded-xl bg-muted border border-border">
+                    <LikertRow
+                        label={item.text}
+                        name={key}
+                        value={data[key]}
+                        onChange={onChange}
+                        scaleMax={NGSE_SCALE_MAX}
+                    />
+                </div>
+            );
+        })}
+    </>
+);
 
 const LikertPair: React.FC<LikertPairProps> = ({
     beforeLabel, afterLabel, beforeKey, afterKey,
-    beforeValue, afterValue, onChange,
+    beforeValue, afterValue, onChange, scaleMax, labels,
 }) => (
     <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-        <LikertRow label={beforeLabel} name={beforeKey} value={beforeValue} onChange={onChange} />
-        <LikertRow label={afterLabel} name={afterKey} value={afterValue} onChange={onChange} />
+        <LikertRow label={beforeLabel} name={beforeKey} value={beforeValue} onChange={onChange} scaleMax={scaleMax} labels={labels} />
+        <LikertRow label={afterLabel} name={afterKey} value={afterValue} onChange={onChange} scaleMax={scaleMax} labels={labels} />
     </div>
 );
 
@@ -424,7 +466,7 @@ export const Evaluation: React.FC = () => {
                     {/* Likert scale */}
                     <SectionHeader
                         title="Rate your agreement"
-                        description="Think about your confidence levels before playing the game versus right now after playing the game and rate the following statements on a scale from 1 to 6. (1 = strongly disagree, 2 = disagree, 3 = slightly disagree, 4 = slightly agree, 5 = agree, 6 = strongly agree)."
+                        description="Think about your confidence levels before playing the game versus right now after playing the game and rate how often the following statements apply to you on a scale from 1 to 5. (1 = never, 2 = infrequently, 3 = occasionally, 4 = frequently, 5 = always)."
                     />
 
                     <LikertPair
@@ -435,6 +477,8 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.uncomfortable_before}
                         afterValue={data.uncomfortable_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
 
                     <LikertPair
@@ -445,6 +489,8 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.worried_tutor_before}
                         afterValue={data.worried_tutor_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
 
                     <LikertPair
@@ -455,6 +501,8 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.better_prepared_before}
                         afterValue={data.better_prepared_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
 
                     <LikertPair
@@ -465,6 +513,8 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.rapport_worry_before}
                         afterValue={data.rapport_worry_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
 
                     <LikertPair
@@ -475,6 +525,8 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.keep_interested_before}
                         afterValue={data.keep_interested_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
 
                     <LikertPair
@@ -485,7 +537,25 @@ export const Evaluation: React.FC = () => {
                         beforeValue={data.present_info_before}
                         afterValue={data.present_info_after}
                         onChange={setLikert}
+                        scaleMax={5}
+                        labels={FREQUENCY_LABELS}
                     />
+
+                    {/* NGSE: before playing */}
+                    <SectionHeader
+                        title="Before playing the game"
+                        description="Think about how you felt before playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
+                    />
+
+                    <NgseBlock phase="before" data={data} onChange={setLikert} />
+
+                    {/* NGSE: after playing */}
+                    <SectionHeader
+                        title="After playing the game"
+                        description="Think about how you feel now after playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
+                    />
+
+                    <NgseBlock phase="after" data={data} onChange={setLikert} />
 
                     {/* Likert scale part 2 */}
                     <SectionHeader
