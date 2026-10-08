@@ -154,7 +154,7 @@ const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange, sca
             {Array.from({ length: scaleMax }, (_, i) => i + 1).map((n) => (
                 <label
                     key={n}
-                    className={`flex flex-col items-center gap-1 cursor-pointer px-3 py-2 rounded-lg border transition-all
+                    className={`flex flex-col items-center justify-start gap-1 w-[5.5rem] h-[4.5rem] shrink-0 cursor-pointer px-2 py-2 rounded-lg border transition-all
             ${value === n
                             ? 'border-primary bg-secondary text-secondary-foreground'
                             : 'border-border bg-background text-muted-foreground hover:border-ring hover:bg-accent'
