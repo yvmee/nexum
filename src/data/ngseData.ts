@@ -3,6 +3,7 @@
 // the "after" items in the final evaluation.
 
 export const NGSE_SCALE_MAX = 5;
+export const NGSE_SCALE_LABELS = ['Strongly disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly agree'];
 
 export const NGSE_ITEMS = [
     { id: 1, text: 'I will be able to achieve most of the goals that I have set for myself.' },

@@ -69,7 +69,7 @@ export const PreSurvey: React.FC = () => {
             {/* Self-efficacy */}
             <SectionHeader
                 title="Before playing the game (continued)"
-                description="Think about how you feel right now about being a Tutor, and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
+                description="Think about how you feel right now about being a Tutor, and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 2 = disagree, 3 = neutral, 4 = agree, 5 = strongly agree)."
             />
 
             <NgseBlock phase="before" values={answers} onChange={setLikert} />

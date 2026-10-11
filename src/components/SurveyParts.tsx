@@ -1,7 +1,7 @@
 import React from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
 import {
-    NGSE_ITEMS, NGSE_SCALE_MAX, ngseField,
+    NGSE_ITEMS, NGSE_SCALE_LABELS, NGSE_SCALE_MAX, ngseField,
     type NgseAnswers, type NgseField, type NgsePhase,
 } from '../data/ngseData';
 import {
@@ -132,6 +132,7 @@ export const NgseBlock: React.FC<NgseBlockProps> = ({ phase, values, onChange })
         values={values}
         onChange={onChange}
         scaleMax={NGSE_SCALE_MAX}
+        labels={NGSE_SCALE_LABELS}
     />
 );
 

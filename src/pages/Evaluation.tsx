@@ -363,7 +363,7 @@ export const Evaluation: React.FC = () => {
             {/* NGSE: after playing */}
             <SectionHeader
                 title="After playing the game (continued)"
-                description="Think about how you feel now after playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
+                description="Think about how you feel now after playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 2 = disagree, 3 = neutral, 4 = agree, 5 = strongly agree)."
             />
 
             <NgseBlock phase="after" values={data} onChange={setLikert} />
