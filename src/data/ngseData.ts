@@ -1,5 +1,6 @@
 // New General Self-Efficacy Scale (NGSE), 8 items.
-// Answered twice in the evaluation: once for before and once for after playing the game.
+// Answered twice: the "before" items in the survey shown before the game starts,
+// the "after" items in the final evaluation.
 
 export const NGSE_SCALE_MAX = 5;
 
@@ -21,12 +22,22 @@ export type NgseField = `ngse_${NgseItemId}_${NgsePhase}`;
 // One answer (1–5, or null if unanswered) per item and phase
 export type NgseAnswers = Record<NgseField, number | null>;
 
-export const ngseField = (id: NgseItemId, phase: NgsePhase): NgseField => `ngse_${id}_${phase}`;
+export const ngseField = <P extends NgsePhase>(id: NgseItemId, phase: P): `ngse_${NgseItemId}_${P}` =>
+    `ngse_${id}_${phase}`;
 
-export const NGSE_FIELDS: NgseField[] = NGSE_ITEMS.flatMap((item) => [
-    ngseField(item.id, 'before'),
-    ngseField(item.id, 'after'),
-]);
+export type NgseBeforeField = NgseField & `${string}_before`;
+export type NgseAfterField = NgseField & `${string}_after`;
+
+// Answers collected before playing, kept in the game store until the evaluation is uploaded
+export type NgseBeforeAnswers = Record<NgseBeforeField, number | null>;
+
+export const NGSE_BEFORE_FIELDS: NgseBeforeField[] = NGSE_ITEMS.map((item) => ngseField(item.id, 'before'));
+export const NGSE_AFTER_FIELDS: NgseAfterField[] = NGSE_ITEMS.map((item) => ngseField(item.id, 'after'));
+
+export const NGSE_FIELDS: NgseField[] = [...NGSE_BEFORE_FIELDS, ...NGSE_AFTER_FIELDS];
+
+export const emptyNgseBeforeAnswers = (): NgseBeforeAnswers =>
+    Object.fromEntries(NGSE_BEFORE_FIELDS.map((f) => [f, null])) as NgseBeforeAnswers;
 
 export const emptyNgseAnswers = (): NgseAnswers =>
     Object.fromEntries(NGSE_FIELDS.map((f) => [f, null])) as NgseAnswers;

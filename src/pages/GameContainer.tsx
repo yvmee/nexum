@@ -17,7 +17,7 @@ export default function GameContainer() {
     if (gameState === 'IDLE') {
       void navigate('/');
     } else if (gameState === 'END') {
-      void navigate('/endpage');
+      void navigate('/evaluation');
     }
   }, [gameState, navigate]);
 

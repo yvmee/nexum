@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MinigameNode } from '../../storydata/dialogueData';
+import { MinigameNode } from '../../data/dialogueData';
 import { PaperTableGame, Paper } from './PaperTableGame';
 import { SortingGame } from './SortingGame';
 import { useGameStore } from '../../store/useGameStore';

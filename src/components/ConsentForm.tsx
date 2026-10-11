@@ -30,9 +30,9 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
                         This study involves playing a game demo for <strong>Nexum</strong>, a visual novel web game designed as an onboarding experience 
-                        for student tutors and doctoral candidates, and completing a short survey about your experience. 
+                        for student tutors and doctoral candidates, and completing a short first survey and a second survey about your experience after playing. 
                         The goal is to evaluate the game's effectiveness and usability. 
-                        This study is conducted as part of a master thesis at TUM.
+                        This study is conducted as part of a research project at TUM.
                     </p>
                 </section>
 
@@ -42,9 +42,10 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                         Your Task
                     </h3>
                     <p className="text-sm text-white/80 leading-relaxed">
-                        You will play through the Nexum game demo, by reading through the story, clicking decisions, 
+                        You wil be asked to fill out a short survey before playing a game demo on your current feelings about being a Tutor.
+                        Afterwards, you will play through the Nexum game demo, by reading through the story, clicking decisions, 
                         and responding to text prompts. 
-                        After the game ends, you will be taken to an anonymous survey about your experience. 
+                        When the game ends, you will be taken to a second anonymous survey about your experience. 
                         Please use a <strong>notebook or desktop computer</strong> as the game is not optimised for mobile devices.
                     </p>
                     <p className="text-sm text-white/80 leading-relaxed">
@@ -84,7 +85,7 @@ export const ConsentForm: React.FC<ConsentFormProps> = ({ onConsent, onCancel })
                         This data will be used solely for the academic evaluation 
                         of the Nexum game demo and will not be shared with third parties. 
                         The data will be analyzed anonymously using descriptive and statistical methods and
-                        used for a master's thesis and potential academic publications.
+                        used for a research project and potential academic publications.
                     </p>
                 </section>
 

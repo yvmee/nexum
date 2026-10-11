@@ -4,6 +4,7 @@ import GameContainer from './pages/GameContainer.tsx';
 import { EndPage } from './pages/EndPage.tsx';
 import { Menu } from './pages/Menu.tsx';
 import { Evaluation } from './pages/Evaluation.tsx';
+import { PreSurvey } from './pages/PreSurvey.tsx';
 
 /**
  * Provides the main layout structure for the app and sets up routing between pages
@@ -19,6 +20,7 @@ export const Layout: React.FC = () => {
       <div className="relative w-screen h-screen overflow-hidden font-sans bg-background">
         <Routes>
           <Route path="/" element={<Menu />} />
+          <Route path="/presurvey" element={<PreSurvey />} />
           <Route path="/game" element={<GameContainer />} />
           <Route path="/endpage" element={<EndPage />} />
           <Route path="/evaluation" element={<Evaluation />} />

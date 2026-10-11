@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGameStore, useCurrentReflection } from '../../store/useGameStore';
-import { UserResponse, reflectionVotingSets } from '../../storydata/reflectionData';
+import { UserResponse, reflectionVotingSets } from '../../data/reflectionData';
 import { ReflectionDialogueBox } from './ReflectionDialogueBox';
 import { ThoughtBubbles } from './ThoughtBubbles';
 import { ReflectionParticles } from './ReflectionParticles';

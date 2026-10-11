@@ -1,5 +1,5 @@
 import React from 'react';
-import { DialogueNode } from '../../storydata/dialogueData.ts';
+import { DialogueNode } from '../../data/dialogueData.ts';
 import { withClickSound } from '../../store/useSoundStore.ts';
 
 type DialogueBoxProps = {

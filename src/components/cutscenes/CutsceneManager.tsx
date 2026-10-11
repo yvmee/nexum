@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CutsceneNode } from '../../storydata/dialogueData';
+import { CutsceneNode } from '../../data/dialogueData';
 import { GlowParticleScene } from './GlowParticleScene';
 import { LightFlashScene } from './LightFlashScene';
 import { PipAppearanceScene } from './PipAppearanceScene';

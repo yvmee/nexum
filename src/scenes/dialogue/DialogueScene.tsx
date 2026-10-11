@@ -4,9 +4,9 @@ import { DialogueBox } from './DialogueBox.tsx';
 import { CutsceneManager } from '../../components/cutscenes/CutsceneManager.tsx';
 import { MinigameManager } from '../../components/minigames/MinigameManager.tsx';
 import { useGameStore, useCurrentDialogue } from '../../store/useGameStore.ts';
-import { characters, characterRenderClasses } from '../../storydata/assetData.ts';
+import { characters, characterRenderClasses } from '../../data/assetData.ts';
 import { PipImage } from '../../components/PipImage.tsx';
-import { isDialogueNode, isCutsceneNode, isMinigameNode, isBranchingNode } from '../../storydata/dialogueData.ts';
+import { isDialogueNode, isCutsceneNode, isMinigameNode, isBranchingNode } from '../../data/dialogueData.ts';
 
 /**
  * Dialogue scene that handles dialogue flow with branching support

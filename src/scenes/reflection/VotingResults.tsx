@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReflectionOption } from '../../storydata/reflectionData';
+import { ReflectionOption } from '../../data/reflectionData';
 
 interface VotingResultsProps {
   options: ReflectionOption[];

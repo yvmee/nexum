@@ -1,56 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import SchoolBackground from '../../assets/backgrounds/BackgroundLecturehall.png';
+import { AnxietyBlock, NgseBlock, SectionHeader, SurveyShell } from '../components/SurveyParts';
 import { useSoundStore, withClickSound } from '../store/useSoundStore';
 import { uploadEvaluation } from '../db/database';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../store/useGameStore';
-import {
-    NGSE_FIELDS, NGSE_ITEMS, NGSE_SCALE_MAX, emptyNgseAnswers, ngseField,
-    type NgseAnswers, type NgsePhase,
-} from '../storydata/ngseData';
+import { NGSE_AFTER_FIELDS, emptyNgseAnswers, type NgseAnswers } from '../data/ngseData';
+import { ANXIETY_AFTER_FIELDS, emptyAnxietyAnswers, type AnxietyAnswers } from '../data/anxietyData';
 
 const background = SchoolBackground;
 
-// Button labels for the before/after TCHAS items
-const FREQUENCY_LABELS = ['Never', 'Infrequently', 'Occasionally', 'Frequently', 'Always'];
+const TUM_SCHOOLS = [
+    'TUM School of Computation, Information & Technology',
+    'TUM School of Engineering and Design',
+    'TUM School of Life Sciences',
+    'TUM School of Management',
+    'TUM School of Medicine & Health',
+    'TUM School of Natural Sciences',
+    'TUM School of Social Sciences & Technology',
+];
 
 // Types for evaluation items
 
-export interface EvaluationData extends NgseAnswers {
+export interface EvaluationData extends NgseAnswers, AnxietyAnswers {
     // Demographics
     age: string;
     gender: string;
+    studiesAtTum: string;
+    tumSchool: string;
     study: string;
     gamingExperience: string;
     tutorialVisited: string;
     tutorialHeld: string;
     exerciseHeld: string;
-    // Likert pre/post TCHAS pairs (1–5, never to always)
-    uncomfortable_before: number | null;
-    uncomfortable_after: number | null;
-    worried_tutor_before: number | null;
-    worried_tutor_after: number | null;
-    better_prepared_before: number | null;
-    better_prepared_after: number | null;
-    rapport_worry_before: number | null;
-    rapport_worry_after: number | null;
-    keep_interested_before: number | null;
-    keep_interested_after: number | null;
-    present_info_before: number | null;
-    present_info_after: number | null;
-    // NGSE items (1–5) are inherited from NgseAnswers
-    // Likert perceived usability items
-    scenarios_better_sense: number | null;
-    scenarios_too_different: number | null;
-    reflection_helped: number | null;
-    reflection_difficult_connect: number | null;
-    others_perspectives: number | null;
-    own_contribution_meaningful: number | null;
-    more_confident: number | null;
-    no_change: number | null;
-    fun: number | null;
-    easy_navigation: number | null;
-    recommend: number | null;
+    // NGSE and teaching anxiety items (1–5) are inherited from NgseAnswers / AnxietyAnswers;
+    // the "before" items are filled from the game store on upload
     // Open questions
     most_relevant: string;
     missing: string;
@@ -59,45 +43,28 @@ export interface EvaluationData extends NgseAnswers {
 }
 
 const EMPTY: EvaluationData = {
-    age: '', gender: '', study: '', gamingExperience: '',
+    age: '', gender: '', studiesAtTum: '', tumSchool: '', study: '', gamingExperience: '',
     tutorialVisited: '', tutorialHeld: '', exerciseHeld: '',
-    uncomfortable_before: null, uncomfortable_after: null,
-    worried_tutor_before: null, worried_tutor_after: null,
-    better_prepared_before: null, better_prepared_after: null,
-    rapport_worry_before: null, rapport_worry_after: null,
-    keep_interested_before: null, keep_interested_after: null,
-    present_info_before: null, present_info_after: null,
+    ...emptyAnxietyAnswers(),
     ...emptyNgseAnswers(),
-    scenarios_better_sense: null, scenarios_too_different: null,
-    reflection_helped: null, reflection_difficult_connect: null,
-    others_perspectives: null, own_contribution_meaningful: null,
-    more_confident: null, no_change: null, fun: null, 
-    easy_navigation: null, recommend: null,
     most_relevant: '', missing: '', most_essential: '', other_comments: '',
 };
 
 // Helper function to check if all required fields are filled out before allowing submission
 function isComplete(d: EvaluationData): boolean {
     const requiredStrings: (keyof EvaluationData)[] = [
-        'age', 'gender', 'study', 'gamingExperience',
+        'age', 'gender', 'studiesAtTum', 'study', 'gamingExperience',
         'tutorialVisited', 'tutorialHeld', 'exerciseHeld',
         'most_relevant', 'missing', 'most_essential',
     ];
     if (requiredStrings.some((k) => !(d[k] as string).trim())) return false;
 
+    // The school is only asked of TUM students
+    if (d.studiesAtTum === 'yes' && !d.tumSchool) return false;
+
     const requiredLikert: (keyof EvaluationData)[] = [
-        'uncomfortable_before', 'uncomfortable_after',
-        'worried_tutor_before', 'worried_tutor_after',
-        'better_prepared_before', 'better_prepared_after',
-        'rapport_worry_before', 'rapport_worry_after',
-        'keep_interested_before', 'keep_interested_after',
-        'present_info_before', 'present_info_after',
-        ...NGSE_FIELDS,
-        'scenarios_better_sense', 'scenarios_too_different',
-        'reflection_helped', 'reflection_difficult_connect',
-        'others_perspectives', 'own_contribution_meaningful',
-        'more_confident', 'no_change', 
-        'fun', 'easy_navigation', 'recommend',
+        ...ANXIETY_AFTER_FIELDS,
+        ...NGSE_AFTER_FIELDS,
     ];
     if (requiredLikert.some((k) => d[k] === null)) return false;
 
@@ -112,12 +79,14 @@ interface RadioGroupProps {
     options: { value: string; label: string }[];
     value: string;
     onChange: (v: string) => void;
+    // Stack the options instead of wrapping them in a row, for long labels
+    vertical?: boolean;
 }
 
-const RadioGroup: React.FC<RadioGroupProps> = ({ label, name, options, value, onChange }) => (
+const RadioGroup: React.FC<RadioGroupProps> = ({ label, name, options, value, onChange, vertical = false }) => (
     <div className="mb-6">
         <p className="text-foreground font-semibold mb-2">{label}</p>
-        <div className="flex flex-wrap gap-3">
+        <div className={vertical ? 'flex flex-col gap-2' : 'flex flex-wrap gap-3'}>
             {options.map((opt) => (
                 <label key={opt.value} className="flex items-center gap-2 cursor-pointer group">
                     <input
@@ -134,98 +103,6 @@ const RadioGroup: React.FC<RadioGroupProps> = ({ label, name, options, value, on
                 </label>
             ))}
         </div>
-    </div>
-);
-
-interface LikertRowProps {
-    label: string;
-    name: keyof EvaluationData;
-    value: number | null;
-    onChange: (key: keyof EvaluationData, v: number) => void;
-    scaleMax?: number;
-    // Optional label per button (index 0 = value 1); defaults to agree/disagree on the end points
-    labels?: string[];
-}
-
-const LikertRow: React.FC<LikertRowProps> = ({ label, name, value, onChange, scaleMax = 6, labels }) => (
-    <div className="mb-5">
-        <p className="text-foreground text-sm mb-3 leading-snug">{label}<span className="text-primary ml-1">*</span></p>
-        <div className="flex gap-2 flex-wrap">
-            {Array.from({ length: scaleMax }, (_, i) => i + 1).map((n) => (
-                <label
-                    key={n}
-                    className={`flex flex-col items-center justify-start gap-1 w-[5.5rem] h-[4.5rem] shrink-0 cursor-pointer px-2 py-2 rounded-lg border transition-all
-            ${value === n
-                            ? 'border-primary bg-secondary text-secondary-foreground'
-                            : 'border-border bg-background text-muted-foreground hover:border-ring hover:bg-accent'
-                        }`}
-                >
-                    <input
-                        type="radio"
-                        name={name}
-                        value={n}
-                        checked={value === n}
-                        onChange={() => onChange(name, n)}
-                        className="sr-only"
-                    />
-                    <span className="font-bold text-sm">{n}</span>
-                    {labels ? (
-                        <span className="text-xs text-center leading-tight">{labels[n - 1]}</span>
-                    ) : (n === 1 || n === scaleMax) && (
-                        <span className="text-xs text-center leading-tight whitespace-pre-line">
-                            {n === 1 ? 'Strongly\ndisagree' : 'Strongly\nagree'}
-                        </span>
-                    )}
-                </label>
-            ))}
-        </div>
-    </div>
-);
-
-interface LikertPairProps {
-    beforeLabel: string;
-    afterLabel: string;
-    beforeKey: keyof EvaluationData;
-    afterKey: keyof EvaluationData;
-    beforeValue: number | null;
-    afterValue: number | null;
-    onChange: (key: keyof EvaluationData, v: number) => void;
-    scaleMax?: number;
-    labels?: string[];
-}
-
-interface NgseBlockProps {
-    phase: NgsePhase;
-    data: EvaluationData;
-    onChange: (key: keyof EvaluationData, v: number) => void;
-}
-
-const NgseBlock: React.FC<NgseBlockProps> = ({ phase, data, onChange }) => (
-    <>
-        {NGSE_ITEMS.map((item) => {
-            const key = ngseField(item.id, phase);
-            return (
-                <div key={key} className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                    <LikertRow
-                        label={item.text}
-                        name={key}
-                        value={data[key]}
-                        onChange={onChange}
-                        scaleMax={NGSE_SCALE_MAX}
-                    />
-                </div>
-            );
-        })}
-    </>
-);
-
-const LikertPair: React.FC<LikertPairProps> = ({
-    beforeLabel, afterLabel, beforeKey, afterKey,
-    beforeValue, afterValue, onChange, scaleMax, labels,
-}) => (
-    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-        <LikertRow label={beforeLabel} name={beforeKey} value={beforeValue} onChange={onChange} scaleMax={scaleMax} labels={labels} />
-        <LikertRow label={afterLabel} name={afterKey} value={afterValue} onChange={onChange} scaleMax={scaleMax} labels={labels} />
     </div>
 );
 
@@ -254,24 +131,13 @@ const TextAreaQuestion: React.FC<TextAreaQuestionProps> = ({ label, name, value,
 );
 
 
-const SectionHeader: React.FC<{ title: string; description?: string }> = ({ title, description }) => (
-    <div className="mt-8 mb-5 border-b border-border pb-2">
-        <h2 className="text-primary font-black text-xl tracking-widest uppercase">
-            {title}
-        </h2>
-        {description && (
-            <p className="text-muted-foreground text-sm mt-1">{description}</p>
-        )}
-    </div>
-);
-
-
 /**
  * Evaluation page component where users can fill out a survey after playing the game
  */
 export const Evaluation: React.FC = () => {
     const stopBgm = useSoundStore((s) => s.stopBgm);
     const playtime = useGameStore((s) => s.playtime);
+    const preSurvey = useGameStore((s) => s.preSurvey);
     const [data, setData] = useState<EvaluationData>(EMPTY);
     const [submitted, setSubmitted] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -295,7 +161,12 @@ export const Evaluation: React.FC = () => {
     };
 
     const setRadio = (key: keyof EvaluationData) => (value: string) => {
-        setData((prev) => ({ ...prev, [key]: value }));
+        setData((prev) => ({
+            ...prev,
+            [key]: value,
+            // Drop a school picked earlier when switching to "no"
+            ...(key === 'studiesAtTum' && value !== 'yes' ? { tumSchool: '' } : {}),
+        }));
     };
 
     const canSubmit = isComplete(data);
@@ -305,7 +176,9 @@ export const Evaluation: React.FC = () => {
         setSubmitting(true);
         setError(null);
         try {
-            await uploadEvaluation(data, playtime);
+            // The "before" answers come from the survey shown before the game
+            await uploadEvaluation({ ...data, ...preSurvey }, playtime);
+            useGameStore.getState().clearPreSurvey();
             setSubmitted(true);
         } catch (e) {
             console.error(e);
@@ -347,384 +220,219 @@ export const Evaluation: React.FC = () => {
     }
 
     return (
-        <div className="w-full h-full">
-            {/* Background */}
-            <div className="absolute inset-0 z-0">
-                <img src={background} alt="Background" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/50 to-black/85" />
+        <SurveyShell>
+            {/* Title */}
+            <h1 className="text-foreground font-black text-4xl mb-2 tracking-[0.2em] text-center">
+                Evaluation
+            </h1>
+            <p className="text-muted-foreground text-sm text-center mb-8">
+                Please fill out the following short survey about your experience. Your answers are anonymous and will be used for research purposes only.
+                All fields marked <span className="text-primary">*</span> are required.
+            </p>
+
+            {/* Demographics */}
+            <SectionHeader
+                title="Demographics"
+            />
+
+            <div className="mb-6">
+                <label className="block text-foreground font-semibold mb-2">
+                    Your age <span className="text-primary">*</span>
+                </label>
+                <input
+                    type="number"
+                    min={1}
+                    max={120}
+                    value={data.age}
+                    onChange={(e) => setField('age', e.target.value)}
+                    className="w-32 rounded-lg bg-background border border-border text-foreground px-3 py-2 text-sm
+            focus:outline-none focus:border-ring transition-colors"
+                    placeholder="e.g. 25"
+                />
             </div>
 
-            {/* Scrollable content */}
-            <div className="relative z-10 w-full h-full overflow-y-auto">
-                <div className="max-w-2xl mx-auto px-6 py-12 bg-background shadow-xl rounded-none sm:rounded-2xl my-0 sm:my-8 min-h-full sm:min-h-0">
-                    {/* Title */}
-                    <h1 className="text-foreground font-black text-4xl mb-2 tracking-[0.2em] text-center">
-                        Evaluation
-                    </h1>
-                    <p className="text-muted-foreground text-sm text-center mb-8">
-                        Please fill out the following short survey about your experience. Your answers are anonymous and will be used for research purposes only.
-                        All fields marked <span className="text-primary">*</span> are required.
-                    </p>
+            <RadioGroup
+                label="Your gender *"
+                name="gender"
+                value={data.gender}
+                onChange={setRadio('gender')}
+                options={[
+                    { value: 'female', label: 'Female' },
+                    { value: 'male', label: 'Male' },
+                    { value: 'non-binary', label: 'Non-binary' },
+                    { value: 'other', label: 'Other' },
+                ]}
+            />
 
-                    {/* Demographics */}
-                    <SectionHeader
-                        title="Demographics"
-                    />
+            <RadioGroup
+                label="Do you study at TUM? *"
+                name="studiesAtTum"
+                value={data.studiesAtTum}
+                onChange={setRadio('studiesAtTum')}
+                options={[
+                    { value: 'yes', label: 'Yes' },
+                    { value: 'no', label: 'No' },
+                ]}
+            />
 
-                    <div className="mb-6">
-                        <label className="block text-foreground font-semibold mb-2">
-                            Your age <span className="text-primary">*</span>
-                        </label>
-                        <input
-                            type="number"
-                            min={1}
-                            max={120}
-                            value={data.age}
-                            onChange={(e) => setField('age', e.target.value)}
-                            className="w-32 rounded-lg bg-background border border-border text-foreground px-3 py-2 text-sm
-                    focus:outline-none focus:border-ring transition-colors"
-                            placeholder="e.g. 25"
-                        />
-                    </div>
+            {data.studiesAtTum === 'yes' && (
+                <RadioGroup
+                    label="If you study at TUM, select your school *"
+                    name="tumSchool"
+                    value={data.tumSchool}
+                    onChange={setRadio('tumSchool')}
+                    vertical
+                    options={[
+                        ...TUM_SCHOOLS.map((school) => ({ value: school, label: school })),
+                        { value: 'other', label: 'Other' },
+                    ]}
+                />
+            )}
 
-                    <RadioGroup
-                        label="Your gender *"
-                        name="gender"
-                        value={data.gender}
-                        onChange={setRadio('gender')}
-                        options={[
-                            { value: 'female', label: 'Female' },
-                            { value: 'male', label: 'Male' },
-                            { value: 'non-binary', label: 'Non-binary' },
-                            { value: 'other', label: 'Other' },
-                        ]}
-                    />
-
-                    <div className="mb-6">
-                        <label className="block text-foreground font-semibold mb-2">
-                            What do you study? <span className="text-primary">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            value={data.study}
-                            onChange={(e) => setField('study', e.target.value)}
-                            className="w-full rounded-lg bg-background border border-border text-foreground px-3 py-2 text-sm
-                    focus:outline-none focus:border-ring transition-colors"
-                            placeholder="e.g. Informatics"
-                        />
-                    </div>
-
-                    <RadioGroup
-                        label="How much gaming experience do you have? *"
-                        name="gamingExperience"
-                        value={data.gamingExperience}
-                        onChange={setRadio('gamingExperience')}
-                        options={[
-                            { value: 'none', label: 'Almost none' },
-                            { value: 'little', label: 'Little' },
-                            { value: 'moderate', label: 'Moderate' },
-                            { value: 'regularly', label: 'I play regularly' },
-                        ]}
-                    />
-
-                    <RadioGroup
-                        label="Have you visited a tutorial accompanying a lecture before? *"
-                        name="tutorialVisited"
-                        value={data.tutorialVisited}
-                        onChange={setRadio('tutorialVisited')}
-                        options={[
-                            { value: 'never', label: 'No, never' },
-                            { value: 'once', label: 'Yes, at least once' },
-                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
-                        ]}
-                    />
-
-                    <RadioGroup
-                        label="Have you ever held a university tutorial accompanying a lecture? *"
-                        name="tutorialHeld"
-                        value={data.tutorialHeld}
-                        onChange={setRadio('tutorialHeld')}
-                        options={[
-                            { value: 'never', label: 'No, never' },
-                            { value: 'one', label: 'Yes, at least one' },
-                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
-                        ]}
-                    />
-
-                    <RadioGroup
-                        label="Have you ever held an exercise (e.g. a central exercise accompanying a lecture)? *"
-                        name="exerciseHeld"
-                        value={data.exerciseHeld}
-                        onChange={setRadio('exerciseHeld')}
-                        options={[
-                            { value: 'never', label: 'No, never' },
-                            { value: 'one', label: 'Yes, at least one' },
-                            { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
-                        ]}
-                    />
-
-                    {/* Likert scale */}
-                    <SectionHeader
-                        title="Rate your agreement"
-                        description="Think about your confidence levels before playing the game versus right now after playing the game and rate how often the following statements apply to you on a scale from 1 to 5. (1 = never, 2 = infrequently, 3 = occasionally, 4 = frequently, 5 = always)."
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, I felt uncomfortable speaking before a group of students."
-                        afterLabel="Now, after playing the game, I feel uncomfortable speaking before a group of students."
-                        beforeKey="uncomfortable_before"
-                        afterKey="uncomfortable_after"
-                        beforeValue={data.uncomfortable_before}
-                        afterValue={data.uncomfortable_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, I was worried about whether I could be a good tutor / teaching assistant."
-                        afterLabel="Now, after playing the game, I am worried about whether I can be a good tutor / teaching assistant."
-                        beforeKey="worried_tutor_before"
-                        afterKey="worried_tutor_after"
-                        beforeValue={data.worried_tutor_before}
-                        afterValue={data.worried_tutor_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, I felt better prepared for teaching than (I assume) others do."
-                        afterLabel="Now, after playing the game, I feel better prepared for teaching than (I assume) others do."
-                        beforeKey="better_prepared_before"
-                        afterKey="better_prepared_after"
-                        beforeValue={data.better_prepared_before}
-                        afterValue={data.better_prepared_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, a lack of rapport with my students was one of my biggest worries."
-                        afterLabel="Now, after playing the game, a lack of rapport with my students is one of my biggest worries."
-                        beforeKey="rapport_worry_before"
-                        afterKey="rapport_worry_after"
-                        beforeValue={data.rapport_worry_before}
-                        afterValue={data.rapport_worry_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, I worried about being able to keep students interested in what I teach."
-                        afterLabel="Now, after playing the game, I worry about being able to keep students interested in what I teach."
-                        beforeKey="keep_interested_before"
-                        afterKey="keep_interested_after"
-                        beforeValue={data.keep_interested_before}
-                        afterValue={data.keep_interested_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    <LikertPair
-                        beforeLabel="Before playing the game, deciding how to present information in a tutorial made me feel uncertain."
-                        afterLabel="Now, after playing the game, deciding how to present information in a tutorial makes me feel uncertain."
-                        beforeKey="present_info_before"
-                        afterKey="present_info_after"
-                        beforeValue={data.present_info_before}
-                        afterValue={data.present_info_after}
-                        onChange={setLikert}
-                        scaleMax={5}
-                        labels={FREQUENCY_LABELS}
-                    />
-
-                    {/* NGSE: before playing */}
-                    <SectionHeader
-                        title="Before playing the game"
-                        description="Think about how you felt before playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
-                    />
-
-                    <NgseBlock phase="before" data={data} onChange={setLikert} />
-
-                    {/* NGSE: after playing */}
-                    <SectionHeader
-                        title="After playing the game"
-                        description="Think about how you feel now after playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
-                    />
-
-                    <NgseBlock phase="after" data={data} onChange={setLikert} />
-
-                    {/* Likert scale part 2 */}
-                    <SectionHeader
-                        title="Rate your agreement"
-                        description="Think about the game you just played and rate the following statements on a scale from 1 to 6. (1 = strongly disagree, 2 = disagree, 3 = slightly disagree, 4 = slightly agree, 5 = agree, 6 = strongly agree)."
-                    />
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="Playing through the tutorial scenarios gave me a better sense of what to expect in my first real tutoring session."
-                            name="scenarios_better_sense"
-                            value={data.scenarios_better_sense}
-                            onChange={setLikert}
-                        /></div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="The scenarios in the game feel too different from real tutoring situations to be useful."
-                            name="scenarios_too_different"
-                            value={data.scenarios_too_different}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="Answering the reflection questions after each tutorial helped me better understand my own decision-making."
-                            name="reflection_helped"
-                            value={data.reflection_helped}
-                            onChange={setLikert}
-                        /></div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I found it difficult to connect my answers in the reflection questions to the role as a tutor."
-                            name="reflection_difficult_connect"
-                            value={data.reflection_difficult_connect}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="Reading other players' solution suggestions gave me new perspectives on how to handle tutoring situations."
-                            name="others_perspectives"
-                            value={data.others_perspectives}
-                            onChange={setLikert}
-                        /></div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="Contributing my own thoughts to the shared discussion felt like a meaningful part of the learning experience."
-                            name="own_contribution_meaningful"
-                            value={data.own_contribution_meaningful}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I would feel more confident entering my first tutorial session having played this game than without it."
-                            name="more_confident"
-                            value={data.more_confident}
-                            onChange={setLikert}
-                        /></div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I do not see how the game experience will change anything about how I approach my tutoring role."
-                            name="no_change"
-                            value={data.no_change}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I had fun playing the game."
-                            name="fun"
-                            value={data.fun}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I found it easy to navigate the game and understand the controls."
-                            name="easy_navigation"
-                            value={data.easy_navigation}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    <div className="mb-6 p-4 rounded-xl bg-muted border border-border">
-                        <LikertRow
-                            label="I would recommend this game to other tutors or doctoral candidates."
-                            name="recommend"
-                            value={data.recommend}
-                            onChange={setLikert}
-                        />
-                    </div>
-
-                    {/* Open Questions */}
-                    <SectionHeader
-                        title="Open Questions"
-                        description="Please answer the following questions."
-                    />
-
-                    <TextAreaQuestion
-                        label="Which part of the game felt most relevant for an upcoming role as a tutor and why?"
-                        name="most_relevant"
-                        value={data.most_relevant}
-                        onChange={(k, v) => setField(k, v)}
-                    />
-
-                    <TextAreaQuestion
-                        label="What was the game missing that you feel is necessary for preparing as a tutor?"
-                        name="missing"
-                        value={data.missing}
-                        onChange={(k, v) => setField(k, v)}
-                    />
-
-                    <TextAreaQuestion
-                        label="What did you think was the most essential part of the game?"
-                        name="most_essential"
-                        value={data.most_essential}
-                        onChange={(k, v) => setField(k, v)}
-                    />
-
-                    <TextAreaQuestion
-                        label="Do you have any other comments or suggestions?"
-                        name="other_comments"
-                        value={data.other_comments}
-                        onChange={(k, v) => setField(k, v)}
-                        required={false}
-                    />
-
-                    {/* Submit */}
-                    {error && (
-                        <p className="text-destructive text-sm text-center mb-4">{error}</p>
-                    )}
-
-                    {!canSubmit && (
-                        <p className="text-muted-foreground text-xs text-center mb-3">
-                            Please answer all required questions before submitting.
-                        </p>
-                    )}
-
-                    <div className="flex justify-center mb-16">
-                        <button
-                            onClick={() => void handleSubmit()}
-                            disabled={!canSubmit || submitting}
-                            className={`
-                    rounded-full border
-                    text-xl font-bold uppercase tracking-widest
-                    py-4 px-12 cursor-pointer
-                    transition-all duration-300 ease-out
-                    ${canSubmit && !submitting
-                                    ? 'bg-primary border-primary text-primary-foreground hover:opacity-90 hover:scale-105 hover:shadow-md'
-                                    : 'bg-muted border-border text-muted-foreground cursor-not-allowed'
-                                }
-                `}
-                        >
-                            {submitting ? 'Submitting…' : 'Submit'}
-                        </button>
-                    </div>
-                </div>
+            <div className="mb-6">
+                <label className="block text-foreground font-semibold mb-2">
+                    What do you study? <span className="text-primary">*</span>
+                </label>
+                <input
+                    type="text"
+                    value={data.study}
+                    onChange={(e) => setField('study', e.target.value)}
+                    className="w-full rounded-lg bg-background border border-border text-foreground px-3 py-2 text-sm
+            focus:outline-none focus:border-ring transition-colors"
+                    placeholder="e.g. Informatics"
+                />
             </div>
-        </div>
+
+            <RadioGroup
+                label="How much gaming experience do you have? *"
+                name="gamingExperience"
+                value={data.gamingExperience}
+                onChange={setRadio('gamingExperience')}
+                options={[
+                    { value: 'none', label: 'Almost none' },
+                    { value: 'little', label: 'Little' },
+                    { value: 'moderate', label: 'Moderate' },
+                    { value: 'regularly', label: 'I play regularly' },
+                ]}
+            />
+
+            <RadioGroup
+                label="Have you visited a tutorial accompanying a lecture before? *"
+                name="tutorialVisited"
+                value={data.tutorialVisited}
+                onChange={setRadio('tutorialVisited')}
+                options={[
+                    { value: 'never', label: 'No, never' },
+                    { value: 'once', label: 'Yes, at least once' },
+                    { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
+                ]}
+            />
+
+            <RadioGroup
+                label="Have you ever held a university tutorial accompanying a lecture? *"
+                name="tutorialHeld"
+                value={data.tutorialHeld}
+                onChange={setRadio('tutorialHeld')}
+                options={[
+                    { value: 'never', label: 'No, never' },
+                    { value: 'one', label: 'Yes, at least one' },
+                    { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
+                ]}
+            />
+
+            <RadioGroup
+                label="Have you ever held an exercise (e.g. a central exercise accompanying a lecture)? *"
+                name="exerciseHeld"
+                value={data.exerciseHeld}
+                onChange={setRadio('exerciseHeld')}
+                options={[
+                    { value: 'never', label: 'No, never' },
+                    { value: 'one', label: 'Yes, at least one' },
+                    { value: 'multiple', label: 'Yes, for multiple lectures (3+)' },
+                ]}
+            />
+
+            {/* Teaching anxiety: after playing */}
+            <SectionHeader
+                title="After playing the game"
+                description="Think about how you feel now about being a Tutor, after playing the game, and rate how often the following statements apply to you on a scale from 1 to 5. (1 = never, 2 = infrequently, 3 = occasionally, 4 = frequently, 5 = always)."
+            />
+
+            <AnxietyBlock phase="after" values={data} onChange={setLikert} />
+
+            {/* NGSE: after playing */}
+            <SectionHeader
+                title="After playing the game (continued)"
+                description="Think about how you feel now after playing the game and rate the following statements on a scale from 1 to 5 in regards of your upcoming teaching task. (1 = strongly disagree, 5 = strongly agree)."
+            />
+
+            <NgseBlock phase="after" values={data} onChange={setLikert} />
+
+            {/* Open Questions */}
+            <SectionHeader
+                title="Open Questions"
+                description="Please answer the following questions."
+            />
+
+            <TextAreaQuestion
+                label="Which part of the game felt most relevant for an upcoming role as a tutor and why?"
+                name="most_relevant"
+                value={data.most_relevant}
+                onChange={(k, v) => setField(k, v)}
+            />
+
+            <TextAreaQuestion
+                label="What was the game missing that you feel is necessary for preparing as a tutor?"
+                name="missing"
+                value={data.missing}
+                onChange={(k, v) => setField(k, v)}
+            />
+
+            <TextAreaQuestion
+                label="What did you think was the most essential part of the game?"
+                name="most_essential"
+                value={data.most_essential}
+                onChange={(k, v) => setField(k, v)}
+            />
+
+            <TextAreaQuestion
+                label="Do you have any other comments or suggestions?"
+                name="other_comments"
+                value={data.other_comments}
+                onChange={(k, v) => setField(k, v)}
+                required={false}
+            />
+
+            {/* Submit */}
+            {error && (
+                <p className="text-destructive text-sm text-center mb-4">{error}</p>
+            )}
+
+            {!canSubmit && (
+                <p className="text-muted-foreground text-xs text-center mb-3">
+                    Please answer all required questions before submitting.
+                </p>
+            )}
+
+            <div className="flex justify-center mb-16">
+                <button
+                    onClick={() => void handleSubmit()}
+                    disabled={!canSubmit || submitting}
+                    className={`
+            rounded-full border
+            text-xl font-bold uppercase tracking-widest
+            py-4 px-12 cursor-pointer
+            transition-all duration-300 ease-out
+            ${canSubmit && !submitting
+                            ? 'bg-primary border-primary text-primary-foreground hover:opacity-90 hover:scale-105 hover:shadow-md'
+                            : 'bg-muted border-border text-muted-foreground cursor-not-allowed'
+                        }
+        `}
+                >
+                    {submitting ? 'Submitting…' : 'Submit'}
+                </button>
+            </div>
+        </SurveyShell>
     );
 };
 

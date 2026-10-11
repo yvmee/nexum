@@ -1,17 +1,22 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { SceneNode } from '../storydata/dialogueData';
-import { locations } from '../storydata/dialogueData';
-import { ReflectionNode } from '../storydata/reflectionData';
+import { SceneNode } from '../data/dialogueData';
+import { locations } from '../data/dialogueData';
+import { ReflectionNode } from '../data/reflectionData';
 import {
   StoryFlow,
   evaluateNextChunk,
   chunkHasReflection,
-} from '../storydata/storyFlow';
-import { gameFlow } from '../storydata/storyFlowData';
-import { backgrounds } from '../storydata/assetData';
+} from '../data/storyFlow';
+import { gameFlow } from '../data/storyFlowData';
+import { backgrounds } from '../data/assetData';
 import { scoreInput } from '../lib/scoreInput';
 import { isBgmTrack, isSfxTrack, useSoundStore } from './useSoundStore';
+import type { NgseBeforeAnswers } from '../data/ngseData';
+import type { AnxietyBeforeAnswers } from '../data/anxietyData';
+
+// All answers collected before the game starts
+export type PreSurveyAnswers = NgseBeforeAnswers & AnxietyBeforeAnswers;
 
 type Scene = 'STORY' | 'REFLECTION' | 'END'; // All scenes with different layouts
 type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'END' ; // Overall game state 
@@ -100,7 +105,15 @@ interface GameManagerState {
   playStartTime: number | null;
   playtime: number | null;
 
+  // Study data: consent is not persisted, so every visit has to consent again
+  consentGiven: boolean;
+  // Answers of the survey before the game, uploaded together with the final evaluation
+  preSurvey: PreSurveyAnswers | null;
+
   // Actions to manage game flow
+  giveConsent: () => void;
+  submitPreSurvey: (answers: PreSurveyAnswers) => void;
+  clearPreSurvey: () => void;
   startGame: () => void;
   setScene: (scene: Scene) => void;
   advanceDialogue: (nextDialogueId?: string) => void;
@@ -167,6 +180,10 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   playStartTime: null,
   playtime: null,
 
+  // Study data
+  consentGiven: false,
+  preSurvey: null,
+
   // Pip color
   pipColorValue: 0,
   reflectionInputScores: [],
@@ -187,6 +204,13 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
   playerChoices: {},
   reflectionAnswers: {},
   sortingGameChoices: [],
+
+  giveConsent: () => set({ consentGiven: true }),
+
+  // Save the pre-game answers; consent only covers a single run, so it is reset here
+  submitPreSurvey: (answers) => set({ preSurvey: answers, consentGiven: false }),
+
+  clearPreSurvey: () => set({ preSurvey: null }),
 
   // Start the game loop by activating the first chunk of the loaded story flow
   startGame: () => {
@@ -413,6 +437,7 @@ export const useGameStore = create<GameManagerState>()(persist((set, get) => ({
     sortingGameChoices: state.sortingGameChoices,
     dialogueHistory: state.dialogueHistory,
     playtime: state.playtime,
+    preSurvey: state.preSurvey,
   }),
   onRehydrateStorage: () => (state) => {
     if (!state?.currentChunkId) return;

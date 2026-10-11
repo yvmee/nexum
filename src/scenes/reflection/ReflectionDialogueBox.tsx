@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ReflectionNode, ReflectionOption, reflectionVotingSets } from '../../storydata/reflectionData';
+import { ReflectionNode, ReflectionOption, reflectionVotingSets } from '../../data/reflectionData';
 import { withClickSound } from '../../store/useSoundStore';
 import { VotingResults } from './VotingResults';
 
