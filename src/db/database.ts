@@ -1,5 +1,7 @@
 import { supabase } from './dbClient'
 import profanityList from '@dsojevic/profanity-list';
+import { ANXIETY_ITEMS } from '../data/anxietyData';
+import { NGSE_ITEMS } from '../data/ngseData';
 
 /**
  * Type for basice reflection data loaded from the database
@@ -327,9 +329,31 @@ export const loadReflectionTableData = async (): Promise<ReflectionData[] | null
   return data as ReflectionData[];
 }
 
+
+export const EVALUATION_TABLE = 'followup_evaluation';
+
 /**
- * Upload evaluation survey data to the 'evaluation' table in Supabase
- * @param evaluation The completed evaluation data
+ * Columns for a scale answered before and after playing, e.g. anx1Before / anx1After
+ * Reads the matching `${prefix}_${id}_${phase}` fields of the evaluation data
+ */
+const scaleColumns = (
+  prefix: string,
+  items: readonly { id: number }[],
+  answers: object,
+): Record<string, number | null> => {
+  const values = answers as Record<string, number | null | undefined>;
+  return Object.fromEntries(
+    items.flatMap(({ id }) => [
+      [`${prefix}${id}Before`, values[`${prefix}_${id}_before`] ?? null],
+      [`${prefix}${id}After`, values[`${prefix}_${id}_after`] ?? null],
+    ]),
+  );
+};
+
+/**
+ * Upload the pre-survey and evaluation answers as one row to the table named by EVALUATION_TABLE
+ * @param evaluation The completed evaluation data, including the "before" answers from the pre-survey
+ * @param playtime Total playtime in seconds
  */
 export const uploadEvaluation = async (evaluation: import('../pages/Evaluation').EvaluationData, playtime?: number | null): Promise<void> => {
   const userId = await getOrCreateUser();
@@ -340,7 +364,7 @@ export const uploadEvaluation = async (evaluation: import('../pages/Evaluation')
 
   // Sanitize text inputs and save to database
   const { error } = await (supabase as any)
-    .from('evaluation')
+    .from(EVALUATION_TABLE)
     .insert({
       user_id: userId,
       // Demographics
@@ -354,59 +378,9 @@ export const uploadEvaluation = async (evaluation: import('../pages/Evaluation')
       tutorialHeld: evaluation.tutorialHeld,
       exerciseHeld: evaluation.exerciseHeld,
       // Teaching anxiety scale pre/post (1-5)
-      anx1Before: evaluation.anx_1_before,
-      anx1After: evaluation.anx_1_after,
-      anx2Before: evaluation.anx_2_before,
-      anx2After: evaluation.anx_2_after,
-      anx3Before: evaluation.anx_3_before,
-      anx3After: evaluation.anx_3_after,
-      anx4Before: evaluation.anx_4_before,
-      anx4After: evaluation.anx_4_after,
-      anx5Before: evaluation.anx_5_before,
-      anx5After: evaluation.anx_5_after,
-      anx6Before: evaluation.anx_6_before,
-      anx6After: evaluation.anx_6_after,
-      anx7Before: evaluation.anx_7_before,
-      anx7After: evaluation.anx_7_after,
-      anx8Before: evaluation.anx_8_before,
-      anx8After: evaluation.anx_8_after,
-      anx9Before: evaluation.anx_9_before,
-      anx9After: evaluation.anx_9_after,
-      anx10Before: evaluation.anx_10_before,
-      anx10After: evaluation.anx_10_after,
-      anx11Before: evaluation.anx_11_before,
-      anx11After: evaluation.anx_11_after,
-      anx12Before: evaluation.anx_12_before,
-      anx12After: evaluation.anx_12_after,
-      anx13Before: evaluation.anx_13_before,
-      anx13After: evaluation.anx_13_after,
-      anx14Before: evaluation.anx_14_before,
-      anx14After: evaluation.anx_14_after,
-      anx15Before: evaluation.anx_15_before,
-      anx15After: evaluation.anx_15_after,
-      anx16Before: evaluation.anx_16_before,
-      anx16After: evaluation.anx_16_after,
-      anx17Before: evaluation.anx_17_before,
-      anx17After: evaluation.anx_17_after,
-      anx18Before: evaluation.anx_18_before,
-      anx18After: evaluation.anx_18_after,
+      ...scaleColumns('anx', ANXIETY_ITEMS, evaluation),
       // New General Self-Efficacy Scale pre/post (1-5)
-      ngse1Before: evaluation.ngse_1_before,
-      ngse1After: evaluation.ngse_1_after,
-      ngse2Before: evaluation.ngse_2_before,
-      ngse2After: evaluation.ngse_2_after,
-      ngse3Before: evaluation.ngse_3_before,
-      ngse3After: evaluation.ngse_3_after,
-      ngse4Before: evaluation.ngse_4_before,
-      ngse4After: evaluation.ngse_4_after,
-      ngse5Before: evaluation.ngse_5_before,
-      ngse5After: evaluation.ngse_5_after,
-      ngse6Before: evaluation.ngse_6_before,
-      ngse6After: evaluation.ngse_6_after,
-      ngse7Before: evaluation.ngse_7_before,
-      ngse7After: evaluation.ngse_7_after,
-      ngse8Before: evaluation.ngse_8_before,
-      ngse8After: evaluation.ngse_8_after,
+      ...scaleColumns('ngse', NGSE_ITEMS, evaluation),
       // Open questions
       mostRelevant: sanitizeInput(evaluation.most_relevant),
       missing: sanitizeInput(evaluation.missing),
@@ -417,9 +391,9 @@ export const uploadEvaluation = async (evaluation: import('../pages/Evaluation')
     });
 
   if (error) {
-    console.error('Error saving evaluation:', error);
+    console.error(`Error saving evaluation to '${EVALUATION_TABLE}':`, error);
     throw error;
   }
 
-  console.log('Evaluation saved successfully!');
+  console.log(`Evaluation saved successfully to '${EVALUATION_TABLE}'!`);
 };
